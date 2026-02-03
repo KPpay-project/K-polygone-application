@@ -1,11 +1,11 @@
 export const formatCardNumber = (value: string): string => {
-  const digits = value.replace(/\D/g, '');
+  const digits = value.replace(/\D/g, "");
 
-  return digits.replace(/(\d{4})(?=\d)/g, '$1 ').trim();
+  return digits.replace(/(\d{4})(?=\d)/g, "$1 ").trim();
 };
 
 export const formatExpiryDate = (value: string): string => {
-  const digits = value.replace(/\D/g, '');
+  const digits = value.replace(/\D/g, "");
 
   if (digits.length <= 2) {
     return digits;
@@ -14,27 +14,27 @@ export const formatExpiryDate = (value: string): string => {
 };
 
 export const formatCVV = (value: string): string => {
-  return value.replace(/\D/g, '').slice(0, 3);
+  return value.replace(/\D/g, "").slice(0, 3);
 };
 
 export const getCardType = (cardNumber: string): string => {
-  const digits = cardNumber.replace(/\D/g, '');
+  const digits = cardNumber.replace(/\D/g, "");
   const firstTwo = parseInt(digits.slice(0, 2), 10);
   const firstFour = parseInt(digits.slice(0, 4), 10);
 
-  if (digits.startsWith('4')) return 'Visa';
-  if (firstTwo >= 51 && firstTwo <= 55) return 'Mastercard';
-  if (firstTwo === 34 || firstTwo === 37) return 'American Express';
-  if (firstFour >= 2221 && firstFour <= 2720) return 'Mastercard';
-  if (digits.startsWith('6')) return 'Discover';
+  if (digits.startsWith("4")) return "Visa";
+  if (firstTwo >= 51 && firstTwo <= 55) return "Mastercard";
+  if (firstTwo === 34 || firstTwo === 37) return "American Express";
+  if (firstFour >= 2221 && firstFour <= 2720) return "Mastercard";
+  if (digits.startsWith("6")) return "Discover";
 
-  return '';
+  return "";
 };
 
 export const validateExpiryDate = (value: string): boolean => {
   if (!value) return true;
 
-  const [month, year] = value.split('/');
+  const [month, year] = value.split("/");
   if (!month || !year) return false;
 
   const monthNum = parseInt(month, 10);
@@ -47,7 +47,10 @@ export const validateExpiryDate = (value: string): boolean => {
   const currentYear = currentDate.getFullYear() % 100;
   const currentMonth = currentDate.getMonth() + 1;
 
-  if (yearNum < currentYear || (yearNum === currentYear && monthNum < currentMonth)) {
+  if (
+    yearNum < currentYear ||
+    (yearNum === currentYear && monthNum < currentMonth)
+  ) {
     return false;
   }
 

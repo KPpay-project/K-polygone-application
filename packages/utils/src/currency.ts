@@ -1,31 +1,35 @@
 export function formatCurrency(
   amount: number | string,
-  currency: string = 'USD',
-  locale: string = 'en-US',
-  options?: Intl.NumberFormatOptions
+  currency: string = "USD",
+  locale: string = "en-US",
+  options?: Intl.NumberFormatOptions,
 ): string {
-  const numericAmount = typeof amount === 'number' ? amount : Number(amount);
+  const numericAmount = typeof amount === "number" ? amount : Number(amount);
   if (!Number.isFinite(numericAmount)) {
-    return '';
+    return "";
   }
 
   const formatter = new Intl.NumberFormat(locale, {
-    style: 'currency',
+    style: "currency",
     currency,
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
-    ...options
+    ...options,
   });
 
   return formatter.format(numericAmount);
 }
 
 export const parseCurrency = (value: string): number => {
-  const cleaned = value.replace(/[^\d.-]/g, '');
+  const cleaned = value.replace(/[^\d.-]/g, "");
   return Number.parseFloat(cleaned) || 0;
 };
 
-export const convertCurrency = (amount: number, fromRate: number, toRate: number): number => {
+export const convertCurrency = (
+  amount: number,
+  fromRate: number,
+  toRate: number,
+): number => {
   return (amount / fromRate) * toRate;
 };
 
@@ -42,14 +46,23 @@ export const formatBalance = (balance: number): string => {
   return balance.toFixed(2);
 };
 
-export const calculateInterest = (principal: number, rate: number, time: number, compound = false): number => {
+export const calculateInterest = (
+  principal: number,
+  rate: number,
+  time: number,
+  compound = false,
+): number => {
   if (compound) {
     return principal * (1 + rate / 100) ** time - principal;
   }
   return (principal * rate * time) / 100;
 };
 
-export const formatCurrencyWithCode = (amount: number, currency = 'USD', locale = 'en-US'): string => {
+export const formatCurrencyWithCode = (
+  amount: number,
+  currency = "USD",
+  locale = "en-US",
+): string => {
   try {
     const formatted = formatCurrency(Number(amount), currency, locale);
     return `${formatted} ${currency}`;

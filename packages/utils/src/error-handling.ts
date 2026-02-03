@@ -1,4 +1,4 @@
-import { toast } from 'sonner';
+import { toast } from "sonner";
 
 export interface GraphQLError {
   message: string;
@@ -27,9 +27,9 @@ export interface GraphQLResponse<T = any> {
  */
 export function handleGraphQLError(
   error: ApolloError | GraphQLResponse | any,
-  fallbackMessage: string = 'An error occurred'
+  fallbackMessage: string = "An error occurred",
 ): void {
-  console.error('GraphQL Error:', error);
+  console.error("GraphQL Error:", error);
 
   if (error.errors && Array.isArray(error.errors) && error.errors.length > 0) {
     error.errors.forEach((graphQLError: GraphQLError) => {
@@ -38,7 +38,11 @@ export function handleGraphQLError(
     return;
   }
 
-  if (error.graphQLErrors && Array.isArray(error.graphQLErrors) && error.graphQLErrors.length > 0) {
+  if (
+    error.graphQLErrors &&
+    Array.isArray(error.graphQLErrors) &&
+    error.graphQLErrors.length > 0
+  ) {
     error.graphQLErrors.forEach((graphQLError: GraphQLError) => {
       toast.error(graphQLError.message);
     });
@@ -46,7 +50,7 @@ export function handleGraphQLError(
   }
 
   if (error.networkError) {
-    toast.error('Network error: Please check your connection');
+    toast.error("Network error: Please check your connection");
     return;
   }
 
@@ -63,7 +67,9 @@ export function handleGraphQLError(
  * @param error - The error object
  * @returns Array of error messages
  */
-export function extractErrorMessages(error: ApolloError | GraphQLResponse | any): string[] {
+export function extractErrorMessages(
+  error: ApolloError | GraphQLResponse | any,
+): string[] {
   const messages: string[] = [];
 
   if (error.errors && Array.isArray(error.errors)) {
@@ -79,7 +85,7 @@ export function extractErrorMessages(error: ApolloError | GraphQLResponse | any)
   }
 
   if (error.networkError) {
-    messages.push('Network error: Please check your connection');
+    messages.push("Network error: Please check your connection");
   }
 
   if (error.message && !messages.length) {
