@@ -1,0 +1,10 @@
+import { createFileRoute } from '@tanstack/react-router';
+import MnosPage from '@/pages/dashboard/mnos';
+
+export const Route = createFileRoute('/dashboard/mnos/')({
+  component: RouteComponent
+});
+
+function RouteComponent() {
+  return <MnosPage />;
+}

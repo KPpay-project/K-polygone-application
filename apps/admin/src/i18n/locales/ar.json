@@ -1,0 +1,414 @@
+{
+  "common": {
+    "loading": "جاري التحميل...",
+    "error": "حدث خطأ",
+    "success": "نجح",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "back": "رجوع",
+    "next": "التالي",
+    "previous": "السابق",
+    "submit": "إرسال",
+    "close": "إغلاق",
+    "yes": "نعم",
+    "no": "لا",
+    "required": "مطلوب",
+    "proceed": "المتابعة",
+    "create": "إنشاء",
+    "creating": "جاري الإنشاء...",
+    "status": "الحالة",
+    "page": "الصفحة",
+    "of": "من",
+    "loadingUsers": "جاري تحميل المستخدمين...",
+    "errorLoadingUsers": "خطأ: {{message}}"
+  },
+  "dashboard": {
+    "card": {
+      "title": "البطاقة",
+      "createCard": "إنشاء بطاقة",
+      "addCard": "إضافة بطاقة",
+      "addNewCard": "إضافة بطاقة جديدة",
+      "cardNumber": "رقم البطاقة",
+      "expiryDate": "تاريخ انتهاء الصلاحية",
+      "cvv": "رمز الأمان",
+      "cardAddedSuccessfully": "تمت إضافة البطاقة بنجاح",
+      "cardAddedDescription": "تم حفظ بطاقتك وهي متاحة الآن للمدفوعات.",
+      "noCardsFound": "عذراً! لم يتم العثور على بطاقات ائتمان.",
+      "noCardsDescription": "لم تقم بإضافة أي بطاقات ائتمان بعد.",
+      "placeholders": {
+        "cardNumber": "أدخل رقم البطاقة",
+        "expiryDate": "شهر/سنة",
+        "cvv": "أدخل رمز الأمان"
+      }
+    },
+    "quickAccess": {
+      "title": "الوصول السريع",
+      "deposit": "إيداع",
+      "withdraw": "سحب",
+      "exchange": "تبديل",
+      "transfer": "تحويل",
+      "beneficiary": "المستفيد"
+    },
+    "transactions": {
+      "title": "المعاملات الأخيرة",
+      "searchPlaceholder": "البحث في المعاملات",
+      "pickDate": "اختر تاريخ",
+      "type": "النوع",
+      "status": "الحالة",
+      "currency": "العملة",
+      "paymentCategory": "فئة الدفع",
+      "transactionId": "معرف المعاملة",
+      "transactionType": "نوع المعاملة",
+      "transactionTypes": {
+        "withdrawal": "سحب الأموال"
+      },
+      "paymentMethods": {
+        "mobileMoney": "المال المحمول"
+      },
+      "amount": "المبلغ",
+      "date": "التاريخ",
+      "time": {
+        "am": "ص",
+        "pm": "م"
+      },
+      "statuses": {
+        "completed": "مكتمل",
+        "pending": "قيد الانتظار",
+        "failed": "فشل",
+        "approved": "موافق عليه"
+      },
+      "noTransactions": "لم يتم العثور على معاملات"
+    }
+  },
+  "wallet": {
+    "title": "محافظي",
+    "totalWallets": "إجمالي {{count}} محفظة",
+    "createWallet": "إنشاء محفظة",
+    "createWalletTitle": "إنشاء محفظة جديدة",
+    "deposit": {
+      "title": "إيداع الأموال",
+      "description": "أدخل المبلغ واختر طريقة لإيداع الأموال في محفظتك.",
+      "amountPlaceholder": "أدخل المبلغ",
+      "confirmButton": "تأكيد الإيداع"
+    },
+    "withdraw": "سحب",
+    "availableBalance": "الرصيد المتاح {{currency}}",
+    "walletId": "الهوية: {{id}}",
+    "status": {
+      "default": "افتراضي",
+      "limit": "الحد: $600"
+    }
+  },
+  "auth": {
+    "createAccount": {
+      "title": "إنشاء حساب",
+      "description": "يرجى ملء تفاصيلك بشكل صحيح",
+      "firstName": "الاسم الأول",
+      "lastName": "اسم العائلة",
+      "email": "البريد الإلكتروني",
+      "phone": "رقم الهاتف",
+      "country": "بلد الإقامة",
+      "password": "كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "enterPhoneNumber": "أدخل رقم الهاتف",
+      "selectCountry": "اختر البلد",
+      "passwordsDontMatch": "كلمات المرور غير متطابقة",
+      "alreadyHaveAccount": "هل لديك حساب بالفعل؟",
+      "signIn": "تسجيل الدخول"
+    },
+    "login": {
+      "title": "تسجيل الدخول إلى حسابك",
+      "description": "يرجى ملء تفاصيلك بشكل صحيح",
+      "email": "البريد الإلكتروني",
+      "emailOrPhone": "البريد الإلكتروني أو الهاتف",
+      "password": "كلمة المرور",
+      "forgotPassword": "نسيت كلمة المرور؟",
+      "dontHaveAccount": "ليس لديك حساب؟",
+      "createAccount": "تسجيل",
+      "signIn": "تسجيل الدخول"
+    },
+    "forgotPassword": {
+      "title": "نسيت كلمة المرور؟",
+      "description": "لا تقلق، سنرسل لك تعليمات إعادة التعيين",
+      "email": "البريد الإلكتروني",
+      "sendResetLink": "إعادة تعيين كلمة المرور",
+      "backToLogin": "العودة إلى تسجيل الدخول"
+    },
+    "resetPassword": {
+      "title": "إعادة تعيين كلمة المرور؟",
+      "description": "أدخل كلمة المرور الجديدة",
+      "password": "كلمة المرور الجديدة",
+      "confirmPassword": "تأكيد كلمة المرور الجديدة",
+      "resetPassword": "إعادة تعيين كلمة المرور"
+    },
+    "verifyReset": {
+      "title": "أدخل رمزك",
+      "description": "أرسلنا رمز التحقق إلى {{email}}",
+      "otp": "رمز التحقق",
+      "verify": "تحقق",
+      "resendCode": "إعادة إرسال الرمز"
+    },
+    "passwordResetSuccess": {
+      "title": "إعادة تعيين كلمة المرور",
+      "description": "تم تغيير كلمة المرور بنجاح.",
+      "continueToLogin": "المتابعة إلى تسجيل الدخول"
+    }
+  },
+  "onboarding": {
+    "getStarted": {
+      "title": "انضم إلينا!",
+      "description": "للبدء في هذه الرحلة، أخبرنا ما نوع الحساب الذي ستفتحه.",
+      "user": {
+        "title": "المستخدم",
+        "description": "حساب شخصي لإدارة جميع أنشطتك."
+      },
+      "merchant": {
+        "title": "التاجر",
+        "description": "حساب تجاري لإدارة جميع أنشطتك."
+      }
+    },
+    "sidebar": {
+      "title": "أكثر منصة معاملات مالية أماناً وموثوقية.",
+      "subtitle": "انضم إلى مجتمع Kpay الآن!"
+    }
+  },
+  "userManagement": {
+    "title": "إدارة المستخدمين",
+    "createNewUser": "إنشاء مستخدم جديد",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "createUser": "إنشاء مستخدم",
+    "creating": "جاري الإنشاء...",
+    "users": "المستخدمون",
+    "created": "تم الإنشاء",
+    "loadingUsers": "جاري تحميل المستخدمين...",
+    "errorLoadingUsers": "خطأ: {{message}}"
+  },
+  "countries": {
+    "US": "الولايات المتحدة",
+    "GB": "المملكة المتحدة",
+    "CA": "كندا",
+    "AU": "أستراليا",
+    "NG": "نيجيريا",
+    "IN": "الهند",
+    "DE": "ألمانيا",
+    "FR": "فرنسا",
+    "JP": "اليابان",
+    "BR": "البرازيل"
+  },
+  "validation": {
+    "required": "هذا الحقل مطلوب",
+    "email": "يرجى إدخال عنوان بريد إلكتروني صحيح",
+    "minLength": "يجب أن يكون على الأقل {{min}} أحرف",
+    "maxLength": "يجب ألا يزيد عن {{max}} حرف",
+    "passwordRequirements": "كلمة المرور يجب أن تحتوي على حرف كبير واحد وحرف صغير واحد ورقم واحد على الأقل",
+    "phoneNumber": "يرجى إدخال رقم هاتف صحيح",
+    "otpLength": "رمز OTP يجب أن يكون 6 أرقام",
+    "otpFormat": "رمز OTP يجب أن يكون رقم من 6 أرقام",
+    "selectValidCountry": "يرجى اختيار بلد صحيح",
+    "selectValidCurrency": "يرجى اختيار عملة صحيحة",
+    "selectValidPaymentMethod": "يرجى اختيار طريقة دفع صحيحة",
+    "selectValidNetwork": "يرجى اختيار شبكة صحيحة",
+    "amountRequired": "المبلغ مطلوب",
+    "amountNumeric": "المبلغ يجب أن يكون رقماً",
+    "amountMinimum": "المبلغ يجب أن يكون على الأقل 1",
+    "accountNumberRequired": "رقم الحساب مطلوب",
+    "accountNumberNumeric": "رقم الحساب يجب أن يكون رقماً",
+    "cardNumber": {
+      "length": "رقم البطاقة يجب أن يكون بين 13 و 19 رقم",
+      "format": "رقم البطاقة يجب أن يحتوي على أرقام فقط",
+      "invalid": "رقم البطاقة غير صحيح",
+      "valid": "رقم البطاقة صحيح"
+    },
+    "expiryDate": {
+      "format": "يرجى إدخال تاريخ انتهاء الصلاحية بالتنسيق شهر/سنة",
+      "expired": "البطاقة منتهية الصلاحية",
+      "valid": "تاريخ انتهاء الصلاحية صحيح"
+    },
+    "cvv": {
+      "length": "رمز الأمان يجب أن يكون بين 3 و 4 أرقام",
+      "format": "رمز الأمان يجب أن يحتوي على أرقام فقط",
+      "valid": "رمز الأمان صحيح"
+    },
+    "status": "حالة التحقق"
+  },
+  "navigation": {
+    "home": "الرئيسية",
+    "dashboard": "لوحة التحكم",
+    "profile": "الملف الشخصي",
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج"
+  },
+  "placeholders": {
+    "firstName": "أحمد",
+    "lastName": "محمد",
+    "email": "ahmed.mohamed@example.com",
+    "emailOrPhone": "أدخل البريد الإلكتروني أو رقم الهاتف",
+    "password": "••••••••",
+    "phoneNumber": "أدخل رقم الهاتف",
+    "selectCountry": "اختر البلد",
+    "selectCurrency": "اختر العملة",
+    "selectPaymentMethod": "اختر طريقة الدفع",
+    "selectNetwork": "اختر الشبكة",
+    "enterAmount": "أدخل المبلغ",
+    "enterAccountNumber": "أدخل رقم الحساب"
+  },
+  "billPayment": {
+    "title": "دفع الفواتير",
+    "purchaseAirtime": "شراء رصيد",
+    "selectedService": "الخدمة المختارة",
+    "confirmPayment": "تأكيد دفع الفاتورة",
+    "paymentSuccessful": "تم الدفع بنجاح",
+    "paymentSuccessMessage": "تم معالجة دفع فاتورتك بنجاح.",
+    "confirmYourRequest": "أكد طلبك",
+    "amount": "المبلغ",
+    "fee": "الرسوم",
+    "destination": "الوجهة",
+    "service": "الخدمة",
+    "total": "الإجمالي",
+    "confirmAndSend": "تأكيد وإرسال",
+    "services": {
+      "airtime": "رصيد الهاتف",
+      "airtimeDescription": "اشحن هاتفك المحمول برصيد",
+      "data": "البيانات",
+      "dataDescription": "اشتري باقات البيانات المحمولة",
+      "electricity": "الكهرباء",
+      "electricityDescription": "ادفع فواتير الكهرباء",
+      "cabletv": "التلفزيون الكابلي",
+      "cabletvDescription": "ادفع اشتراك التلفزيون الكابلي",
+      "betting": "المراهنة",
+      "bettingDescription": "مول حساب المراهنة الخاص بك",
+      "giftcard": "بطاقة هداية",
+      "giftcardDescription": "أرسل بطاقات هدايا للأصدقاء والعائلة",
+      "cableTv": "التلفزيون الكابلي",
+      "giftCard": "بطاقة هدية"
+    },
+    "form": {
+      "countryOfResidence": "بلد الإقامة",
+      "selectCurrency": "اختر العملة",
+      "paymentMethod": "طريقة الدفع",
+      "networkType": "نوع الشبكة",
+      "amount": "المبلغ",
+      "accountNumber": "رقم الحساب",
+      "proceed": "المتابعة"
+    },
+    "countries": {
+      "nigeria": "نيجيريا",
+      "ghana": "غانا",
+      "kenya": "كينيا"
+    },
+    "currencies": {
+      "usd": "دولار أمريكي",
+      "ngn": "نيرة نيجيرية",
+      "eur": "يورو"
+    },
+    "paymentMethods": {
+      "mobile": "المال المحمول",
+      "card": "بطاقة ائتمان",
+      "bank": "تحويل بنكي"
+    },
+    "networks": {
+      "mtn": "MTN",
+      "airtel": "Airtel",
+      "glo": "Glo",
+      "9mobile": "9mobile",
+      "sbee": "SBEE",
+      "ekedc": "EKEDC",
+      "ikedc": "IKEDC",
+      "bet9ja": "Bet9ja"
+    }
+  },
+  "pagination": {
+    "previous": "السابق",
+    "next": "التالي",
+    "page": "الصفحة {{current}} من {{total}}"
+  },
+  "sidebar": {
+    "logo": "الشعار",
+    "dashboard": "لوحة التحكم",
+    "wallet": "المحفظة",
+    "deposit": "إيداع",
+    "billPayment": "دفع الفواتير",
+    "creditCard": "بطاقة الائتمان",
+    "withdrawals": "السحوبات",
+    "withdrawMoney": "سحب الأموال",
+    "withdrawList": "قائمة السحوبات",
+    "beneficiaries": "المستفيدون",
+    "transfer": "تحويل",
+    "exchangeMoney": "تبادل الأموال",
+    "transactionHistory": "سجل المعاملات",
+    "ticket": "التذكرة",
+    "settings": "الإعدادات"
+  },
+  "balance": {
+    "totalBalance": "الرصيد الإجمالي",
+    "availableBalance": "الرصيد المتاح",
+    "deposit": "إيداع",
+    "withdraw": "سحب",
+    "viewAll": "عرض الكل",
+    "wallet": "المحفظة",
+    "totalWallets": "إجمالي {{count}} محفظة",
+    "createWallet": "إنشاء محفظة",
+    "default": "افتراضي",
+    "walletId": "المعرف: {{id}}",
+    "showBalance": "إظهار الرصيد",
+    "hideBalance": "إخفاء الرصيد"
+  },
+  "transfer": {
+    "title": "تحويل الأموال",
+    "description": "إرسال الأموال للأصدقاء والعائلة",
+    "whoToSend": "لمن تريد الإرسال؟",
+    "payWithBankTransfer": "الدفع بالتحويل البنكي",
+    "payWithCard": "الدفع بالبطاقة",
+    "bankTransferDescription": "إرسال الأموال إلى مستلم أو مستفيد جديد عبر التحويل البنكي",
+    "cardDescription": "إرسال الأموال إلى مستلم أو مستفيد جديد عبر التحويل البنكي",
+    "cardEndingIn": "بطاقة تنتهي بـ {{lastFour}}",
+    "searchCards": "بحث",
+    "amount": "المبلغ",
+    "destination": "الوجهة",
+    "enterAmount": "أدخل المبلغ",
+    "enterDestination": "أدخل الوجهة",
+    "confirmTransfer": "تأكيد التحويل",
+    "transferSuccessful": "تم التحويل بنجاح",
+    "transferSuccessMessage": "تم معالجة طلب التحويل الخاص بك. ستظهر الأموال قريباً، حسب مقدم خدمة الدفع الخاص بك.",
+    "cancel": "إلغاء",
+    "enterDetails": "أدخل التفاصيل",
+    "currency": "العملة",
+    "changeCurrency": "تغيير",
+    "proceed": "متابعة",
+    "confirm": "تأكيد التحويل",
+    "success": "تم التحويل بنجاح",
+    "bankAccount": "الحساب البنكي",
+    "enterBankAccount": "أدخل رقم الحساب البنكي",
+    "recipientName": "اسم المستلم",
+    "enterRecipientName": "أدخل اسم المستلم",
+    "bankName": "اسم البنك",
+    "enterBankName": "أدخل اسم البنك",
+    "routingNumber": "رقم التوجيه",
+    "enterRoutingNumber": "أدخل رقم التوجيه",
+    "cardNumber": "رقم البطاقة",
+    "expiryDate": "تاريخ الانتهاء",
+    "saveCard": "احفظ هذه البطاقة للاستخدام المستقبلي",
+    "equivalentAmounts": "المبالغ المعادلة بالعملات الأخرى",
+    "validation": {
+      "amountRequired": "المبلغ مطلوب",
+      "amountMustBePositive": "يجب أن يكون المبلغ رقماً موجباً صحيحاً",
+      "currencyRequired": "العملة مطلوبة",
+      "destinationRequired": "الوجهة مطلوبة",
+      "bankAccountRequired": "رقم الحساب البنكي مطلوب",
+      "recipientNameRequired": "اسم المستلم مطلوب",
+      "bankNameRequired": "اسم البنك مطلوب",
+      "routingNumberRequired": "رقم التوجيه مطلوب",
+      "cardNumberRequired": "رقم البطاقة مطلوب",
+      "expiryDateRequired": "تاريخ الانتهاء مطلوب",
+      "invalidCardNumber": "رقم البطاقة غير صحيح",
+      "invalidExpiryDate": "تاريخ الانتهاء غير صحيح"
+    }
+  },
+  "footer": {
+    "copyright": "حقوق الطبع والنشر © 2025 KPpay | جميع الحقوق محفوظة."
+  }
+}

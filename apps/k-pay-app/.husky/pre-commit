@@ -1,0 +1,14 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npm run lint
+if [ $? -ne 0 ]; then
+  echo "\n❌ Lint errors found. Commit aborted."
+  exit 1
+fi
+
+npm run test:coverage -- --passWithNoTests
+if [ $? -ne 0 ]; then
+  echo "\n❌ Tests or coverage requirements not met. Commit aborted."
+  exit 1
+fi 
