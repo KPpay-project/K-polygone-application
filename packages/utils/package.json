@@ -8,6 +8,8 @@
   },
   "license": "MIT",
   "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
     "lint": "eslint \"**/*.ts\""
   },
   "devDependencies": {
@@ -15,5 +17,10 @@
     "@repo/typescript-config": "workspace:*",
     "eslint": "^8.57.0",
     "typescript": "5.5.4"
+  },
+  "dependencies": {
+    "country-currency-map": "^2.1.7",
+    "i18n-iso-countries": "^7.14.0",
+    "sonner": "^2.0.7"
   }
 }
