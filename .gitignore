@@ -9,3 +9,11 @@ dist-ssr
 .cache
 server/dist
 public/dist
+
+# Test Coverage & Reports
+coverage/
+playwright-report/
+test-results/
+blob-report/
+junit-results.xml
+

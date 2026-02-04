@@ -98,6 +98,14 @@ dist
 # vuepress build output
 .vuepress/dist
 
+# Test Coverage & Reports
+coverage/
+playwright-report/
+test-results/
+blob-report/
+junit-results.xml
+
+
 # Serverless directories
 .serverless/
 

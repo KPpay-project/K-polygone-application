@@ -3,6 +3,7 @@ import './styles/app.css';
 
 import { ApolloProvider } from '@apollo/client';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
+import { HelmetProvider } from 'react-helmet-async';
 import { apolloClient } from './lib/apollo-client';
 
 import { routeTree } from './routeTree.gen';
@@ -25,9 +26,11 @@ function GlobalLoader() {
 
 function App() {
   return (
-    <ApolloProvider client={apolloClient}>
-      <RouterProvider router={router} defaultPendingComponent={GlobalLoader} defaultPendingMinMs={250} />
-    </ApolloProvider>
+    <HelmetProvider>
+      <ApolloProvider client={apolloClient}>
+        <RouterProvider router={router} defaultPendingComponent={GlobalLoader} defaultPendingMinMs={250} />
+      </ApolloProvider>
+    </HelmetProvider>
   );
 }
 

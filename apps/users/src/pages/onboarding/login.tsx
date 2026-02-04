@@ -18,7 +18,7 @@ import { Link, useNavigate } from '@tanstack/react-router';
 import { Button, Form, FormControl, FormField, FormItem, FormLabel, Input } from 'k-polygon-assets/components';
 import { IconArrowRight } from 'k-polygon-assets/icons';
 import { Eye, EyeOff } from 'lucide-react';
-import { Loading } from '@/components/common';
+import { Loading, Head } from '@/components/common';
 
 function Login() {
   const { t } = useTranslation();
@@ -70,6 +70,7 @@ function Login() {
   const urlParamType = params.get('user');
   return (
     <OnboardingLayout title={t('auth.login.title')} description={t('auth.login.description')} canGoBack>
+      <Head title={t('auth.login.title')} />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
