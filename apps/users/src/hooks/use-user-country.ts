@@ -14,9 +14,9 @@ interface IpApiResponse {
   city: string;
   region: string;
   region_code: string;
-  country: string; 
-  country_name: string; 
-  country_code: string; 
+  country: string;
+  country_name: string;
+  country_code: string;
   country_code_iso3: string;
   country_capital: string;
   country_tld: string;
@@ -45,7 +45,6 @@ export const useUserCountry = (): UserCountryData => {
   useEffect(() => {
     const fetchCountry = async () => {
       try {
-      
         const storedCountryCode = sessionStorage.getItem('user_country_code');
         if (storedCountryCode) {
           const supportedCountry = countries.find((c) => c.code === storedCountryCode);
@@ -57,15 +56,12 @@ export const useUserCountry = (): UserCountryData => {
           }
         }
 
-      
         const response = await fetch('https://ipapi.co/json/');
         const data: IpApiResponse = await response.json();
-        
-       
+
         if (data && data.country_code) {
-   
           const supportedCountry = countries.find((c) => c.code === data.country_code);
-          
+
           if (supportedCountry) {
             setCountryCode(supportedCountry.code);
             setCountryName(supportedCountry.name);

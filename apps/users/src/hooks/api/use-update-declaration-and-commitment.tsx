@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { UPDATE_DECLARATION_AND_COMMITMENT } from '../../lib/graphql/mutations/update-kyc';
+import { UPDATE_DECLARATION_AND_COMMITMENT } from '@repo/api';
 import { UpdateDeclarationAndCommitmentResult, UpdateDeclarationAndCommitmentVariables } from '@repo/types';
 
 export const useUpdateDeclarationAndCommitment = () => {

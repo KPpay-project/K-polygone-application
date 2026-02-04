@@ -12,7 +12,7 @@ import { WalletCardProps, WalletAction } from '../../../../types/wallet.interfac
 import VerifyWalletKyc from '@/components/actions/wallet/verify-wallet-kyc.tsx';
 import { useFreezeWallet } from '@/hooks/api/kyc/wallet';
 import { useQuery } from '@apollo/client';
-import { ME } from '@/lib/graphql/operations.ts';
+import { ME } from '@repo/api';
 import {
   DropdownMenu,
   DropdownMenuContent,

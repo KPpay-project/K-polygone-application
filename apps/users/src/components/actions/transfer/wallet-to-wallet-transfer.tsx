@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { NumberInput, Currency } from '@/components/ui/input';
 import DefaultModal from '@/components/sub-modules/popups/modal';
 import { TransferConfirmation } from '@/components/modules/transfer/transfer-confirmation';
-import { WALLET_TO_WALLET_TRANSFER, WalletToWalletInput, GET_USER_WALLET_CODE } from '@/lib/graphql/mutations/transfer';
+import { WALLET_TO_WALLET_TRANSFER, WalletToWalletInput, GET_USER_WALLET_CODE } from '@repo/api';
 import { BENEFICIARY_TYPE_ENUM, TRANSFER_METHOD_ENUM } from '@/enums';
 import { useTransferQuote } from '@/hooks/api/use-transfer';
 import UsersCurrencyDropdown from '@/components/currency-dropdown/users-currency-dropdown.tsx';
@@ -20,7 +20,7 @@ import { useGetMyWallets } from '@/hooks/api';
 import ErrorAndSuccessFallback from '@/components/sub-modules/modal-contents/error-success-fallback';
 import ListBeneficiariesPanel, { Beneficiary } from '@/components/modules/beneficiaries/list-beneficiaries-panel';
 import { EmptyState } from '@/components/common/fallbacks';
-import { CREATE_BENEFICIARY_MUTATION } from '@/lib/graphql/beneficiary';
+import { CREATE_BENEFICIARY_MUTATION } from '@repo/api';
 
 interface WalletToWalletTransferResponse {
   fromBalance: { availableBalance: number };
@@ -163,7 +163,7 @@ export function WalletToWalletTransferAction({ onSuccess }: WalletToWalletTransf
     if (!fq) return null;
     const amountNum = parseAmountStringToNumber(fq.amount);
     const feeNum = parseAmountStringToNumber(fq.feeAmount);
-    const totalDebitNum = parseAmountStringToNumber(fq.totalDebits);
+    const totalDebitNum = parseAmountStringToNumber(fq.totalDebit);
     return {
       amount: formatNumberFixed(amountNum, 2),
       applies: Boolean(fq.applies),

@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { DEPOSIT } from '../../lib/graphql/mutations/deposit';
+import { DEPOSIT } from '@repo/api';
 import { DepositResponse, DepositVariables } from '@repo/types';
 
 interface DepositMutationResult {

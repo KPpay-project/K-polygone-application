@@ -15,7 +15,7 @@ import z from 'zod';
 import { useGetMyWallets } from '@/hooks/api';
 import CrossCurrencyPreviewAndConvertionAction from '@/components/actions/wallet/cross-currency-convertion-action';
 import DefaultModal from '@/components/sub-modules/popups/modal';
-import { CROSS_CURRENCY_QUOTE } from '@/lib/graphql/mutations/wallet';
+import { CROSS_CURRENCY_QUOTE } from '@repo/api';
 import { handleGraphQLError } from '@/utils/error-handling';
 import { normalizeApolloError, toFriendlyMessage } from '@/helpers/errors';
 import { Skeleton } from '@/components/ui/skeleton';

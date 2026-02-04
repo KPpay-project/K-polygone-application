@@ -15,7 +15,7 @@ import { ReactNode, useState } from 'react';
 import ModularCard from '@/components/sub-modules/card/card';
 import CreateBeneficiariesActions from '@/components/actions/create-beneficiaries-action';
 import { EmptyState } from '@/components/common/fallbacks';
-import { FETCH_BENEFICIARIES_QUERY, DELETE_BENEFICIARY_MUTATION } from '@/lib/graphql/beneficiary';
+import { FETCH_BENEFICIARIES_QUERY, DELETE_BENEFICIARY_MUTATION } from '@repo/api';
 import { useQuery, useMutation } from '@apollo/client';
 import { BENEFICIARY_TYPE_ENUM } from '@/enums';
 import { toast } from 'sonner';

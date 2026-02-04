@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { USER_WALLETS_TRANSACTION_HISTORY } from '@/lib/graphql/queries/transactions';
+import { USER_WALLETS_TRANSACTION_HISTORY } from '@repo/api';
 import { UserWalletTransaction as WalletTransaction } from '@repo/types';
 
 export interface UserWalletsTransactionHistoryVariables {

@@ -1,6 +1,4 @@
-import { FREEZE_WALLET } from '@/lib/graphql/mutations/wallet';
-import { type SafeResult } from '@/lib/graphql/wrapper';
-import { useSafeMutation } from '@/lib/graphql/hooks';
+import { FREEZE_WALLET, type SafeResult, useSafeMutation } from '@repo/api';
 
 export interface FreezeWalletParams {
   walletId: string;

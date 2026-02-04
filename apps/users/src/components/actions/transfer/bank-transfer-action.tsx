@@ -14,9 +14,9 @@ import { Typography } from '@/components/sub-modules/typography/typography';
 import {
   FLW_BANKS,
   RESOLVE_BANK_ACCOUNT,
-  FLW_BANK_WITHDRAWAL_QUOTE,
+  FLW_BANK_WITHDRAWAL_QUOTE_QUERY,
   WITHDRAW_TO_BANK
-} from '@/lib/graphql/mutations/transfer';
+} from '@repo/api';
 import { TransferConfirmation } from '@/components/modules/transfer/transfer-confirmation.tsx';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { TRANSFER_METHOD_ENUM } from '@/enums';
@@ -77,7 +77,7 @@ const BankTransferAction = ({ onSuccess }: Props) => {
   });
 
   const [resolveAccount, { data: accountData, loading: resolving }] = useLazyQuery(RESOLVE_BANK_ACCOUNT);
-  const [getQuote, { loading: quoting }] = useMutation(FLW_BANK_WITHDRAWAL_QUOTE, {
+  const [getQuote, { loading: quoting }] = useMutation(FLW_BANK_WITHDRAWAL_QUOTE_QUERY, {
     errorPolicy: 'all'
   });
   const [withdrawToBank, { loading: withdrawing }] = useMutation(WITHDRAW_TO_BANK);

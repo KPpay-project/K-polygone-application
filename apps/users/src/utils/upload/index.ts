@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { UPLOAD_FILE } from '@repo/api';
 
 export interface FileUploadResult {
   url: string;
@@ -14,17 +14,6 @@ export interface UploadProgress {
 }
 
 export type FileUploadCallback = (progress: UploadProgress) => void;
-
-export const UPLOAD_FILE = gql`
-  mutation UploadFile($file: Upload!, $folder: String) {
-    uploadFile(file: $file, folder: $folder) {
-      success
-      message
-      url
-      filename
-    }
-  }
-`;
 
 /**
  * Validates file before upload

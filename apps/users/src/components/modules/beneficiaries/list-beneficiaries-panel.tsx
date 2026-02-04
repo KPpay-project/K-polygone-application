@@ -1,4 +1,4 @@
-import { FETCH_BENEFICIARIES_QUERY } from '@/lib/graphql/beneficiary';
+import { FETCH_BENEFICIARIES_QUERY } from '@repo/api';
 import { useQuery } from '@apollo/client';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';

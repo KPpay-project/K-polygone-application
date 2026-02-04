@@ -1,4 +1,4 @@
-import { SETUP_PIN_MUTATION, SetupPaymentPinInput } from '@/lib/graphql';
+import { SETUP_PIN_MUTATION, type SetupPaymentPinInput } from '@repo/api';
 import { useMutation } from '@apollo/client';
 import { Button } from '@/components/ui/button';
 import { useState, useRef, useEffect } from 'react';

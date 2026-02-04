@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { useState } from 'react';
-import { DEPOSIT_VIA_BANK } from '../../../lib/graphql/mutations/deposit';
+import { DEPOSIT_VIA_BANK } from '@repo/api';
 import { Button } from 'k-polygon-assets/components';
 import UsersCurrencyDropdown from '@/components/currency-dropdown/users-currency-dropdown.tsx';
 import { toast } from 'sonner';

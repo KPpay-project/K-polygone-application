@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CROSS_CURRENCY_TRANSFER } from '@/lib/graphql/mutations/wallet';
+import { CROSS_CURRENCY_TRANSFER } from '@repo/api';
 import { Button } from 'k-polygon-assets';
 import { useMutation } from '@apollo/client';
 import { FormProgress } from '@/components/common/forms/form-progress';

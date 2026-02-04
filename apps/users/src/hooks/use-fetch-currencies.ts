@@ -1,5 +1,5 @@
 import { useGraphQLQuery } from './useGraphQL';
-import { GET_CURRENCIES } from '../lib/graphql/queries';
+import { GET_CURRENCIES } from '@repo/api';
 import { CurrenciesData, Currency } from '@repo/types';
 
 export function useFetchCurrencies() {

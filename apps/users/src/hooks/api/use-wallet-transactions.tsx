@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { GET_ALL_WALLET_TRANSACTIONS } from '@/lib/graphql/queries/transactions';
+import { GET_ALL_WALLET_TRANSACTIONS } from '@repo/api';
 import { UserWalletTransaction as WalletTransaction } from '@repo/types';
 
 interface WalletTransactionsQueryResult {

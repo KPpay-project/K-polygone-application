@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { GET_KYC_STATUS } from '@/lib/graphql/queries/kyc';
+import { GET_KYC_STATUS } from '@repo/api';
 
 interface KycStatusQueryResult {
   getKycStatus: {

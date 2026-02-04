@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { CREATE_PAYMENT_LINK } from '@/lib/graphql/mutations/merchants/payment-link';
+import { CREATE_PAYMENT_LINK, PAYMENT_LINKS_QUERY } from '@repo/api';
 import { useGetMyWallets } from '@/hooks/api/use-wallet-queries';
 import ErrorAndSuccessFallback from '@/components/sub-modules/modal-contents/error-success-fallback';
 import { cn } from '@/lib/utils';
@@ -21,7 +21,6 @@ import { Typography } from '@/components/sub-modules/typography/typography';
 import { Dialog, DialogContent, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import { Twitter, Facebook, Whatsapp } from 'react-social-sharing';
-import { PAYMENT_LINKS_QUERY } from '@/components/modules/payment-link/list-payment-link';
 
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -49,7 +48,7 @@ export const CreatePaymentLink = () => {
   } | null>(null);
 
   const { data: walletsData, loading: walletsLoading } = useGetMyWallets();
-  const [createPaymentLink, { loading: creating }] = useMutation(CREATE_PAYMENT_LINK, {
+  const [createPaymentLink, { loading: creating, error: mutationError }] = useMutation(CREATE_PAYMENT_LINK, {
     onCompleted: (data) => {
       if (data.createPaymentLink.success) {
         setSuccessData(data.createPaymentLink.paymentLink);

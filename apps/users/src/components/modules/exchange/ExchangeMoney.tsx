@@ -11,7 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@apollo/client';
 import { WithdrawalRequest } from './withdrawal-request';
 import { useGetMyWallets } from '@/hooks/api';
-import { EXCHANGE_CURRENCY_VIA_WALLET } from '@/lib/graphql/mutations/wallet';
+import { EXCHANGE_CURRENCY_VIA_WALLET } from '@repo/api';
 
 const ExchangeMoney = () => {
   const formSchema = exchangeSchema();

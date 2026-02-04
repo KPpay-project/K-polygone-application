@@ -18,7 +18,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { VerifyTransactionPin } from '@/components/actions/pin/verify-transaction-pin';
 import ListBeneficiariesPanel, { Beneficiary } from '@/components/modules/beneficiaries/list-beneficiaries-panel';
 import { BENEFICIARY_TYPE_ENUM } from '@/enums';
-import { CREATE_BENEFICIARY_MUTATION, FETCH_BENEFICIARIES_QUERY } from '@/lib/graphql/beneficiary';
+import { CREATE_BENEFICIARY_MUTATION, FETCH_BENEFICIARIES_QUERY } from '@repo/api';
 import { useMutation } from '@apollo/client';
 import { Button as ShadcnButton } from '@/components/ui/button';
 

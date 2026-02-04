@@ -1,6 +1,6 @@
 import { useState, ReactNode } from 'react';
 import { useMutation } from '@apollo/client';
-import { WITHDRAW } from '@/lib/graphql/mutations/withdraw';
+import { WITHDRAW } from '@repo/api';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

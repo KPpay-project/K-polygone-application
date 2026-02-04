@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 import { fromPromise } from '@apollo/client';
 import { jwtDecode } from 'jwt-decode';
 import { JWT_TOKEN_NAME, JWT_REFRESH_TOKEN_NAME, BASE_ENDPOINT_URL } from '@/constant';
-import { REFRESH_TOKEN } from './graphql';
+import { REFRESH_TOKEN } from '@repo/api';
 
 const GRAPHQL_ENDPOINT = BASE_ENDPOINT_URL;
 const uploadLink = createLink({ uri: GRAPHQL_ENDPOINT });

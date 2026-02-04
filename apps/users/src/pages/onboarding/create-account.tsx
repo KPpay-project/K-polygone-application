@@ -28,7 +28,11 @@ function CreateAccount() {
   const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { countryCode: detectedCountryCode, countryName: detectedCountryName, loading: countryLoading } = useUserCountry();
+  const {
+    countryCode: detectedCountryCode,
+    countryName: detectedCountryName,
+    loading: countryLoading
+  } = useUserCountry();
   const [selectedCountryCode, setSelectedCountryCode] = useState(countries[0].code);
   const [captchaToken, setCaptchaToken] = useState<string>('');
   const navigate = useNavigate();

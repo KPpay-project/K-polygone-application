@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { WalletAdd } from 'iconsax-reactjs';
 import { useTranslation } from 'react-i18next';
 import { EmptyTicketState } from '@/components/common/fallbacks';
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { UserWalletTransaction as WalletTransaction } from '@repo/types';
 import { getStatusColor } from '@/data/transactions';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
@@ -15,68 +15,7 @@ import { ServerErrorFallbackScreen } from '@/components/common/fallbacks/server-
 
 export type Transaction = WalletTransaction;
 
-export const USER_WALLETS_TRANSACTION_HISTORY = gql`
-  query GetUserWalletsTransactionHistory(
-    $page: Int!
-    $perPage: Int!
-    $search: String
-    $type: String
-    $fromDate: String
-    $toDate: String
-    $sortBy: String
-    $sortDirection: String
-  ) {
-    userWalletsTransactionHistory(
-      page: $page
-      perPage: $perPage
-      search: $search
-      type: $type
-      fromDate: $fromDate
-      toDate: $toDate
-      sortBy: $sortBy
-      sortDirection: $sortDirection
-    ) {
-      entries {
-        id
-        transactionType
-        amount
-        status
-        reference
-        externalReference
-        description
-        feeAmount
-        exchangeRate
-        provider
-        providerStatus
-        providerMessage
-        customerPhone
-        insertedAt
-        updatedAt
-        currency {
-          id
-          code
-          name
-          symbol
-        }
-        wallet {
-          id
-          ownerType
-          ownerId
-          status
-        }
-        counterpartyWallet {
-          id
-          ownerType
-          ownerId
-        }
-      }
-      pageNumber
-      pageSize
-      totalEntries
-      totalPages
-    }
-  }
-`;
+import { USER_WALLETS_TRANSACTION_HISTORY } from '@repo/api';
 
 interface TransactionTableProps {
   showTitle?: boolean;

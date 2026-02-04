@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { CREATE_POLITICAL_EXPOSURE } from '../../lib/graphql/mutations/create-kyc';
+import { CREATE_POLITICAL_EXPOSURE } from '@repo/api';
 import { CreatePoliticalExposureResult, CreatePoliticalExposureVariables } from '@repo/types';
 
 export const useCreatePoliticalExposure = () => {

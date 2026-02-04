@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { UPDATE_FINANCIAL_INFO } from '../../lib/graphql/mutations/update-kyc';
+import { UPDATE_FINANCIAL_INFO } from '@repo/api';
 import { UpdateFinancialInfoResult, UpdateFinancialInfoVariables } from '@repo/types';
 
 export const useUpdateFinancialInfo = () => {
