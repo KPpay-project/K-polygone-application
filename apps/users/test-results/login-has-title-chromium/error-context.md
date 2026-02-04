@@ -1,0 +1,51 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - button "Go to back" [ref=e9] [cursor=pointer]:
+            - img [ref=e10]
+            - paragraph [ref=e12]: Go to back
+          - heading "Welcome Back" [level=1] [ref=e13]
+          - paragraph [ref=e14]: Sign in to your account to continue
+        - generic [ref=e16]:
+          - generic [ref=e17]:
+            - text: Email or Phone
+            - textbox "Email or Phone" [ref=e18]:
+              - /placeholder: Enter email or phone number
+          - generic [ref=e19]:
+            - text: Password
+            - generic [ref=e20]:
+              - textbox "Password" [ref=e21]:
+                - /placeholder: ••••••••
+              - button [ref=e22] [cursor=pointer]:
+                - img [ref=e23]
+          - link "Forgot Password?" [ref=e27] [cursor=pointer]:
+            - /url: /onboarding/forgot-password
+          - button "Sign In" [ref=e31] [cursor=pointer]:
+            - text: Sign In
+            - img
+          - paragraph [ref=e32]:
+            - text: Don't have an account?
+            - button "Create Account" [ref=e33] [cursor=pointer]
+      - generic [ref=e36]:
+        - heading "The Safest & Most Reliable Money Transaction Platform." [level=1] [ref=e37]
+        - paragraph [ref=e38]: Join the Kpay Community Now!
+    - generic [ref=e40]:
+      - paragraph [ref=e41]: Copyright © 2025 KPpay | All Rights Reserved.
+      - combobox [ref=e43] [cursor=pointer]:
+        - generic:
+          - generic:
+            - generic: 🇺🇸
+            - generic: English
+            - img
+        - img [ref=e44]
+  - generic [ref=e46]:
+    - img [ref=e48]
+    - button "Open Tanstack query devtools" [ref=e96] [cursor=pointer]:
+      - img [ref=e97]
+  - region "Notifications alt+T"
+```

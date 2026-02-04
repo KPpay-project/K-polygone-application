@@ -19,7 +19,11 @@
     "welcome": "node scripts/welcome.js",
     "setup:manual": "bun run setup:submodule && bun run setup:assets",
     "setup:submodule": "git submodule update --init --recursive || echo 'Warning: Could not initialize submodules. Make sure you have git access.'",
-    "setup:assets": "cd assets && bun install && bun run build || echo 'Warning: Could not setup assets. Please check the assets directory.'"
+    "setup:assets": "cd assets && bun install && bun run build || echo 'Warning: Could not setup assets. Please check the assets directory.'",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "codegen": "playwright codegen"
   },
   "dependencies": {
     "@apollo/client": "^3.13.8",
@@ -115,9 +119,10 @@
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "@faker-js/faker": "^9.9.0",
+    "@playwright/test": "^1.58.1",
     "@rollup/plugin-alias": "^5.1.1",
     "@tanstack/router-plugin": "^1.129.7",
-    "@types/node": "^24.1.0",
+    "@types/node": "^25.2.0",
     "@types/papaparse": "^5.3.16",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
