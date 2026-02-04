@@ -1,0 +1,221 @@
+import { useState } from 'react';
+import { useMutation } from '@apollo/client';
+import { DEPOSIT } from '@/lib/graphql/mutations/deposit';
+import { Button } from 'k-polygon-assets/components';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useCurrencyStore } from '@/store/currency-store';
+import { useCurrencies } from '@/hooks/use-currencies';
+import { toast } from 'sonner';
+import { useProfileStore } from '@/store/profile-store';
+import { SupportedProviders } from '@repo/types';
+import UsersCurrencyDropdown from '@/components/currency-dropdown/users-currency-dropdown.tsx';
+import ErrorAndSuccessFallback from '@/components/sub-modules/modal-contents/error-success-fallback.tsx';
+import { extractErrorMessages } from '@/utils';
+import { NumberInput } from '@/components/ui/input';
+import { PrimaryPhoneNumberInput } from '../common/inputs/primary-phone-number-input';
+import { useGetMyWallets } from '@/hooks/api';
+
+interface DepositActionProps {
+  walletId?: string;
+  currencyCode?: string;
+  customerPhone?: string;
+  onSuccess?: () => void;
+  onCancel?: () => void;
+}
+
+interface DepositInput {
+  walletId: string;
+  currencyCode: string;
+  amount: number;
+  provider?: string;
+  customerPhone?: string;
+}
+
+interface DepositResponse {
+  deposit: {
+    success: boolean;
+    message: string;
+    balance: {
+      id: string;
+      amount: number;
+      currency: string;
+      wallet_id: string;
+      updated_at: string;
+    };
+    transaction: {
+      id: string;
+      amount: number;
+      currency: string;
+      transaction_type: string;
+      status: string;
+      description: string;
+      reference: string;
+      wallet_id: string;
+      created_at: string;
+      updated_at: string;
+    };
+  };
+}
+
+type Currency = 'USD' | 'NGN' | 'EUR' | 'GBP';
+
+export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess }: DepositActionProps) {
+  const { profile, fetchProfile } = useProfileStore();
+  const { wallets } = profile || {};
+  const { refetch: refetchWallets } = useGetMyWallets();
+
+  const { selectedCurrency } = useCurrencyStore();
+  const { apiCurrencies } = useCurrencies();
+
+  // Store amount as number for NumberInput
+  const [amount, setAmount] = useState<number>(0);
+
+  const [phone, setPhone] = useState(customerPhone || '');
+  const [selectedCurrencyCode, setSelectedCurrencyCode] = useState(() => {
+    if (currencyCode && apiCurrencies) {
+      const found = apiCurrencies.find((c: any) => c.code === currencyCode);
+      return found?.code || '';
+    }
+    if (selectedCurrency && apiCurrencies) {
+      const found = apiCurrencies.find((c: any) => c.code === selectedCurrency);
+      return found?.code || '';
+    }
+    return '';
+  });
+
+  let resolvedWalletId = walletId;
+  if (!resolvedWalletId && wallets && wallets.length > 0) {
+    resolvedWalletId = wallets[0].id;
+  }
+
+  const [selectedProvider, setSelectedProvider] = useState<SupportedProviders>(SupportedProviders.MTN_MOMO);
+  const [selectedWalletId, setSelectedWalletId] = useState<string>(resolvedWalletId || '');
+  const [resultOpen, setResultOpen] = useState(false);
+  const [resultStatus, setResultStatus] = useState<'success' | 'error'>('success');
+  const [resultMessage, setResultMessage] = useState('');
+
+  const [deposit, { loading }] = useMutation<DepositResponse, { input: DepositInput }>(DEPOSIT, {
+    errorPolicy: 'all'
+  });
+
+  // Map selectedCurrencyCode to NumberInput's Currency union if available
+  const currencyForNumberInput: Currency | undefined = ['USD', 'NGN', 'EUR', 'GBP'].includes(selectedCurrencyCode)
+    ? (selectedCurrencyCode as Currency)
+    : undefined;
+
+  const handleDeposit = async () => {
+    const finalWalletId = selectedWalletId || resolvedWalletId;
+    if (!finalWalletId || !selectedCurrencyCode || !phone) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
+    const amountNumber = Number(amount);
+    if (isNaN(amountNumber) || amountNumber <= 0) {
+      toast.error('Please enter a valid amount');
+      return;
+    }
+
+    try {
+      const res = await deposit({
+        variables: {
+          input: {
+            walletId: finalWalletId,
+            currencyCode: selectedCurrencyCode,
+            amount: amountNumber,
+            provider: selectedProvider,
+            customerPhone: phone
+          }
+        }
+      });
+      if (res.errors && res.errors.length) {
+        const msgs = extractErrorMessages(res);
+        setResultStatus('error');
+        setResultMessage(msgs.join('\n') || 'Deposit failed');
+        setResultOpen(true);
+        return;
+      }
+      const success = res.data?.deposit?.success;
+      const message = res.data?.deposit?.message || (success ? 'Deposit successful' : 'Deposit failed');
+      if (success) {
+        refetchWallets();
+        setAmount(0);
+        await fetchProfile();
+        setResultStatus('success');
+        setResultMessage(message);
+        setResultOpen(true);
+        onSuccess?.();
+      } else {
+        setResultStatus('error');
+        setResultMessage(message);
+        setResultOpen(true);
+      }
+    } catch (e: any) {
+      const msgs = extractErrorMessages(e);
+      setResultStatus('error');
+      setResultMessage(msgs.join('\n') || (typeof e?.message === 'string' ? e.message : 'Deposit failed'));
+      setResultOpen(true);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      {resultOpen ? (
+        <ErrorAndSuccessFallback
+          status={resultStatus}
+          title={'Deposit Request'}
+          body={resultMessage}
+          onAction={() => setResultOpen(false)}
+        />
+      ) : (
+        <>
+          <UsersCurrencyDropdown
+            label="Select currency"
+            selectedCurrency={selectedCurrencyCode}
+            onChange={(opt) => {
+              setSelectedWalletId(opt?.walletId ?? '');
+              setSelectedCurrencyCode(opt?.currencyCode ?? '');
+            }}
+          />
+
+          <div className="space-y-2">
+            <Label htmlFor="provider">Provider</Label>
+            <Select value={selectedProvider} onValueChange={(v) => setSelectedProvider(v as SupportedProviders)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select provider" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={SupportedProviders.MTN_MOMO}>MTN Mobile Money</SelectItem>
+                <SelectItem value={SupportedProviders.M_PESA}>M-Pesa</SelectItem>
+                <SelectItem value={SupportedProviders.AIRTEL}>Airtel Money</SelectItem>
+                <SelectItem value={SupportedProviders.ORANGE}>Orange Money</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="amount">Amount</Label>
+            <NumberInput
+              value={amount}
+              onChange={(val: number) => setAmount(val)}
+              currency={currencyForNumberInput}
+              placeholder="Enter amount"
+              className="w-full"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <PrimaryPhoneNumberInput value={phone} onChange={(e) => setPhone(e)} />
+          </div>
+
+          <div className="flex justify-end space-x-2 pt-4">
+            <Button onClick={handleDeposit} disabled={loading} className="bg-primary hover:bg-primary/90 w-full">
+              {loading ? 'Processing...' : 'Deposit'}
+            </Button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}

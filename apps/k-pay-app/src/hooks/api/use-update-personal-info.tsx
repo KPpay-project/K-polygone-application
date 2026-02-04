@@ -1,0 +1,20 @@
+import { useMutation } from '@apollo/client';
+import { UPDATE_PERSONAL_INFO } from '../../lib/graphql/mutations/update-kyc';
+import {
+  UpdatePersonalInfoResult,
+  UpdatePersonalInfoVariables,
+} from '../../types/graphql';
+
+export const useUpdatePersonalInfo = () => {
+  const [updatePersonalInfo, { loading, error, data }] = useMutation<
+    UpdatePersonalInfoResult,
+    UpdatePersonalInfoVariables
+  >(UPDATE_PERSONAL_INFO);
+
+  return {
+    updatePersonalInfo,
+    loading,
+    error,
+    data,
+  };
+};

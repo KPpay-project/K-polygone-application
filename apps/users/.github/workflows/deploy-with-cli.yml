@@ -1,0 +1,94 @@
+name: Deploy KPay User Frontend with AWS CLI
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  deploy:
+    name: Upload to S3 & Invalidate CloudFront
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📦 Checkout Code
+        uses: actions/checkout@v3
+
+      - name: 🔐 Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1
+
+      - name: 🧰 Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: 📥 Install Dependencies
+        run: pnpm install --force
+
+      - name: 🛠️ Build Vite App
+        run: pnpm run build
+
+      - name: 🪣 Create S3 Bucket (if not exists)
+        run: |
+          BUCKET_NAME="kpay-user-frontend-$(date +%s)"
+          aws s3 mb s3://$BUCKET_NAME --region eu-north-1 || echo "Bucket might already exist"
+          echo "BUCKET_NAME=$BUCKET_NAME" >> $GITHUB_ENV
+
+      - name: 🌐 Create CloudFront Distribution (if not exists)
+        run: |
+          # This is a simplified example - you might want to use a more robust approach
+          DISTRIBUTION_CONFIG='{
+            "CallerReference": "kpay-user-'$(date +%s)'",
+            "Origins": {
+              "Quantity": 1,
+              "Items": [
+                {
+                  "Id": "S3-'$BUCKET_NAME'",
+                  "DomainName": "'$BUCKET_NAME'.s3.eu-north-1.amazonaws.com",
+                  "S3OriginConfig": {
+                    "OriginAccessIdentity": ""
+                  }
+                }
+              ]
+            },
+            "DefaultCacheBehavior": {
+              "TargetOriginId": "S3-'$BUCKET_NAME'",
+              "ViewerProtocolPolicy": "redirect-to-https",
+              "MinTTL": 0
+            },
+            "Comment": "KPay User Frontend Distribution",
+            "Enabled": true
+          }'
+
+          # Create distribution and extract ID
+          DIST_ID=$(aws cloudfront create-distribution --distribution-config "$DISTRIBUTION_CONFIG" --query 'Distribution.Id' --output text)
+          echo "DISTRIBUTION_ID=$DIST_ID" >> $GITHUB_ENV
+
+      - name: ⬆️ Upload Files to S3
+        run: |
+          echo "Uploading dist/ to s3://$BUCKET_NAME"
+          aws s3 sync dist/ s3://$BUCKET_NAME --delete
+
+      - name: 🧹 Invalidate CloudFront Cache
+        run: |
+          echo "Invalidating CloudFront cache for distribution: $DISTRIBUTION_ID"
+          aws cloudfront create-invalidation \
+            --distribution-id $DISTRIBUTION_ID \
+            --paths "/*"
+
+      - name: ✅ Deployment Complete
+        run: |
+          echo "✅ Deployment complete!"
+          echo "S3 Bucket: $BUCKET_NAME"
+          echo "CloudFront Distribution: $DISTRIBUTION_ID"

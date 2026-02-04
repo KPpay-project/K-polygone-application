@@ -1,0 +1,12 @@
+schema: 'https://move-bars.fly.dev/api/graphiql'
+documents: 'src/**/*.{ts,tsx}'
+generates:
+  src/graphql/generated.tsx:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-react-apollo'
+    config:
+      withHooks: true
+      withComponent: false
+      withHOC: false

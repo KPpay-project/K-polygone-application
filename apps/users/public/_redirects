@@ -1,0 +1,19 @@
+# Custom redirects for your app
+# Redirect root to onboarding or dashboard based on auth state
+# /    /onboarding    302
+
+# Handle specific route redirects
+# /login    /onboarding/login    301
+# /signup   /onboarding/signup   301
+
+# SPA fallback - catch all routes and redirect to index.html
+/*    /index.html   200
+
+# API proxy (if you need to proxy API calls to your backend)
+# /api/*       https://your-backend-api.com/api/:splat    200
+
+# Security headers
+/*
+  X-Frame-Options: DENY
+  X-XSS-Protection: 1; mode=block
+  X-Content-Type-Options: nosniff

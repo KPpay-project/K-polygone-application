@@ -1,0 +1,48 @@
+{
+  "required": "This field is required",
+  "firstName": {
+    "min": "First name must be at least 2 characters",
+    "max": "First name cannot exceed 50 characters",
+    "format": "First name can only contain letters, spaces, hyphens and apostrophes"
+  },
+  "lastName": {
+    "min": "Last name must be at least 2 characters",
+    "max": "Last name cannot exceed 50 characters",
+    "format": "Last name can only contain letters, spaces, hyphens and apostrophes"
+  },
+  "maidenName": {
+    "max": "Maiden name cannot exceed 50 characters",
+    "format": "Maiden name can only contain letters, spaces, hyphens and apostrophes"
+  },
+  "dateOfBirth": {
+    "min": "Date of birth cannot be before 1900",
+    "max": "Date of birth cannot be in the future",
+    "age": "You must be at least 18 years old"
+  },
+  "placeOfBirth": {
+    "min": "Place of birth must be at least 2 characters",
+    "max": "Place of birth cannot exceed 100 characters",
+    "format": "Place of birth can only contain letters, spaces, commas, periods and hyphens"
+  },
+  "nationality": {
+    "required": "Please select your nationality"
+  },
+  "countryOfTaxResidence": {
+    "required": "Please select your country of tax residence"
+  },
+  "taxIdentificationNumber": {
+    "format": "Tax identification number must contain only numbers"
+  },
+  "occupation": {
+    "min": "Occupation must be at least 2 characters",
+    "max": "Occupation cannot exceed 100 characters",
+    "format": "Occupation can only contain letters, spaces, hyphens and ampersands"
+  },
+  "currentEmployer": {
+    "max": "Current employer cannot exceed 100 characters",
+    "format": "Current employer can only contain letters, numbers, spaces and basic punctuation"
+  },
+  "employmentStatus": {
+    "required": "Please select your employment status"
+  }
+}
