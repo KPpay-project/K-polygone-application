@@ -8,7 +8,7 @@ import z from 'zod';
 
 import { CustomFormMessage } from '@/components/common/forms/form-message';
 import OnboardingLayout from '@/components/layouts/onboarding-layout';
-import { LOGIN_USER } from '@/lib/graphql/mutations/auth';
+import { LOGIN_USER } from '@repo/api';
 import { loginSchema } from '@/schema/auth';
 import { useAuth } from '@/hooks/use-auth';
 import type { LoginInput, LoginResponse } from '@repo/types';

@@ -3,7 +3,7 @@ import { useMutation } from '@apollo/client';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { REGISTER_USER } from '@/lib/graphql/mutations/auth';
+import { REGISTER_USER } from '@repo/api';
 import type { UserInput, RegisterUserResponse } from '@repo/types';
 import { CustomFormMessage } from '@/components/common/forms/form-message';
 import { CountrySelector } from '@/components/common/country-selector';

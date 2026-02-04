@@ -8,6 +8,7 @@
   },
   "scripts": {
     "lint": "eslint \"**/*.ts*\"",
+    "test": "vitest",
     "codegen": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
@@ -19,8 +20,6 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
     "@graphql-codegen/cli": "5.0.2",
     "@graphql-codegen/client-preset": "4.2.5",
     "@graphql-codegen/typescript": "4.0.7",
@@ -30,6 +29,9 @@
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^20.11.24",
     "eslint": "^8.57.0",
-    "typescript": "5.5.4"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "5.5.4",
+    "vitest": "^4.0.18"
   }
 }

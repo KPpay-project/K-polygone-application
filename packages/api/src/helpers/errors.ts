@@ -1,3 +1,4 @@
+//@ts-ignore
 import type { ApolloError, GraphQLError as ApolloGraphQLError } from '@apollo/client';
 
 export enum ErrorCode {

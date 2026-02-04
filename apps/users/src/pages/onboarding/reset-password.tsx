@@ -12,7 +12,7 @@ import { IconArrowRight } from 'k-polygon-assets/icons';
 import { Eye, EyeOff } from 'lucide-react';
 import z from 'zod';
 import { useMutation } from '@apollo/client';
-import { RESET_PASSWORD } from '@/lib/graphql/mutations/auth';
+import { RESET_PASSWORD } from '@repo/api';
 import { toast } from 'sonner';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 
