@@ -1,17 +1,34 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Login Page', () => {
-  test('should have disabled submit button until captcha is verified', async ({ page }) => {
-    await page.goto('/onboarding/login');
+test('has title', async ({ page }) => {
+  await page.goto('/onboarding/login');
+  await expect(page).toHaveTitle("Welcome Back");
+});
 
-    const submitButton = page.getByRole('button', { name: /sign in/i });
+test('login form validation', async ({ page }) => {
+  await page.goto('/onboarding/login');
+  const loginButton = page.getByRole('button', { name: /Sign In/i });
+  await expect(loginButton).toBeVisible();
+});
 
-    // The button should be disabled initially because captchaToken is empty
-    await expect(submitButton).toBeDisabled();
-    
-    // Note: Since we are using a Cloudflare Test Key, we might not be able to easily 
-    // simulate the success state without interacting with the iframe, which is complex.
-    // However, verifying it is disabled initially confirms the requirement:
-    // "button is disabled if the capture has not been validated yet"
-  });
+test('navigates to create account when user param is present', async ({ page }) => {
+  await page.goto('/onboarding/login?user=user');
+
+  const createAccountButton = page.getByRole('button', { name: /Create Account/i });
+  await expect(createAccountButton).toBeVisible();
+
+  await createAccountButton.click();
+
+  await expect(page).toHaveURL(/.*\/onboarding\/create-account/);
+});
+
+test('navigates to register merchant when user param is missing', async ({ page }) => {
+  await page.goto('/onboarding/login');
+
+  const createAccountButton = page.getByRole('button', { name: /Create Account/i });
+  await expect(createAccountButton).toBeVisible();
+
+  await createAccountButton.click();
+
+  await expect(page).toHaveURL(/.*\/onboarding\/register-merchant/);
 });

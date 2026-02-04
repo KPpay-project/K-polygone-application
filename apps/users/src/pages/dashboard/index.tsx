@@ -9,7 +9,7 @@ import { Add, Box2 } from 'iconsax-reactjs';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@apollo/client';
 import { ME } from '@/lib/graphql/operations';
-import { HAS_PAYMENT_PIN, HasPaymentPinResponse } from '@/lib/graphql/queries/misc';
+import {  HAS_PAYMENT_PIN, HasPaymentPinResponse } from '@repo/api';
 import { useProfileStore } from '@/store/profile-store';
 import { useEffect, useState } from 'react';
 import { EmptyState } from '@/components/common/fallbacks';

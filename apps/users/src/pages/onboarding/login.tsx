@@ -15,10 +15,11 @@ import type { LoginInput, LoginResponse } from '@repo/types';
 import { ENV } from '@/utils/constants';
 import { handleGraphQLError } from '@/utils/error-handling';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { Button, Form, FormControl, FormField, FormItem, FormLabel, Input } from 'k-polygon-assets/components';
+import {  Form, FormControl, FormField, FormItem, FormLabel, Input } from 'k-polygon-assets/components';
 import { IconArrowRight } from 'k-polygon-assets/icons';
 import { Eye, EyeOff } from 'lucide-react';
 import { Loading, Head } from '@/components/common';
+import { Button } from '@/components/ui/button';
 
 function Login() {
   const { t } = useTranslation();
@@ -150,7 +151,7 @@ function Login() {
           <Button
             type="submit"
             className="w-full bg-primary hover:bg-brandBlue-600"
-            icon={<IconArrowRight />}
+            // icon={<IconArrowRight />}
             disabled={loading || !captchaToken}
           >
             {loading ? t('common.loading') : t('auth.login.signIn')}
