@@ -1,5 +1,6 @@
 import { SupportedProviders } from '@/types/graphql';
-export const PAYSTACK_TEST_KEY = process.env.EXPO_PUBLIC_PAYSTACK_TEST_KEY || '';
+export const PAYSTACK_TEST_KEY =
+  process.env.EXPO_PUBLIC_PAYSTACK_TEST_KEY || '';
 export const FLUTTERWAVE_TEST_KEY = 'FLWSECK_TEST-SANDBOXDEMOKEY-X';
 
 const GRAPHQL_ENDPOINT = 'https://kp-pay.fly.dev/api/kp-pay';

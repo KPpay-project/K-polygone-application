@@ -613,7 +613,7 @@ export enum SupportedProviders {
   MTN_MOMO = 'MTN_MOMO',
   M_PESA = 'M_PESA',
   ORANGE = 'ORANGE',
-  AIRTEL = 'AIRTEL'
+  AIRTEL = 'AIRTEL',
 }
 
 export interface WithdrawalInput {

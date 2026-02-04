@@ -1,7 +1,7 @@
 export enum UserRole {
-  MANAGER = "MANAGER",
-  DELIVERY_PARTNER = "DELIVERY_PARTNER",
-  CUSTOMER = "CUSTOMER",
+  MANAGER = 'MANAGER',
+  DELIVERY_PARTNER = 'DELIVERY_PARTNER',
+  CUSTOMER = 'CUSTOMER',
 }
 
 export type AuthUserType = {

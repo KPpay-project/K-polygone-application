@@ -39,7 +39,6 @@ export interface GetBillersResult {
 
 export interface GetBillerByIdVariables {
   id: string;
-  
 }
 
 export interface GetBillerByIdResult {

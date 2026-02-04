@@ -1,5 +1,5 @@
-declare module "apollo-absinthe-upload-link" {
-  import { ApolloLink } from "@apollo/client";
+declare module 'apollo-absinthe-upload-link' {
+  import { ApolloLink } from '@apollo/client';
 
   interface CreateLinkOptions {
     uri: string;
@@ -11,8 +11,6 @@ declare module "apollo-absinthe-upload-link" {
 
   export class ReactNativeFile {
     constructor(options: { uri: string; type: string; name: string });
-    static list(
-      files: Array<{ uri: string; type: string; name: string }>,
-    ): ReactNativeFile[];
+    static list(files: Array<{ uri: string; type: string; name: string }>): ReactNativeFile[];
   }
 }
