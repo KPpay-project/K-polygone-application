@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import Turnstile from 'react-turnstile';
@@ -24,6 +24,7 @@ function Login() {
   const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string>('');
+  const turnstileRef = useRef<any>(null);
   const navigate = useNavigate();
   const { setAuthTokens, logUser } = useAuth();
 
@@ -60,9 +61,13 @@ function Login() {
         navigate({ to: '/dashboard' });
       } else if (response.errors) {
         handleGraphQLError(response, 'Login failed');
+        turnstileRef.current?.reset();
+        setCaptchaToken('');
       }
     } catch (error) {
       handleGraphQLError(error, t('common.notifications.loginFailed'));
+      turnstileRef.current?.reset();
+      setCaptchaToken('');
     }
   }
 
@@ -125,14 +130,20 @@ function Login() {
 
           <div className="w-full flex justify-center py-4 min-h-[70px]">
             <Turnstile
+              ref={turnstileRef}
               sitekey={ENV.CLOUDFLARE_SITE_KEY}
+              action="login"
               theme="light"
               fixedSize={true}
               onVerify={(token) => {
                 setCaptchaToken(token);
               }}
-              onError={() => {}}
-              onLoad={() => {}}
+              onError={() => {
+                setCaptchaToken('');
+              }}
+              onExpire={() => {
+                setCaptchaToken('');
+              }}
             />
           </div>
 
