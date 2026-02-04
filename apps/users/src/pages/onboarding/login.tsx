@@ -54,8 +54,6 @@ function Login() {
       if (response?.data?.login) {
         const { token, userAccount } = response.data.login;
 
-        console.log(userAccount);
-
         setAuthTokens(token.accessToken, token.refreshToken);
         logUser(userAccount);
 
@@ -130,11 +128,10 @@ function Login() {
               theme="light"
               fixedSize={true}
               onVerify={(token) => {
-                console.log('Turnstile verified:', token);
                 setCaptchaToken(token);
               }}
-              onError={(error) => console.error('Turnstile error:', error)}
-              onLoad={() => console.log('Turnstile loaded')}
+              onError={() => {}}
+              onLoad={() => {}}
             />
           </div>
 
