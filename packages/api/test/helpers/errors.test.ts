@@ -83,16 +83,16 @@ describe('Error Helpers', () => {
     });
 
     it('should detect FORBIDDEN code', () => {
-        const gqlError = new GraphQLError('Forbidden access', {
-          extensions: { code: 'FORBIDDEN' },
-        });
-        const apolloError = new ApolloError({
-          graphQLErrors: [gqlError],
-        });
-  
-        const result = normalizeApolloError(apolloError);
-        expect(result.code).toBe(ErrorCode.FORBIDDEN);
+      const gqlError = new GraphQLError('Forbidden access', {
+        extensions: { code: 'FORBIDDEN' },
       });
+      const apolloError = new ApolloError({
+        graphQLErrors: [gqlError],
+      });
+
+      const result = normalizeApolloError(apolloError);
+      expect(result.code).toBe(ErrorCode.FORBIDDEN);
+    });
 
     it('should fallback to UNKNOWN for unmapped codes', () => {
       const gqlError = new GraphQLError('Weird Error', {

@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const FETCH_BENEFICIARIES_QUERY = gql`
-  query FetchBeneficiaries($page: Int, $perPage: Int) {
-    myBeneficiaries(page: $page, perPage: $perPage) {
+  query {
+    myBeneficiaries(page: 1, perPage: 20) {
       entries {
         id
         name

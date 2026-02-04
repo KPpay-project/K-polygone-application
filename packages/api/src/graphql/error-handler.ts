@@ -11,7 +11,7 @@ export const handleGraphQLError = (error: ApolloError): GraphQLErrorInfo => {
     return {
       message: 'Network error occurred. Please check your connection.',
       type: 'network',
-      details: error.networkError
+      details: error.networkError,
     };
   }
 
@@ -20,25 +20,28 @@ export const handleGraphQLError = (error: ApolloError): GraphQLErrorInfo => {
     return {
       message: firstError.message || 'GraphQL error occurred',
       type: 'graphql',
-      details: firstError
+      details: firstError,
     };
   }
 
   return {
     message: error.message || 'An unknown error occurred',
     type: 'unknown',
-    details: error
+    details: error,
   };
 };
 
 export const isAuthenticationError = (error: ApolloError): boolean => {
   return error.graphQLErrors.some(
-    (err) => err.extensions?.code === 'UNAUTHENTICATED' || err.message.toLowerCase().includes('unauthorized')
+    (err) =>
+      err.extensions?.code === 'UNAUTHENTICATED' ||
+      err.message.toLowerCase().includes('unauthorized'),
   );
 };
 
 export const isValidationError = (error: ApolloError): boolean => {
   return error.graphQLErrors.some(
-    (err) => err.extensions?.code === 'BAD_USER_INPUT' || err.extensions?.code === 'VALIDATION_ERROR'
+    (err) =>
+      err.extensions?.code === 'BAD_USER_INPUT' || err.extensions?.code === 'VALIDATION_ERROR',
   );
 };

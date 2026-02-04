@@ -30,6 +30,7 @@ export interface Currency {
   name: string;
   countryCode?: string;
   precision?: number;
+  symbol?: string;
 }
 
 export interface KycApplicationType {

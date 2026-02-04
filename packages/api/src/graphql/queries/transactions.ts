@@ -77,6 +77,41 @@ export const GET_TRANSACTIONS = gql`
   }
 `;
 
+export const GET_WALLET_TRANSACTION_BY_ID = gql`
+  query GetWalletTransactionById($transactionId: String!) {
+    getWalletTransactionById(transactionId: $transactionId) {
+      id
+      amount
+      currency {
+        code
+        name
+      }
+      transactionType
+      status
+      reference
+      externalReference
+      description
+      insertedAt
+      updatedAt
+      feeAmount
+      feeCurrency {
+        code
+        name
+      }
+      provider
+      providerStatus
+      providerMessage
+      customerPhone
+      wallet {
+        id
+      }
+      counterpartyWallet {
+        id
+      }
+    }
+  }
+`;
+
 // export const USER_WALLETS_TRANSACTION_HISTORY = gql`
 //   query UserWalletsTransactionHistory($limit: Int, $offset: Int, $type: String, $fromDate: Date, $toDate: Date) {
 //     userWalletsTransactionHistory(limit: $limit, offset: $offset, type: $type, fromDate: $fromDate, toDate: $toDate) {

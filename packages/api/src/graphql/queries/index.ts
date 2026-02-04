@@ -6,3 +6,5 @@ export * from './misc';
 export * from './beneficiary';
 export * from './ticket';
 export * from './ticket-by-id';
+export * from './payment-links';
+export * from './banks';

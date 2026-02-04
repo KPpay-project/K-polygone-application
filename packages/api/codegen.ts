@@ -1,4 +1,3 @@
-
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
@@ -7,11 +6,7 @@ const config: CodegenConfig = {
   documents: 'src/**/*.{ts,tsx}',
   generates: {
     'src/generated.tsx': {
-      plugins: [
-        'typescript',
-        'typescript-operations',
-        'typescript-react-apollo'
-      ],
+      plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo'],
       config: {
         withHooks: true,
         withComponent: false,

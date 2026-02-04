@@ -11,7 +11,7 @@ export enum ErrorCode {
   NETWORK_ERROR = 'NETWORK_ERROR',
   NOT_FOUND = 'NOT_FOUND',
   RATE_LIMITED = 'RATE_LIMITED',
-  UNKNOWN = 'UNKNOWN'
+  UNKNOWN = 'UNKNOWN',
 }
 
 export const ErrorMessages: Record<ErrorCode, string> = {
@@ -24,7 +24,7 @@ export const ErrorMessages: Record<ErrorCode, string> = {
   [ErrorCode.NETWORK_ERROR]: 'Network error occurred. Please check your connection and try again',
   [ErrorCode.NOT_FOUND]: 'Requested resource was not found',
   [ErrorCode.RATE_LIMITED]: 'Too many requests. Please slow down and try again later',
-  [ErrorCode.UNKNOWN]: 'Something went wrong. Please try again'
+  [ErrorCode.UNKNOWN]: 'Something went wrong. Please try again',
 };
 
 export interface NormalizedGraphQLError {
@@ -69,8 +69,13 @@ export const normalizeGraphQLError = (err: ApolloGraphQLError | any): Normalized
   return { message, path, locations, code, extensions: err?.extensions };
 };
 
-const resolveErrorCode = (apollo: ApolloError | null, normalizedErrors: NormalizedGraphQLError[]): ErrorCode => {
-  const extCode = normalizedErrors.find((e) => typeof e.code === 'string')?.code as string | undefined;
+const resolveErrorCode = (
+  apollo: ApolloError | null,
+  normalizedErrors: NormalizedGraphQLError[],
+): ErrorCode => {
+  const extCode = normalizedErrors.find((e) => typeof e.code === 'string')?.code as
+    | string
+    | undefined;
   if (extCode) {
     const upper = extCode.toUpperCase();
     if (upper.includes('UNAUTH')) return ErrorCode.AUTHENTICATION_REQUIRED;
@@ -82,7 +87,8 @@ const resolveErrorCode = (apollo: ApolloError | null, normalizedErrors: Normaliz
   }
 
   const msg = normalizedErrors[0]?.message?.toLowerCase?.() || '';
-  if (msg.includes('authentication required') || msg.includes('unauth')) return ErrorCode.AUTHENTICATION_REQUIRED;
+  if (msg.includes('authentication required') || msg.includes('unauth'))
+    return ErrorCode.AUTHENTICATION_REQUIRED;
   if (msg.includes('forbidden')) return ErrorCode.FORBIDDEN;
   if (msg.includes('validation')) return ErrorCode.VALIDATION_ERROR;
 
@@ -94,20 +100,21 @@ const resolveErrorCode = (apollo: ApolloError | null, normalizedErrors: Normaliz
 export const normalizeApolloError = (error: ApolloError): ValidationError => {
   const normalized = (error.graphQLErrors || []).map(normalizeGraphQLError);
   const code = resolveErrorCode(error, normalized);
-  const message = normalized[0]?.message || error.message || ErrorMessages[code] || ErrorMessages.UNKNOWN;
+  const message =
+    normalized[0]?.message || error.message || ErrorMessages[code] || ErrorMessages.UNKNOWN;
 
   return new ValidationError(message, {
     code,
     details: error.networkError || error.extraInfo || undefined,
     path: normalized[0]?.path,
     locations: normalized[0]?.locations,
-    originalErrors: normalized
+    originalErrors: normalized,
   });
 };
 
 export const assertGraphQLResponse = <TData = any>(
   response: { data?: TData | null; errors?: any[] | null },
-  options?: { requiredPaths?: string[]; friendlyMessageMap?: Partial<Record<ErrorCode, string>> }
+  options?: { requiredPaths?: string[]; friendlyMessageMap?: Partial<Record<ErrorCode, string>> },
 ): TData => {
   const { requiredPaths = [], friendlyMessageMap = {} } = options || {};
 
@@ -115,7 +122,11 @@ export const assertGraphQLResponse = <TData = any>(
   if (errors && errors.length > 0) {
     const normalized = errors.map(normalizeGraphQLError);
     const code = resolveErrorCode(null, normalized);
-    const message = friendlyMessageMap[code] || normalized[0]?.message || ErrorMessages[code] || ErrorMessages.UNKNOWN;
+    const message =
+      friendlyMessageMap[code] ||
+      normalized[0]?.message ||
+      ErrorMessages[code] ||
+      ErrorMessages.UNKNOWN;
     throw new ValidationError(message, { code, originalErrors: normalized });
   }
 
@@ -129,7 +140,10 @@ export const assertGraphQLResponse = <TData = any>(
     let cur: any = response;
     for (const s of segs) cur = cur?.[s];
     if (cur === null || cur === undefined) {
-      throw new ValidationError(ErrorMessages.UNKNOWN, { code: ErrorCode.UNKNOWN, details: { path: p } });
+      throw new ValidationError(ErrorMessages.UNKNOWN, {
+        code: ErrorCode.UNKNOWN,
+        details: { path: p },
+      });
     }
   }
 

@@ -1,10 +1,16 @@
-import type { ApolloError, ApolloQueryResult, MutationFunctionOptions, OperationVariables } from '@apollo/client';
+import type {
+  ApolloError,
+  ApolloQueryResult,
+  FetchResult,
+  MutationFunctionOptions,
+  OperationVariables,
+} from '@apollo/client';
 import {
   assertGraphQLResponse,
   ErrorCode,
   ErrorMessages,
   normalizeApolloError,
-  ValidationError
+  ValidationError,
 } from '../helpers/errors';
 
 export interface SafeResult<TPayload = any> {
@@ -13,7 +19,10 @@ export interface SafeResult<TPayload = any> {
   error?: ValidationError;
 }
 
-export interface SafeOptions<TVars = OperationVariables> extends MutationFunctionOptions<any, TVars> {
+export interface SafeOptions<TVars = OperationVariables> extends MutationFunctionOptions<
+  any,
+  TVars
+> {
   payloadPath?: string;
   requireSuccess?: boolean;
   friendlyMessages?: Partial<Record<ErrorCode, string>>;
@@ -25,14 +34,16 @@ function getByPath(obj: any, path?: string): any {
 }
 
 export async function safeGraphQLOperation<TData, TVars = OperationVariables, TPayload = any>(
-  execute: (options?: MutationFunctionOptions<TData, TVars>) => Promise<ApolloQueryResult<TData>>,
-  options?: SafeOptions<TVars>
+  execute: (
+    options?: MutationFunctionOptions<TData, TVars>,
+  ) => Promise<ApolloQueryResult<TData> | FetchResult<TData>>,
+  options?: SafeOptions<TVars>,
 ): Promise<SafeResult<TPayload>> {
   try {
     const result = await execute(options);
     const data = assertGraphQLResponse<TData>(result as any, {
       requiredPaths: options?.payloadPath ? [`data.${options.payloadPath}`] : [],
-      friendlyMessageMap: options?.friendlyMessages
+      friendlyMessageMap: options?.friendlyMessages,
     });
     const payload = getByPath(data as any, options?.payloadPath) as any as TPayload;
     if (options?.requireSuccess) {
@@ -48,8 +59,8 @@ export async function safeGraphQLOperation<TData, TVars = OperationVariables, TP
           ok: false,
           error: new ValidationError(message, {
             code,
-            details: { fieldErrors: (payload as any)?.errors, raw: payload }
-          })
+            details: { fieldErrors: (payload as any)?.errors, raw: payload },
+          }),
         };
       }
     }
@@ -59,7 +70,9 @@ export async function safeGraphQLOperation<TData, TVars = OperationVariables, TP
     const normalized =
       apolloErr?.graphQLErrors || apolloErr?.networkError
         ? normalizeApolloError(apolloErr)
-        : new ValidationError((e as Error)?.message || ErrorMessages[ErrorCode.UNKNOWN], { code: ErrorCode.UNKNOWN });
+        : new ValidationError((e as Error)?.message || ErrorMessages[ErrorCode.UNKNOWN], {
+            code: ErrorCode.UNKNOWN,
+          });
     if (options?.friendlyMessages) {
       const fm = options.friendlyMessages[normalized.code as ErrorCode];
       if (fm) normalized.message = fm;

@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-const REGISTER_MERCHANT = gql`
+export const REGISTER_MERCHANT = gql`
   mutation RegisterMerchant($input: MerchantInput!) {
     registerMerchant(input: $input) {
       currentSignInAt
@@ -19,4 +19,3 @@ const REGISTER_MERCHANT = gql`
   }
 `;
 
-export default REGISTER_MERCHANT;

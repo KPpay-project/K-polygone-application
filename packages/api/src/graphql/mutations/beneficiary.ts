@@ -1,7 +1,12 @@
 import { gql } from '@apollo/client';
 
 const CREATE_BENEFICIARY_MUTATION = gql`
-  mutation CreateBeneficiary($name: String!, $number: String!, $type: BeneficiaryType!, $providerName: String) {
+  mutation CreateBeneficiary(
+    $name: String!
+    $number: String!
+    $type: BeneficiaryType!
+    $providerName: String
+  ) {
     createBeneficiary(name: $name, number: $number, type: $type, providerName: $providerName) {
       beneficiary {
         id

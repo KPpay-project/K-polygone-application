@@ -24,7 +24,7 @@ const FLW_BANKS = gql`
   }
 `;
 
-const FLW_BANK_WITHDRAWAL_QUOTE = gql`
+const FLW_BANK_WITHDRAWAL_QUOTE_QUERY = gql`
   query GetWithdrawalQuoteQuery($input: FlutterwaveBankWithdrawalQuoteInput!) {
     flutterwaveBankWithdrawalQuote(input: $input) {
       quoteId
@@ -70,4 +70,4 @@ const GET_VIRTUAL_ACCOUNT_NUMBER = gql`
   }
 `;
 
-export { FLW_CARD_DEPOSIT_QUOTE, FLW_BANKS, FLW_BANK_WITHDRAWAL_QUOTE, GET_VIRTUAL_ACCOUNT_NUMBER };
+export { FLW_CARD_DEPOSIT_QUOTE, FLW_BANKS, FLW_BANK_WITHDRAWAL_QUOTE_QUERY, GET_VIRTUAL_ACCOUNT_NUMBER };
