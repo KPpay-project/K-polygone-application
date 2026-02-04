@@ -1,0 +1,35 @@
+{
+  "name": "@repo/api",
+  "version": "0.0.0",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint \"**/*.ts*\"",
+    "codegen": "graphql-codegen --config codegen.ts"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.13.8",
+    "graphql": "^16.11.0"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "@graphql-codegen/cli": "5.0.2",
+    "@graphql-codegen/client-preset": "4.2.5",
+    "@graphql-codegen/typescript": "4.0.7",
+    "@graphql-codegen/typescript-operations": "4.2.1",
+    "@graphql-codegen/typescript-react-apollo": "4.3.0",
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^20.11.24",
+    "eslint": "^8.57.0",
+    "typescript": "5.5.4"
+  }
+}
