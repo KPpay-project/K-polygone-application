@@ -10,6 +10,7 @@ export * from './bill-payment';
 export * from './ticket';
 export * from './ticket-message';
 export * from './update-kyc';
+export * from './kyc/verify-kyc';
 export * from './wallet';
 export * from './merchants/merchant-auth';
 export * from './merchants/payment-link';
