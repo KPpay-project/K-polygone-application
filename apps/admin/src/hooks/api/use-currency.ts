@@ -1,10 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { toast } from 'sonner';
-import {
-  CREATE_CURRENCY_MUTATION,
-  UPDATE_CURRENCY_MUTATION,
-  DELETE_CURRENCY_MUTATION
-} from '@repo/api';
+import { CREATE_CURRENCY_MUTATION, UPDATE_CURRENCY_MUTATION, DELETE_CURRENCY_MUTATION } from '@repo/api';
 
 interface CreateCurrencyInput {
   code: string;

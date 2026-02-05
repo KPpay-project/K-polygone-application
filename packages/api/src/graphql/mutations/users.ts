@@ -34,7 +34,6 @@ export const SUSPEND_ADMIN = gql`
   }
 `;
 
-
 export const REGISTER_ADMIN = gql`
   mutation RegisterAdmin($input: AdminInput!) {
     registerAdmin(input: $input) {

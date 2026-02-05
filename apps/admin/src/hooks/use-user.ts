@@ -1,11 +1,5 @@
 import { useMutation } from '@apollo/client';
-import {
-  SUSPEND_ADMIN,
-  REGISTER_MERCHANT,
-  REGISTER_USER,
-  REGISTER_ADMIN,
-  UPDATE_ROLE
-} from '@repo/api';
+import { SUSPEND_ADMIN, REGISTER_MERCHANT, REGISTER_USER, REGISTER_ADMIN, UPDATE_ROLE } from '@repo/api';
 
 export const useUser = () => {
   const [suspendAdminMutation] = useMutation(SUSPEND_ADMIN);
