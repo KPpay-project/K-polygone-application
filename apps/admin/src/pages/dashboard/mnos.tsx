@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { useQuery } from '@apollo/client';
-import { LIST_MNOS } from '@/lib/graphql/queries/mnos';
+import { LIST_MNOS } from '@repo/api';
 
 function MnosPage() {
   const navigate = useNavigate();

@@ -6,7 +6,7 @@ import { ArrowLeftIcon, ArrowRight } from 'lucide-react';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { ModularCard } from '@/components/sub-modules/card/card.tsx';
 import { useQuery } from '@apollo/client';
-import { GET_USER_BY_ID } from '@/lib/graphql/queries/users-admin.ts';
+import { GET_USER_BY_ID } from '@repo/api';
 
 function SkeletonLoader() {
   return (

@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import AddBillerModal from '@/components/modals/add-biller-modal';
 import DeleteAction from '@/components/actions/delete-action';
-import { GET_BILLERS } from '@/lib/graphql/queries/billers';
+import { GET_BILLERS } from '@repo/api';
 import { billerListFilterConfig } from '@/config/filter-configs';
 import { GetBillersResult, GetBillersVariables, Biller } from '@repo/types';
 import { getBillerLogoConfig } from '@/utils/biller-utils';

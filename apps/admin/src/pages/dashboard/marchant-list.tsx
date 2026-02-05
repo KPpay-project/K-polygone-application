@@ -10,7 +10,7 @@ import DefaultModal from '@/components/sub-modules/popups/modal';
 import AddMarchantAction from '@/components/add-marchant-action';
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { GET_MERCHANTS } from '@/lib/graphql/queries/merchants';
+import { GET_MERCHANTS } from '@repo/api';
 import DeleteAction from '@/components/actions/delete-action';
 
 function MarchantListPage() {

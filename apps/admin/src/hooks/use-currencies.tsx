@@ -1,7 +1,7 @@
 import { IconCurrencyDollar, IconCurrencyXof } from 'k-polygon-assets';
 import { useFetchCurrencies } from './use-fetch-currencies';
 import { useMutation } from '@apollo/client';
-import CREATE_CURRENCY_MUTATION from '@/lib/graphql/mutations/currencies';
+import CREATE_CURRENCY_MUTATION from '@repo/api';
 
 export function useCurrencies() {
   const staticCurrencies = [

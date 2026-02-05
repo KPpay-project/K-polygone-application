@@ -34,38 +34,6 @@ export const SUSPEND_ADMIN = gql`
   }
 `;
 
-export const REGISTER_MERCHANT = gql`
-  mutation RegisterMerchant($input: MerchantInput!) {
-    registerMerchant(input: $input) {
-      id
-      role
-      status
-      merchant {
-        id
-        businessName
-        businessType
-        status
-      }
-    }
-  }
-`;
-
-export const REGISTER_USER = gql`
-  mutation RegisterUser($input: UserInput!) {
-    registerUser(input: $input) {
-      id
-      role
-      status
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-      }
-    }
-  }
-`;
 
 export const REGISTER_ADMIN = gql`
   mutation RegisterAdmin($input: AdminInput!) {

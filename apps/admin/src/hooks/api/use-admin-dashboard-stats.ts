@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useGraphQLQuery } from '@/hooks/useGraphQL';
-import { GET_ADMIN_COMPREHENSIVE_TRANSACTION_STATS } from '@/lib/graphql/queries/admin-dashboard-stats';
+import { GET_ADMIN_COMPREHENSIVE_TRANSACTION_STATS } from '@repo/api';
 
 // Types mirroring the GraphQL response shapes we use
 type ComprehensiveTransactionStats = {

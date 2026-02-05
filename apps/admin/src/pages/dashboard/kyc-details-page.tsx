@@ -4,7 +4,7 @@ import { ArrowLeftIcon } from 'lucide-react';
 import { useNavigate } from '@tanstack/react-router';
 import { ModularCard } from '@/components/sub-modules/card/card.tsx';
 import { useQuery } from '@apollo/client';
-import { GET_KYC_BY_ID } from '@/lib/graphql/queries/kyc';
+import { GET_KYC_BY_ID } from '@repo/api';
 import useKycVerification from '@/hooks/api/use-kyc-verification';
 import { toast } from 'sonner';
 import StatusTabs from '@/components/misc/status-tabs';

@@ -4,7 +4,7 @@ import {
   CREATE_CURRENCY_MUTATION,
   UPDATE_CURRENCY_MUTATION,
   DELETE_CURRENCY_MUTATION
-} from '@/lib/graphql/mutations/currencies';
+} from '@repo/api';
 
 interface CreateCurrencyInput {
   code: string;

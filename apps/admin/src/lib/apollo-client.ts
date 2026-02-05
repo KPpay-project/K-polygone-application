@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 import { fromPromise } from '@apollo/client';
 import { jwtDecode } from 'jwt-decode';
 import { JWT_TOKEN_NAME, JWT_REFRESH_TOKEN_NAME, REMEMBER_ME_COOKIE } from '@/constant';
-import { REFRESH_TOKEN } from './graphql';
+import { REFRESH_TOKEN } from '@repo/api';
 import { logoutUser } from '@/utils';
 
 const GRAPHQL_ENDPOINT = import.meta.env.VITE_GRAPHQL_ENDPOINT || 'https://move-bars.fly.dev/api/move-bars';

@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
-import { CREATE_BILL_PAYMENT, VERIFY_BILL_PAYMENT, GET_BILL_PAYMENT_FEES } from '@/lib/graphql/mutations/bill-payment';
+import { CREATE_BILL_PAYMENT, VERIFY_BILL_PAYMENT, GET_BILL_PAYMENT_FEES } from '@repo/api';
 import {
   CreateBillPaymentVariables,
   CreateBillPaymentResult,

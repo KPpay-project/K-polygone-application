@@ -16,3 +16,5 @@ export * from './merchants/merchant-auth';
 export * from './merchants/payment-link';
 export * from './services/flutterwave';
 export * from './upload';
+export * from './currencies';
+export * from './users';

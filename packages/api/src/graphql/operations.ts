@@ -72,29 +72,6 @@ export const ME = gql`
   }
 `;
 
-export const GET_USER = gql`
-  query GetUser($id: ID!) {
-    user(id: $id) {
-      id
-      email
-      name
-      createdAt
-      updatedAt
-    }
-  }
-`;
-
-export const GET_USERS = gql`
-  query GetUsers($limit: Int, $offset: Int) {
-    users(limit: $limit, offset: $offset) {
-      id
-      email
-      name
-      createdAt
-    }
-  }
-`;
-
 export const CREATE_USER = gql`
   mutation CreateUser($input: CreateUserInput!) {
     createUser(input: $input) {

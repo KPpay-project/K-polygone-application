@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { useState } from 'react';
-import { GET_ACTIVITY_LOGS } from '@/lib/graphql/queries/activities-log';
+import { GET_ACTIVITY_LOGS } from '@repo/api';
 
 interface ActivityLog {
   entries?: {

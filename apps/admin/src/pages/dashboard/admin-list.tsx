@@ -14,7 +14,7 @@ import DefaultModal from '@/components/sub-modules/popups/modal';
 import AddNewAdmin from '@/modules/admin/add-admin';
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { GET_ADMINS } from '@/lib/graphql/queries/admins';
+import { GET_ADMINS } from '@repo/api';
 import DeleteAction from '@/components/actions/delete-action';
 import StatusTabs from '@/components/misc/status-tabs';
 import moment from 'moment';
