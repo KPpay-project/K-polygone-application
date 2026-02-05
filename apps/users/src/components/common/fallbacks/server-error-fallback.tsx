@@ -1,7 +1,11 @@
 import ServerErrorFallbackSvg from '@/assets/svgs/server-error-fallback.tsx';
 import { Button } from '../../../../assets/src';
 import { ArrowRight } from 'lucide-react';
-const ServerErrorFallback = () => {
+interface ServerErrorFallbackProps {
+  onRetry?: () => void;
+}
+
+const ServerErrorFallback = ({ onRetry }: ServerErrorFallbackProps) => {
   return (
     <>
       <div className={'flex flex-col items-center justify-center gap-4 h-[calc(100vh-100px)]'}>
@@ -13,8 +17,8 @@ const ServerErrorFallback = () => {
         </div>
         <ServerErrorFallbackSvg />
 
-        <Button className={'w-[200px] mt-9'} onClick={() => window.history.back()}>
-          Go to back <ArrowRight />{' '}
+        <Button className={'w-[200px] mt-9'} onClick={onRetry || (() => window.history.back())}>
+          {onRetry ? 'Retry' : 'Go to back'} <ArrowRight />{' '}
         </Button>
       </div>
     </>

@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { GET_ALL_KYC_APPLICATIONS } from '@/lib/graphql/queries/kyc';
+import { GET_ALL_KYC_APPLICATIONS } from '@repo/api';
 import { KycApplicationsQueryResult } from '@repo/types';
 
 export const useKycApplications = () => {

@@ -13,7 +13,7 @@ import moment from 'moment';
 import { formatCurrency } from '@/utils/current.ts';
 import { VerifyTransactionPin } from '@/components/actions/pin/verify-transaction-pin';
 import { TRANSFER_METHOD_ENUM } from '@/enums';
-import { handleGraphQLError } from '@/lib/graphql';
+import { handleGraphQLError } from '@repo/api';
 
 interface TransferQuoteData {
   amount: string;
@@ -35,6 +35,7 @@ interface TransferConfirmationProps {
   description?: string;
   currency?: string;
   transferMethod: TransferMethod;
+  beneficiaryName?: string;
   onFormSubmit?: () => void;
   onFormSubmitWithPin?: (pin: string) => void;
   quote?: TransferQuoteData | null;
@@ -50,6 +51,7 @@ export const TransferConfirmation = ({
   description,
   currency = 'USD',
   transferMethod,
+  beneficiaryName,
   onFormSubmit,
   onFormSubmitWithPin,
   quote,
@@ -141,6 +143,12 @@ export const TransferConfirmation = ({
               {quoteLoading ? t('common.loading') : quote ? `${quote.feeAmount} ${quote.feeCurrencyCode}` : `—`}
             </Typography>
           </div>
+          {beneficiaryName && (
+            <div className="flex w-full items-center justify-between mb-2">
+              <Typography className="text-sm text-gray-600">Beneficiary</Typography>
+              <Typography className="text-sm font-medium">{beneficiaryName}</Typography>
+            </div>
+          )}
           <div className="flex w-full items-center justify-between mb-2">
             <Typography className="text-sm text-gray-600">{t('transfer.destination')}</Typography>
             <Typography className="text-sm font-medium">{destination}</Typography>

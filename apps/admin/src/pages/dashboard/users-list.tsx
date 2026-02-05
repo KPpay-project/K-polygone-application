@@ -1,13 +1,13 @@
 import DashboardLayout from '@/components/layouts/dashboard-layout';
 import { EyeIcon, MoreHorizontal, Pencil } from 'lucide-react';
 import { useMutation } from '@apollo/client';
-import { SUSPEND_USER } from '@/lib/graphql/queries/users-admin';
+import { SUSPEND_USER } from '@repo/api';
 import { useNavigate } from '@tanstack/react-router';
 import { ResponsiveTable, TableColumn, TableAction } from '@/components/common/responsive-table';
 import ModularHeaderTitle from '@/components/misc/modular-header-title';
 import StatusTabs from '@/components/misc/status-tabs';
 import { useQuery } from '@apollo/client';
-import { GET_USERS } from '@/lib/graphql/queries/users-admin';
+import { GET_USERS } from '@repo/api';
 import { Button } from 'k-polygon-assets';
 import {
   DropdownMenu,

@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { CREATE_CONTACT_DETAIL } from '../../lib/graphql/mutations/CREATE_PERSONAL_INFO.ts';
+import { CREATE_CONTACT_DETAIL } from '@repo/api';
 import { CreateContactDetailResult, CreateContactDetailVariables } from '@repo/types';
 
 export const useCreateContactDetail = () => {

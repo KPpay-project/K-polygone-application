@@ -9,7 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { CustomFormMessage } from '@/components/common/forms/form-message';
 import { useMutation } from '@apollo/client';
-import { CHANGE_PASSWORD } from '@/lib/graphql/mutations/auth';
+import { CHANGE_PASSWORD } from '@repo/api';
 import { getTranslation } from '@/utils/helpers';
 
 const changePasswordSchema = z

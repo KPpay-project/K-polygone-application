@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { useState } from 'react';
-import { DEPOSIT_VIA_CARD, VALIDATE_CARD_PAYMENT } from '../../../lib/graphql/mutations/deposit';
+import { DEPOSIT_VIA_CARD, VALIDATE_CARD_PAYMENT } from '@repo/api';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';

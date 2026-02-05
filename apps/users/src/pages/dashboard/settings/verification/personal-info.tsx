@@ -12,7 +12,7 @@ import { z, ZodIssue } from 'zod';
 import { Loading } from '@/components/common';
 import { CustomFormMessage } from '@/components/common/forms/form-message';
 import React from 'react';
-import { safeGraphQLOperation } from '@/lib/graphql/wrapper';
+import { safeGraphQLOperation } from '@repo/api';
 import { useKycPersonalInfoStore } from '@/store/kyc';
 import { useUser } from '@/store';
 import { CountrySelector } from '@/components/common';

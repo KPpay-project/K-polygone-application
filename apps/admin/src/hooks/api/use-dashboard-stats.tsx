@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { GET_DASHBOARD_STATS } from '@/lib/graphql/queries/dashboard';
+import { GET_DASHBOARD_STATS } from '@repo/api';
 
 interface CountChange {
   total: number | string;

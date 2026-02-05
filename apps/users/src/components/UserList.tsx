@@ -1,5 +1,5 @@
 import { useGraphQLMutation, useGraphQLQuery } from '@/hooks/useGraphQL';
-import { CREATE_USER, DELETE_USER, GET_USERS } from '@/lib/graphql/operations';
+import { CREATE_USER, DELETE_USER, GET_USERS } from '@repo/api';
 import { CreateUserVariables, DeleteUserVariables, GetUsersVariables, User } from '@repo/types';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

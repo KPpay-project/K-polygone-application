@@ -1,26 +1,12 @@
-import { GET_TICKET_BY_ID } from '@/lib/graphql/queries/ticket-by-id';
-
-export function useGetTicketById(ticketId: string) {
-  return useQuery(GET_TICKET_BY_ID, {
-    variables: { ticketId },
-    skip: !ticketId,
-    fetchPolicy: 'cache-first',
-    errorPolicy: 'all'
-  });
-}
-import { CREATE_TICKET_MESSAGE } from '@/lib/graphql/mutations/ticket-message';
-
-export function useCreateTicketMessage() {
-  const [mutate, { loading }] = useMutation(CREATE_TICKET_MESSAGE);
-  const createTicketMessage = async (input: { ticketId: string; message: string }) => {
-    return mutate({ variables: { input } });
-  };
-  return { createTicketMessage, loading };
-}
 import { useMutation, useQuery } from '@apollo/client';
-import { CREATE_TICKET } from '@/lib/graphql/mutations/ticket';
-import { GET_CUSTOMER_TICKETS } from '@/lib/graphql/queries/ticket';
-import { safeGraphQLOperation, type SafeResult } from '@/lib/graphql/wrapper';
+import { 
+  GET_TICKET_BY_ID, 
+  CREATE_TICKET_MESSAGE, 
+  CREATE_TICKET, 
+  GET_CUSTOMER_TICKETS,
+  safeGraphQLOperation, 
+  type SafeResult
+} from '@repo/api';
 import { useProfileStore } from '@/store/profile-store';
 
 export interface CreateTicketParams {
@@ -32,7 +18,7 @@ export interface CreateTicketParams {
 }
 
 export function useCreateTicket() {
-  const [mutate, { loading }] = useMutation(CREATE_TICKET);
+  const [mutate, { loading }] = useMutation<any, { input: CreateTicketParams }>(CREATE_TICKET);
 
   const createTicket = async (
     input: CreateTicketParams
@@ -49,6 +35,23 @@ export function useCreateTicket() {
 
   return { createTicket, loading };
 }
+
+export function useGetTicketById(ticketId: string) {
+  return useQuery(GET_TICKET_BY_ID, {
+    variables: { ticketId },
+    skip: !ticketId,
+    fetchPolicy: 'cache-first',
+    errorPolicy: 'all'
+  });
+}
+
+export const useCreateTicketMessage = () => {
+  const [mutate, { loading }] = useMutation(CREATE_TICKET_MESSAGE);
+  const createTicketMessage = async (input: { ticketId: string; message: string }) => {
+    return mutate({ variables: { input } });
+  };
+  return { createTicketMessage, loading };
+};
 
 export type TicketItem = {
   id: string;

@@ -1,4 +1,4 @@
-declare module "country-currency-map" {
+declare module 'country-currency-map' {
   export interface CountryData {
     currency: string;
     currencySymbol: string;

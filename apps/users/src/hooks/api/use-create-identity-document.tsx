@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { CREATE_IDENTITY_DOCUMENT } from '../../lib/graphql/mutations/CREATE_PERSONAL_INFO.ts';
+import { CREATE_IDENTITY_DOCUMENT } from '@repo/api';
 import { CreateIdentityDocumentResult, CreateIdentityDocumentVariables } from '@repo/types';
 
 export const useCreateIdentityDocument = () => {

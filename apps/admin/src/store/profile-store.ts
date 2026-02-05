@@ -76,7 +76,7 @@ export const useProfileStore = create<ProfileStore>()(
       },
       fetchProfile: async () => {
         try {
-          const { ME } = await import('@/lib/graphql/operations');
+          const { ME } = await import('@repo/api';
           const { apolloClient } = await import('@/lib/apollo-client');
           const response = await apolloClient.query({ query: ME, fetchPolicy: 'network-only' });
           if (response.data?.me) {

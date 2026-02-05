@@ -3,7 +3,7 @@ import { useLazyQuery } from '@apollo/client';
 import { useUserStore } from '@/store/user-store';
 import { useProfileStore } from '@/store/profile-store';
 import { useWalletStore } from '@/store/wallet-store';
-import { ME } from '@/lib/graphql/operations';
+import { ME } from '@repo/api';
 import { handleGraphQLError } from '@/utils/error-handling';
 import Cookies from 'js-cookie';
 import { JWT_TOKEN_NAME } from '@/constant';

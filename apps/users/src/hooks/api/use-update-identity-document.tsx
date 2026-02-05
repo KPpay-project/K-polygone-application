@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { UPDATE_IDENTITY_DOCUMENT } from '../../lib/graphql/mutations/update-kyc';
+import { UPDATE_IDENTITY_DOCUMENT } from '@repo/api';
 import { UpdateIdentityDocumentResult, UpdateIdentityDocumentVariables } from '@repo/types';
 
 export const useUpdateIdentityDocument = () => {

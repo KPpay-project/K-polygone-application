@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { FORGOTTEN_PASSWORD } from '@/lib/graphql/mutations/auth';
+import { FORGOTTEN_PASSWORD } from '@repo/api';
 import { CustomFormMessage } from '@/components/common/forms/form-message';
 import OnboardingLayout from '@/components/layouts/onboarding-layout';
 import { forgotPasswordSchema } from '@/schema/auth';

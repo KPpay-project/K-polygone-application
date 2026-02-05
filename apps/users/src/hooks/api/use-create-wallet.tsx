@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { CREATE_WALLET } from '../../lib/graphql/mutations/create-wallet';
+import { CREATE_WALLET } from '@repo/api';
 import { CreateWalletVariables, Wallet } from '@repo/types';
 
 interface CreateWalletMutationResult {

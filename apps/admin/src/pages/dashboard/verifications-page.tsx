@@ -4,7 +4,7 @@ import moment from 'moment';
 import { EyeIcon } from 'lucide-react';
 import { ResponsiveTable, TableColumn, TableAction } from '@/components/common/responsive-table';
 import HeaderTitle from '@/components/misc/header-title';
-import { GET_ALL_KYC_APPLICATIONS } from '@/lib/graphql/queries/kyc';
+import { GET_ALL_KYC_APPLICATIONS } from '@repo/api';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import StatusBadge from '@/components/ui/status-badge';
 import StatusTabs from '@/components/misc/status-tabs';

@@ -1,5 +1,4 @@
 import { useQuery } from '@apollo/client';
-import gql from 'graphql-tag';
 import { cn } from '@/lib/utils';
 import { formatCurrencyWithCode } from '@/utils/current';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -13,32 +12,7 @@ import QRCode from 'react-qr-code';
 import { toPng } from 'html-to-image';
 import { toast } from 'sonner';
 import { Twitter, Facebook, Whatsapp } from 'react-social-sharing';
-
-export const PAYMENT_LINKS_QUERY = gql`
-  query PaymentLinks {
-    myPaymentLinks {
-      paymentLinks {
-        id
-        name
-        description
-        amount
-        code
-        isActive
-        useCount
-        maxUses
-        insertedAt
-        expiresAt
-        completedPaymentsCount
-        totalCollected
-        checkoutUrl
-        redirectUrl
-        allowedChannels
-        metadata
-        updatedAt
-      }
-    }
-  }
-`;
+import { PAYMENT_LINKS_QUERY } from '@repo/api';
 
 interface PaymentLink {
   id: string;

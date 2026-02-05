@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { CREATE_FINANCIAL_INFO } from '@/lib/graphql';
+import { CREATE_FINANCIAL_INFO } from '@repo/api';
 import { CreateFinancialInfoResult, CreateFinancialInfoVariables } from '@repo/types';
 
 export const useCreateFinancialInfo = () => {

@@ -1,6 +1,6 @@
 import { useState, ReactNode } from 'react';
 import { useMutation } from '@apollo/client';
-import { CREATE_WALLET } from '@/lib/graphql/mutations/create-wallet';
+import { CREATE_WALLET } from '@repo/api';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from 'k-polygon-assets/components';
 import SecondaryCurrencyDropdown from '../common/currency-dropdown/secondary-currency-dropdown';

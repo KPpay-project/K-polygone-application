@@ -3,7 +3,7 @@ import { useMutation } from '@apollo/client';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import REGISTER_MERCHANT from '@/lib/graphql/mutations/merchants/merchant-auth';
+import { REGISTER_MERCHANT } from '@repo/api';
 import z from 'zod';
 import { toast } from 'sonner';
 import { useNavigate } from '@tanstack/react-router';

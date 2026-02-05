@@ -1,7 +1,6 @@
 //@ts-nocheck
 import { useQuery } from '@apollo/client';
-//import { GET_TRANSACTIONS, GET_WALLET_TRANSACTION_BY_ID } from '../../lib/graphql/mutations/transactions-mutation';
-import { GET_TRANSACTIONS } from '@/lib/graphql';
+import { GET_TRANSACTIONS, GET_WALLET_TRANSACTION_BY_ID } from '@repo/api';
 import { TransactionFiltersInput, UserWalletTransaction as WalletTransaction } from '@repo/types';
 
 interface TransactionPagedResult {

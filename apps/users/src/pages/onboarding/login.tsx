@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import Turnstile from 'react-turnstile';
@@ -8,22 +8,24 @@ import z from 'zod';
 
 import { CustomFormMessage } from '@/components/common/forms/form-message';
 import OnboardingLayout from '@/components/layouts/onboarding-layout';
-import { LOGIN_USER } from '@/lib/graphql/mutations/auth';
+import { LOGIN_USER } from '@repo/api';
 import { loginSchema } from '@/schema/auth';
 import { useAuth } from '@/hooks/use-auth';
 import type { LoginInput, LoginResponse } from '@repo/types';
 import { ENV } from '@/utils/constants';
 import { handleGraphQLError } from '@/utils/error-handling';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { Button, Form, FormControl, FormField, FormItem, FormLabel, Input } from 'k-polygon-assets/components';
+import { Form, FormControl, FormField, FormItem, FormLabel, Input } from 'k-polygon-assets/components';
 import { IconArrowRight } from 'k-polygon-assets/icons';
 import { Eye, EyeOff } from 'lucide-react';
-import { Loading } from '@/components/common';
+import { Loading, Head } from '@/components/common';
+import { Button } from '@/components/ui/button';
 
 function Login() {
   const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string>('');
+  const turnstileRef = useRef<any>(null);
   const navigate = useNavigate();
   const { setAuthTokens, logUser } = useAuth();
 
@@ -60,9 +62,13 @@ function Login() {
         navigate({ to: '/dashboard' });
       } else if (response.errors) {
         handleGraphQLError(response, 'Login failed');
+        turnstileRef.current?.reset();
+        setCaptchaToken('');
       }
     } catch (error) {
       handleGraphQLError(error, t('common.notifications.loginFailed'));
+      turnstileRef.current?.reset();
+      setCaptchaToken('');
     }
   }
 
@@ -70,6 +76,7 @@ function Login() {
   const urlParamType = params.get('user');
   return (
     <OnboardingLayout title={t('auth.login.title')} description={t('auth.login.description')} canGoBack>
+      <Head title={t('auth.login.title')} />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
@@ -124,21 +131,27 @@ function Login() {
 
           <div className="w-full flex justify-center py-4 min-h-[70px]">
             <Turnstile
+              ref={turnstileRef}
               sitekey={ENV.CLOUDFLARE_SITE_KEY}
+              action="login"
               theme="light"
               fixedSize={true}
               onVerify={(token) => {
                 setCaptchaToken(token);
               }}
-              onError={() => {}}
-              onLoad={() => {}}
+              onError={() => {
+                setCaptchaToken('');
+              }}
+              onExpire={() => {
+                setCaptchaToken('');
+              }}
             />
           </div>
 
           <Button
             type="submit"
             className="w-full bg-primary hover:bg-brandBlue-600"
-            icon={<IconArrowRight />}
+            // icon={<IconArrowRight />}
             disabled={loading || !captchaToken}
           >
             {loading ? t('common.loading') : t('auth.login.signIn')}

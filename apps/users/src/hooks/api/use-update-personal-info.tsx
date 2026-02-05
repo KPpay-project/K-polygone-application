@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { UPDATE_PERSONAL_INFO } from '../../lib/graphql/mutations/update-kyc';
+import { UPDATE_PERSONAL_INFO } from '@repo/api';
 import { UpdatePersonalInfoResult, UpdatePersonalInfoVariables } from '@repo/types';
 
 export const useUpdatePersonalInfo = () => {

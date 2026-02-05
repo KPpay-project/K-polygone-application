@@ -11,7 +11,7 @@ import UsersCurrencyDropdown from '@/components/currency-dropdown/users-currency
 import Loading from '@/components/common/loading';
 import { toast } from 'sonner';
 import { useProfileStore } from '@/store/profile-store';
-import { DEPOSIT_VIA_CARD, FLW_CARD_DEPOSIT_QUOTE, VALIDATE_CARD_PAYMENT } from '@/lib/graphql/mutations/transfer';
+import { DEPOSIT_VIA_CARD, FLW_CARD_DEPOSIT_QUOTE, VALIDATE_CARD_PAYMENT } from '@repo/api';
 
 const cardFormSchema = z.object({
   amount: z.string().min(1),
@@ -65,6 +65,7 @@ const CardDepositAction = ({ onSuccess }: Props) => {
   const [step, setStep] = useState<'form' | 'otp' | 'avs' | 'success'>('form');
   const [quoteId, setQuoteId] = useState<string | null>(null);
   const [transactionId, setTransactionId] = useState<string | null>(null);
+  const [authMode, setAuthMode] = useState<string | null>(null);
   const [otp, setOtp] = useState('');
 
   const [addressFields, setAddressFields] = useState({

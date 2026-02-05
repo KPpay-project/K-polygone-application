@@ -1,6 +1,6 @@
 import { IconCurrencyDollar, IconCurrencyXof } from 'k-polygon-assets';
 import { useFetchCurrencies } from './use-fetch-currencies';
-import { GET_CURRENCIES, GET_MY_WALLET_CURRENCIES } from '@/lib/graphql';
+import { GET_CURRENCIES, GET_MY_WALLET_CURRENCIES } from '@repo/api';
 import { useQuery } from '@apollo/client';
 
 export function useCurrencies() {

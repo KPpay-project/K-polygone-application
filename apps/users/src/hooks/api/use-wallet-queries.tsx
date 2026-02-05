@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
-import { GET_WALLET, GET_USER_WALLETS, GET_MY_WALLETS } from '../../lib/graphql/queries/wallet';
+import { GET_WALLET, GET_USER_WALLETS, GET_MY_WALLETS } from '@repo/api';
 import { GetUserWalletsVariables, GetWalletVariables, Wallet } from '@repo/types';
-import { GET_MY_CURRENCIES_QUERY } from '@/lib/graphql/mutations/wallet';
+import { GET_MY_CURRENCIES_QUERY } from '@repo/api';
 
 interface GetWalletResult {
   wallet: Wallet;

@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { toast } from 'sonner';
-import { CREATE_TICKET_MESSAGE } from '@/lib/graphql/mutations/ticket';
+import { CREATE_TICKET_MESSAGE } from '@repo/api';
 import type { CreateTicketMessageInput, CreateTicketMessageResponse, CreateTicketMessageVariables } from '@repo/types';
 
 export const useCreateTicketMessage = () => {

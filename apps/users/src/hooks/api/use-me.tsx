@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { ME } from '../../lib/graphql/operations';
+import { ME } from '@repo/api';
 import { UserAccountType } from '@repo/types';
 
 interface MeQueryResult {

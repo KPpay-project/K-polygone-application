@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { CREATE_PERSONAL_INFO } from '../../lib/graphql/mutations/CREATE_PERSONAL_INFO.ts';
+import { CREATE_PERSONAL_INFO } from '@repo/api';
 import { CreatePersonalInfoResult, CreatePersonalInfoVariables } from '@repo/types';
 
 export const useCreatePersonalInfo = () => {

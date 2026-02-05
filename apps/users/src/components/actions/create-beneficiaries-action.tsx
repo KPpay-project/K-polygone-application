@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { IconArrowRight } from 'k-polygon-assets';
-import { FETCH_BENEFICIARIES_QUERY, CREATE_BENEFICIARY_MUTATION } from '@/lib/graphql/beneficiary';
+import { FETCH_BENEFICIARIES_QUERY, CREATE_BENEFICIARY_MUTATION } from '@repo/api';
 import ErrorAndSuccessFallback from '../sub-modules/modal-contents/error-success-fallback';
 import { useMutation } from '@apollo/client';
 import { BENEFICIARY_TYPE_ENUM } from '@/enums';

@@ -1,5 +1,5 @@
 export const isValidLuhn = (cardNumber: string): boolean => {
-  const cleanNumber = cardNumber.replace(/\D/g, "");
+  const cleanNumber = cardNumber.replace(/\D/g, '');
   let sum = 0;
   let isEven = false;
 

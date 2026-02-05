@@ -1,9 +1,9 @@
 import { useMutation } from '@apollo/client';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
-import { TRANSFER_TO_KPAY_USER } from '@/lib/graphql/mutations/transfer';
-import type { TransferToKpayUserInput } from '@/lib/graphql/mutations/transfer';
-import { TRANSFER_QUOTE } from '@/lib/graphql/mutations/transfer';
+import { TRANSFER_TO_KPAY_USER } from '@repo/api';
+import type { TransferToKpayUserInput } from '@repo/api';
+import { TRANSFER_QUOTE } from '@repo/api';
 
 interface TransferToKpayUserResult {
   transferToKpayUser: {
@@ -54,7 +54,7 @@ interface TransferQuoteResult {
 }
 
 interface TransferQuoteVariables {
-  input: import('@/lib/graphql/mutations/transfer').TransferQuoteInput;
+  input: import('@repo/api').TransferQuoteInput;
 }
 
 export const useTransferQuote = () => {

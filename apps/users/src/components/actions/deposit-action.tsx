@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { DEPOSIT } from '@/lib/graphql/mutations/deposit';
+import { DEPOSIT } from '@repo/api';
 import { Button } from 'k-polygon-assets/components';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';

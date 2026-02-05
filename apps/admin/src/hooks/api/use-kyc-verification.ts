@@ -11,7 +11,7 @@ import {
   REJECT_FINANCIAL_INFO,
   REJECT_IDENTITY_DOCUMENT,
   REJECT_PERSONAL_INFO
-} from '@/lib/graphql/mutations/kyc/verify-kyc-infom';
+} from '@repo/api';
 
 interface KycResponse {
   success: boolean;

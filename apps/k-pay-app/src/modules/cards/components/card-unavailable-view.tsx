@@ -1,11 +1,11 @@
-import React from 'react';
+import * as React from 'react';
 import { View, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Typography } from '@/components/ui/typography/typography';
 import { Button } from '@/components/ui/button/button';
 import { Link } from 'expo-router';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const cardImage = require('@/assets/card.png');
 
 export function CardUnavailableView() {

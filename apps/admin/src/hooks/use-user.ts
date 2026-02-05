@@ -5,7 +5,7 @@ import {
   REGISTER_USER,
   REGISTER_ADMIN,
   UPDATE_ROLE
-} from '@/lib/graphql/mutations/users';
+} from '@repo/api';
 
 export const useUser = () => {
   const [suspendAdminMutation] = useMutation(SUSPEND_ADMIN);

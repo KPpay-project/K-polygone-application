@@ -11,7 +11,7 @@ import { Loading } from '@/components/common';
 import z from 'zod';
 import { Switch } from '@/components/ui/switch';
 import { useMutation } from '@apollo/client';
-import { LOGIN_USER } from '@/lib/graphql/mutations/auth';
+import { LOGIN_USER } from '@repo/api';
 import { useNavigate } from '@tanstack/react-router';
 import { toast } from 'sonner';
 import Cookies from 'js-cookie';

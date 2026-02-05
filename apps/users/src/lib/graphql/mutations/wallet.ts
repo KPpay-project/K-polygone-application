@@ -53,7 +53,6 @@ export const CROSS_CURRENCY_TRANSFER = gql`
   }
 `;
 
-//get users currencies/wallets
 export const GET_MY_CURRENCIES_QUERY = gql`
   query Wallets {
     me {

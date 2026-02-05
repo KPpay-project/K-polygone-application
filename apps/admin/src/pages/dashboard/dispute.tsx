@@ -6,7 +6,7 @@ import HeaderTitle from '@/components/misc/header-title';
 import DefaultModal from '@/components/sub-modules/popups/modal';
 import ReusableSheet from '@/components/shared/reusable-sheet';
 import { useQuery } from '@apollo/client';
-import { LIST_DISPUTES } from '@/lib/graphql/queries/dispute';
+import { LIST_DISPUTES } from '@repo/api';
 import moment from 'moment';
 import PreviewAndUpdateDisputeAction from '@/components/actions/preview-and-update-dispute-action';
 import { useState } from 'react';

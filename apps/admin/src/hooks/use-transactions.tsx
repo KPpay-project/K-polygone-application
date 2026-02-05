@@ -2,7 +2,7 @@ import {
   GET_ALL_DEPOSIT_TRANSACTIONS,
   GET_ALL_TRANSFERS_TRANSACTIONS,
   GET_ALL_WITHDRAWAL_TRANSACTIONS
-} from '@/lib/graphql/queries/transactions';
+} from '@repo/api';
 import { useQuery } from '@apollo/client';
 
 function useAllDepositsTransactionHistory(variables) {

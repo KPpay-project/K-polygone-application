@@ -5,7 +5,7 @@ import HeaderTitle from '@/components/misc/header-title';
 import AddCurrencyAction from '@/components/actions/add-currency-action';
 
 import { useQuery } from '@apollo/client';
-import { GET_CURRENCIES } from '@/lib/graphql';
+import { GET_CURRENCIES } from '@repo/api';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 interface Currency {

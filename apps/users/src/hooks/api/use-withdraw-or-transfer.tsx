@@ -1,5 +1,5 @@
 import { MutationHookOptions, useMutation } from '@apollo/client';
-import { WITHDRAW_OR_TRANSFER } from '@/lib/graphql/mutations/withdraw';
+import { WITHDRAW_OR_TRANSFER } from '@repo/api';
 import { WithdrawOrTransferResult, WithdrawOrTransferVariables } from '@repo/types';
 
 export const useWithdrawOrTransfer = (
