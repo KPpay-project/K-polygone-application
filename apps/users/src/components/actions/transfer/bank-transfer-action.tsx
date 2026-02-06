@@ -11,12 +11,7 @@ import { useProfileStore } from '@/store/profile-store';
 import { toast } from 'sonner';
 import Loading from '@/components/common/loading';
 import { Typography } from '@/components/sub-modules/typography/typography';
-import {
-  FLW_BANKS,
-  RESOLVE_BANK_ACCOUNT,
-  FLW_BANK_WITHDRAWAL_QUOTE_QUERY,
-  WITHDRAW_TO_BANK
-} from '@repo/api';
+import { FLW_BANKS, RESOLVE_BANK_ACCOUNT, FLW_BANK_WITHDRAWAL_QUOTE_QUERY, WITHDRAW_TO_BANK } from '@repo/api';
 import { TransferConfirmation } from '@/components/modules/transfer/transfer-confirmation.tsx';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { TRANSFER_METHOD_ENUM } from '@/enums';

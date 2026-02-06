@@ -9,7 +9,7 @@ import { JWT_TOKEN_NAME, JWT_REFRESH_TOKEN_NAME, REMEMBER_ME_COOKIE } from '@/co
 import { REFRESH_TOKEN } from '@repo/api';
 import { logoutUser } from '@/utils';
 
-const GRAPHQL_ENDPOINT = import.meta.env.VITE_GRAPHQL_ENDPOINT || 'https://move-bars.fly.dev/api/move-bars';
+const GRAPHQL_ENDPOINT = import.meta.env.VITE_GRAPHQL_ENDPOINT;
 
 const absintheUploadLink = createAbsintheUploadLink({ uri: GRAPHQL_ENDPOINT });
 

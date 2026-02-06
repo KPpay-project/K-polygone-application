@@ -1,10 +1,10 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { 
-  GET_TICKET_BY_ID, 
-  CREATE_TICKET_MESSAGE, 
-  CREATE_TICKET, 
+import {
+  GET_TICKET_BY_ID,
+  CREATE_TICKET_MESSAGE,
+  CREATE_TICKET,
   GET_CUSTOMER_TICKETS,
-  safeGraphQLOperation, 
+  safeGraphQLOperation,
   type SafeResult
 } from '@repo/api';
 import { useProfileStore } from '@/store/profile-store';
