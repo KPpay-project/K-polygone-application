@@ -1,0 +1,13 @@
+{
+  "extends": "@repo/typescript-config/base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*", "tailwind.config.ts", "postcss.config.js", "components.json"],
+  "exclude": ["node_modules", "dist"]
+}

@@ -16,6 +16,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@ui': path.resolve(__dirname, '../../packages/ui/src'),
       'k-polygon-assets/components': path.resolve(__dirname, './assets/dist/components/index.js'),
       'k-polygon-assets/icons': path.resolve(__dirname, './assets/dist/icons/index.js'),
       'k-polygon-assets/utils': path.resolve(__dirname, './assets/dist/utils/index.js'),
