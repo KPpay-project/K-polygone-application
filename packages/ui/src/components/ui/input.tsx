@@ -15,7 +15,7 @@ const currencySymbols: Record<string, string> = {
   USD: '$',
   NGN: '₦',
   EUR: '€',
-  GBP: '£'
+  GBP: '£',
 };
 
 const getPlaceValue = (num: number) => {
@@ -25,7 +25,13 @@ const getPlaceValue = (num: number) => {
   return '';
 };
 
-const NumberInput: React.FC<NumberInputProps> = ({ value = 0, onChange, currency, placeholder, className }) => {
+const NumberInput: React.FC<NumberInputProps> = ({
+  value = 0,
+  onChange,
+  currency,
+  placeholder,
+  className,
+}) => {
   const [inputValue, setInputValue] = useState(value.toLocaleString());
   const [tooltipPos, setTooltipPos] = useState(0);
 
@@ -71,7 +77,10 @@ const NumberInput: React.FC<NumberInputProps> = ({ value = 0, onChange, currency
             placeholder={placeholder || 'Enter amount'}
             className="outline-none w-full bg-transparent text-lg"
           />
-          <span ref={measureRef} className="absolute top-0 left-0 invisible pointer-events-none text-lg">
+          <span
+            ref={measureRef}
+            className="absolute top-0 left-0 invisible pointer-events-none text-lg"
+          >
             {symbol && <span>{symbol} </span>}
             {inputValue.charAt(0)}
           </span>
@@ -84,7 +93,7 @@ const NumberInput: React.FC<NumberInputProps> = ({ value = 0, onChange, currency
           style={{
             left: tooltipPos,
             transform: 'translateX(0)',
-            whiteSpace: 'nowrap'
+            whiteSpace: 'nowrap',
           }}
         >
           {placeValue}
@@ -96,7 +105,7 @@ const NumberInput: React.FC<NumberInputProps> = ({ value = 0, onChange, currency
               height: 0,
               borderLeft: '4px solid transparent',
               borderRight: '4px solid transparent',
-              borderTop: '4px solid #1f2937'
+              borderTop: '4px solid #1f2937',
             }}
           />
         </div>
@@ -112,13 +121,13 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<'input'>>(
         type={type}
         className={cn(
           'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-[20px] text-base transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
-          className
+          className,
         )}
         ref={ref}
         {...props}
       />
     );
-  }
+  },
 );
 Input.displayName = 'Input';
 

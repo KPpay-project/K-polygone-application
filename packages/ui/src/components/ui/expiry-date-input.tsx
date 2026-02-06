@@ -16,7 +16,7 @@ export const ExpiryDateInput: React.FC<ExpiryDateInputProps> = ({
   placeholder = 'MM/YY',
   className = '',
   autoComplete,
-  name
+  name,
 }) => {
   const [displayValue, setDisplayValue] = useState(value);
 
