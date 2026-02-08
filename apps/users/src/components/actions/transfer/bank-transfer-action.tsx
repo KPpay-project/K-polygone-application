@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { NumberInput, Currency, Dialog, DialogContent, Loader, Input, Button } from '@repo/ui';
+import { NumberInput, Currency, Dialog, DialogContent, Loader, Input, Button, InputWithSearch } from '@repo/ui';
 import UsersCurrencyDropdown from '@/components/currency-dropdown/users-currency-dropdown';
 import { useProfileStore } from '@/store/profile-store';
 import { toast } from 'sonner';
@@ -74,7 +74,6 @@ const BankTransferAction = ({ onSuccess }: Props) => {
   });
   const [withdrawToBank, { loading: withdrawing }] = useMutation(WITHDRAW_TO_BANK);
 
-  const [searchTerm, setSearchTerm] = useState('');
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [pendingValues, setPendingValues] = useState<FormData | null>(null);
   const [resultStatus, setResultStatus] = useState<'success' | 'error' | null>(null);
@@ -85,12 +84,12 @@ const BankTransferAction = ({ onSuccess }: Props) => {
 
   const accountName = accountData?.resolveBankAccountName?.accountName || '';
 
-  const filteredBanks = useMemo(() => {
-    const banks = banksData?.flutterwaveBanks || [];
-    if (!searchTerm.trim()) return banks;
-    const lower = searchTerm.toLowerCase();
-    return banks.filter((b: any) => b.name.toLowerCase().includes(lower));
-  }, [banksData?.flutterwaveBanks, searchTerm]);
+  const bankOptions = useMemo(() => {
+    return (banksData?.flutterwaveBanks || []).map((b: any) => ({
+      label: b.name,
+      value: b.code
+    }));
+  }, [banksData?.flutterwaveBanks]);
 
   useEffect(() => {
     if (watchedAccountNumber.length === 10 && watchedBankCode) {
@@ -210,20 +209,14 @@ const BankTransferAction = ({ onSuccess }: Props) => {
           <Typography className="text-sm font-medium text-gray-700 mb-2">
             {t('transfer.selectBank') || 'Select Bank'}
           </Typography>
-          <Input
-            placeholder={t('transfer.searchBank') || 'Search bank...'}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full mb-2"
+          <InputWithSearch
+            options={bankOptions}
+            value={watchedBankCode}
+            onChange={(val) => setValue('bankCode', val, { shouldValidate: true })}
+            placeholder={t('transfer.selectBank') || 'Select Bank'}
+            emptyMessage="No bank found."
+            className="w-full"
           />
-          <select className="w-full border rounded-md px-3 py-2" {...register('bankCode')}>
-            <option value="">{t('transfer.selectBank') || 'Select Bank'}</option>
-            {filteredBanks.map((b: any) => (
-              <option key={b.code} value={b.code}>
-                {b.name}
-              </option>
-            ))}
-          </select>
           {errors.bankCode && <Typography className="text-red-500 text-xs mt-1">{errors.bankCode.message}</Typography>}
         </div>
 
