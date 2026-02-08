@@ -53,10 +53,6 @@ function AdminListPage() {
     fetchPolicy: 'cache-and-network'
   });
 
-  useEffect(() => {
-    refetch(variables);
-  }, [variables, refetch]);
-
   const columns: TableColumn[] = [
     // { key: 'id', label: 'Admin ID', accessor: 'id' },
     {
@@ -148,23 +144,18 @@ function AdminListPage() {
       <div>
         <div>
           <HeaderTitle
-            title="Admins"
+            title="Admin List"
             count={pageInfo?.totalEntries ?? tableData.length}
             onSearch={(value) => {
               setSearch(value);
               setPage(1);
             }}
-            onFilter={(status) => {
-              setStatusFilter(status);
-              setPage(1);
-            }}
-            filterStatus={statusFilter}
-            filterOptions={['All', 'Active', 'Inactive', 'Suspended', 'Pending']}
+            showFilter={false}
           >
             <DefaultModal
               trigger={
-                <Button className="bg-blue-700">
-                  <Add />
+                <Button className="bg-blue-700 text-white">
+                  <Add className="mr-2 h-4 w-4" />
                   Add Admin
                 </Button>
               }
@@ -251,11 +242,10 @@ function AdminListPage() {
 
       <DefaultModal
         open={suspendOpen}
-        onOpenChange={(open) => {
-          setSuspendOpen(open);
-          if (!open) {
-            setSelectedAdmin(null);
-          }
+        trigger={<></>}
+        onClose={() => {
+          setSuspendOpen(false);
+          setSelectedAdmin(null);
         }}
         title="Suspend Admin"
       >

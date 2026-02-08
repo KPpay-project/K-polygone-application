@@ -3,11 +3,10 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Typography } from '@/components/sub-modules/typography/typography';
-import { Button, Form, FormControl, FormField, FormItem, FormLabel, Input } from 'k-polygon-assets/components';
+import { Form, FormControl, FormField, FormItem, FormLabel, Input } from 'k-polygon-assets/components';
 import { Eye, EyeOff } from 'lucide-react';
 import { CustomFormMessage } from '@/components/common/forms/form-message';
 import { loginSchema } from '@/schema/auth';
-import { Loading } from '@/components/common';
 import z from 'zod';
 import { Switch } from '@/components/ui/switch';
 import { useMutation } from '@apollo/client';
@@ -19,6 +18,7 @@ import { JWT_TOKEN_NAME, JWT_REFRESH_TOKEN_NAME, REMEMBER_ME_COOKIE } from '@/co
 import type { LoginInput, LoginResponse } from '@repo/types';
 import { scheduleTokenRefresh } from '@/lib/apollo-client';
 import { useUserStore } from '@/store/user-store';
+import { Button, Loader } from '@repo/ui';
 
 const LoginPage = () => {
   const { t } = useTranslation();
@@ -145,12 +145,13 @@ const LoginPage = () => {
               )}
             />
 
-            <Button type="submit" className="w-full bg-primary-500 rounded-lg mt-8" disabled={loading}>
-              {loading ? <Loading /> : t('auth.login.submit')}
+            <Button type="submit" className="w-full  rounded-lg mt-8" disabled={loading}>
+              {loading ? <Loader /> : t('auth.login.submit')}
             </Button>
           </form>
         </Form>
       </div>
+      <Loader />
     </div>
   );
 };

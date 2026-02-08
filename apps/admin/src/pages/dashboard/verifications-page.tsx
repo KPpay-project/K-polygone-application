@@ -32,10 +32,6 @@ function VerificationsPage() {
     fetchPolicy: 'cache-and-network'
   });
 
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
-
   const getInitials = (firstName?: string, lastName?: string) => {
     const first = firstName?.[0]?.toUpperCase() || '';
     const last = lastName?.[0]?.toUpperCase() || '';
@@ -144,12 +140,7 @@ function VerificationsPage() {
           setSearch(value);
           setPage(1);
         }}
-        onFilter={(status) => {
-          setStatusFilter(status);
-          setPage(1);
-        }}
-        filterStatus={statusFilter}
-        filterOptions={statusTabs.map((tab) => tab.key)}
+        showFilter={false}
       />
       <StatusTabs tabs={statusTabs} activeTab={statusFilter} onTabChange={setStatusFilter} />
       <ResponsiveTable
