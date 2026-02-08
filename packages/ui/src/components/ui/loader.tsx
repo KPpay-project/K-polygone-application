@@ -19,8 +19,6 @@ export function Loader({ className, size = 24, ...props }: LoaderProps) {
       <div>
         <Logo />
       </div>
-
-    
     </div>
   );
 }

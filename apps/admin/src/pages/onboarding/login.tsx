@@ -146,12 +146,12 @@ const LoginPage = () => {
             />
 
             <Button type="submit" className="w-full  rounded-lg mt-8" disabled={loading}>
-              {loading ? <Loader /> : t('auth.login.submit')}
+              {t('auth.login.submit')}
             </Button>
           </form>
         </Form>
       </div>
-      <Loader />
+      {loading && <Loader />}
     </div>
   );
 };

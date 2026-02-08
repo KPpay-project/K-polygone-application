@@ -12,7 +12,7 @@ function DashboardHome() {
   return (
     <div className="px-6 py-4">
       <div className="flex justify-between items-center mb-6">
-        <div className="text-lg font-medium">
+        <div className="text-lg font-medium w-full">
           <SummaryCards stats={data?.adminDashboardStats} />
         </div>
       </div>
