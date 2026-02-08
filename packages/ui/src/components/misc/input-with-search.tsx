@@ -72,7 +72,7 @@ export function InputWithSearch({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn("justify-between", width, className)}
+          className={cn("justify-between border-black text-black", width, className)}
           disabled={disabled}
         >
           {selectedValue ? selectedLabel : placeholder}
