@@ -96,10 +96,6 @@ function UsersListPage() {
     fetchPolicy: 'cache-and-network'
   });
 
-  useEffect(() => {
-    refetch(variables);
-  }, [variables, refetch]);
-
   const handleViewUser = (userId: string) => {
     navigate({ to: '/dashboard/user-profile', search: { userId } });
   };
@@ -333,14 +329,12 @@ function UsersListPage() {
             setSuspendOpen(false);
             setSelectedUser(null);
             setSuspendReason('');
-            setSuspendError(null);
           }}
         >
           <form
             onSubmit={async (e) => {
               e.preventDefault();
               setSuspending(true);
-              setSuspendError(null);
               setSuspendOpen(false);
 
               const toastId = toast.loading('Suspending user...');
@@ -362,12 +356,10 @@ function UsersListPage() {
                 } else {
                   const errorMsg = res?.data?.suspendUser?.message || 'Failed to suspend user';
                   toast.error(errorMsg, { id: toastId });
-                  setSuspendError(errorMsg);
                 }
               } catch (err: any) {
                 const errorMsg = err?.message || 'Failed to suspend user';
                 toast.error(errorMsg, { id: toastId });
-                setSuspendError(errorMsg);
               } finally {
                 setSuspending(false);
               }

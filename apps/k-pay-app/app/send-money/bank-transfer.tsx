@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useEffect, useMemo } from 'react';
 import { View, ScrollView, TouchableOpacity } from 'react-native';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';

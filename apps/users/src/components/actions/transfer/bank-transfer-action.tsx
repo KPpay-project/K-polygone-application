@@ -4,16 +4,13 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { Input, Button } from 'k-polygon-assets';
-import { NumberInput, Currency } from '@/components/ui/input';
+import { NumberInput, Currency, Dialog, DialogContent, Loader, Input, Button, InputWithSearch } from '@repo/ui';
 import UsersCurrencyDropdown from '@/components/currency-dropdown/users-currency-dropdown';
 import { useProfileStore } from '@/store/profile-store';
 import { toast } from 'sonner';
-import Loading from '@/components/common/loading';
 import { Typography } from '@/components/sub-modules/typography/typography';
 import { FLW_BANKS, RESOLVE_BANK_ACCOUNT, FLW_BANK_WITHDRAWAL_QUOTE_QUERY, WITHDRAW_TO_BANK } from '@repo/api';
 import { TransferConfirmation } from '@/components/modules/transfer/transfer-confirmation.tsx';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { TRANSFER_METHOD_ENUM } from '@/enums';
 import ErrorAndSuccessFallback from '@/components/sub-modules/modal-contents/error-success-fallback.tsx';
 
@@ -72,30 +69,28 @@ const BankTransferAction = ({ onSuccess }: Props) => {
   });
 
   const [resolveAccount, { data: accountData, loading: resolving }] = useLazyQuery(RESOLVE_BANK_ACCOUNT);
-  const [getQuote, { loading: quoting }] = useMutation(FLW_BANK_WITHDRAWAL_QUOTE_QUERY, {
+  const [getQuote, { loading: quoting }] = useLazyQuery(FLW_BANK_WITHDRAWAL_QUOTE_QUERY, {
     errorPolicy: 'all'
   });
   const [withdrawToBank, { loading: withdrawing }] = useMutation(WITHDRAW_TO_BANK);
 
-  const [searchTerm, setSearchTerm] = useState('');
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [pendingValues, setPendingValues] = useState<FormData | null>(null);
   const [resultStatus, setResultStatus] = useState<'success' | 'error' | null>(null);
 
   const [resultMessage, setResultMessage] = useState<string>('');
   const [selectedCurrencyOption, setSelectedCurrencyOption] = useState<CurrencyOption | null>(null);
-  const [currentQuote, setCurrentQuote] = useState<any>(null); // Store latest quote
+  const [currentQuote, setCurrentQuote] = useState<any>(null);
 
   const accountName = accountData?.resolveBankAccountName?.accountName || '';
 
-  const filteredBanks = useMemo(() => {
-    const banks = banksData?.flutterwaveBanks || [];
-    if (!searchTerm.trim()) return banks;
-    const lower = searchTerm.toLowerCase();
-    return banks.filter((b: any) => b.name.toLowerCase().includes(lower));
-  }, [banksData?.flutterwaveBanks, searchTerm]);
+  const bankOptions = useMemo(() => {
+    return (banksData?.flutterwaveBanks || []).map((b: any) => ({
+      label: b.name,
+      value: b.code
+    }));
+  }, [banksData?.flutterwaveBanks]);
 
-  // Resolve account name on valid input
   useEffect(() => {
     if (watchedAccountNumber.length === 10 && watchedBankCode) {
       const timer = setTimeout(() => {
@@ -204,37 +199,27 @@ const BankTransferAction = ({ onSuccess }: Props) => {
     }
   };
 
+  const actionIsLoading = banksLoading || resolving || quoting || withdrawing;
+
   return (
     <>
       <form onSubmit={handleSubmit(openConfirm)} className="px-4 pb-6 space-y-6" autoComplete="on">
-        <Loading
-          isLoading={banksLoading || resolving || quoting || withdrawing}
-          text={t('common.processing') || 'Processing...'}
-        />
-
-        {/* Bank Selection */}
+        {actionIsLoading && <Loader />}
         <div>
           <Typography className="text-sm font-medium text-gray-700 mb-2">
             {t('transfer.selectBank') || 'Select Bank'}
           </Typography>
-          <Input
-            placeholder={t('transfer.searchBank') || 'Search bank...'}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full mb-2"
+          <InputWithSearch
+            options={bankOptions}
+            value={watchedBankCode}
+            onChange={(val) => setValue('bankCode', val, { shouldValidate: true })}
+            placeholder={t('transfer.selectBank') || 'Select Bank'}
+            emptyMessage="No bank found."
+            className="w-full"
           />
-          <select className="w-full border rounded-md px-3 py-2" {...register('bankCode')}>
-            <option value="">{t('transfer.selectBank') || 'Select Bank'}</option>
-            {filteredBanks.map((b: any) => (
-              <option key={b.code} value={b.code}>
-                {b.name}
-              </option>
-            ))}
-          </select>
           {errors.bankCode && <Typography className="text-red-500 text-xs mt-1">{errors.bankCode.message}</Typography>}
         </div>
 
-        {/* Account Number */}
         <div>
           <Typography className="text-sm font-medium text-gray-700 mb-2">
             {t('transfer.accountNumber') || 'Account Number'}
@@ -254,7 +239,6 @@ const BankTransferAction = ({ onSuccess }: Props) => {
           )}
         </div>
 
-        {/* Amount */}
         <div>
           <Typography className="text-sm font-medium text-gray-700 mb-2">{t('transfer.amount') || 'Amount'}</Typography>
           <NumberInput
@@ -279,7 +263,6 @@ const BankTransferAction = ({ onSuccess }: Props) => {
           }}
         />
 
-        {/* Narration */}
         <div>
           <Typography className="text-sm font-medium text-gray-700 mb-2">
             {t('transfer.narration') || 'Narration (optional)'}

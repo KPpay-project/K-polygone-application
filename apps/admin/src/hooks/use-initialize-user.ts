@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { useUserStore } from '@/store/user-store';
 import { useProfileStore } from '@/store/profile-store';
@@ -14,7 +14,7 @@ export const useInitializeUser = () => {
   const { setProfile, clearProfile } = useProfileStore();
   const [getMe, { loading, error }] = useLazyQuery(ME);
 
-  const initializeUser = async () => {
+  const initializeUser = useCallback(async () => {
     const token = Cookies.get(JWT_TOKEN_NAME);
 
     if (!token) {
@@ -53,9 +53,9 @@ export const useInitializeUser = () => {
       Cookies.remove(JWT_TOKEN_NAME);
       console.error('Failed to initialize user:', err);
     }
-  };
+  }, [userAccount, getMe, setUserAccount, clearUserAccount, clearWallet, clearProfile, setProfile, setWallet]);
 
-  const refetchUser = async () => {
+  const refetchUser = useCallback(async () => {
     try {
       const response = await getMe({ fetchPolicy: 'network-only' });
 
@@ -72,7 +72,7 @@ export const useInitializeUser = () => {
     } catch (err) {
       handleGraphQLError(err, 'Failed to refresh user data');
     }
-  };
+  }, [getMe, setUserAccount, setProfile, setWallet, clearWallet]);
 
   return {
     initializeUser,

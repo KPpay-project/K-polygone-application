@@ -99,7 +99,7 @@ export default function SummaryCards({ stats }: { stats?: AdminDashboardStats })
     return {
       title,
       value,
-      icon: ProfileRemove,
+      icon: <ProfileRemove size={30} color={`${highlighted ? 'white' : 'blue'}`} />,
       trend: {
         icon: isPositive ? up : down,
         value: pct(change),
@@ -124,7 +124,7 @@ export default function SummaryCards({ stats }: { stats?: AdminDashboardStats })
         whileHover={{ scale: 1.04, boxShadow: '0 8px 32px rgba(0,0,0,0.10)' }}
         transition={{ duration: 0.3, delay: idx * 0.05 }}
       >
-        <Card className={`${isHighlighted ? 'bg-blue-700 text-white border-0' : ''} shadow-none full`}>
+        <Card className={`${isHighlighted ? 'bg-blue-700 text-white border-0' : ''} shadow-none w-full h-full`}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <div className="flex items-center gap-2">
               <div
@@ -132,7 +132,7 @@ export default function SummaryCards({ stats }: { stats?: AdminDashboardStats })
                 ${!isHighlighted ? 'bg-blue-100/80' : 'bg-white'}
                 flex items-center px-3 rounded-lg `}
               >
-                <ProfileRemove size={30} color={`${isHighlighted ? 'blue' : 'blue'}`} />
+                {card.icon}
               </div>
               <CardTitle className={`text-sm font-medium ${isHighlighted ? 'opacity-90' : ''}`}>{card.title}</CardTitle>
             </div>
@@ -164,7 +164,7 @@ export default function SummaryCards({ stats }: { stats?: AdminDashboardStats })
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="bg-white p-6 rounded-lg shadow-md w-full">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">{allMetricsCards.map(renderCard)}</div>
     </div>
   );
