@@ -8,423 +8,439 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root';
-import { Route as IndexRouteImport } from './routes/index';
-import { Route as WalletIndexRouteImport } from './routes/wallet/index';
-import { Route as TransferIndexRouteImport } from './routes/transfer/index';
-import { Route as TransactionsIndexRouteImport } from './routes/transactions/index';
-import { Route as TicketIndexRouteImport } from './routes/ticket/index';
-import { Route as SettingsIndexRouteImport } from './routes/settings/index';
-import { Route as MerchantIndexRouteImport } from './routes/merchant/index';
-import { Route as ExchangeIndexRouteImport } from './routes/exchange/index';
-import { Route as DepositIndexRouteImport } from './routes/deposit/index';
-import { Route as DashboardIndexRouteImport } from './routes/dashboard/index';
-import { Route as CrossPaymentIndexRouteImport } from './routes/cross-payment/index';
-import { Route as CreditCardIndexRouteImport } from './routes/credit-card/index';
-import { Route as BillPaymentIndexRouteImport } from './routes/bill-payment/index';
-import { Route as ticketIndexRouteImport } from './routes/ ticket/index';
-import { Route as TransferSingleRouteImport } from './routes/transfer/single';
-import { Route as TransferMultipleRouteImport } from './routes/transfer/multiple';
-import { Route as TransferBulkRouteImport } from './routes/transfer/bulk';
-import { Route as TicketIdRouteImport } from './routes/ticket/$id';
-import { Route as OnboardingVerifyResetPasswordRouteImport } from './routes/onboarding/verify-reset-password';
-import { Route as OnboardingResetPasswordRouteImport } from './routes/onboarding/reset-password';
-import { Route as OnboardingRegisterMerchantRouteImport } from './routes/onboarding/register-merchant';
-import { Route as OnboardingPasswordResetRouteImport } from './routes/onboarding/password-reset';
-import { Route as OnboardingLoginRouteImport } from './routes/onboarding/login';
-import { Route as OnboardingGetStartedRouteImport } from './routes/onboarding/get-started';
-import { Route as OnboardingForgotPasswordRouteImport } from './routes/onboarding/forgot-password';
-import { Route as OnboardingCreateAccountRouteImport } from './routes/onboarding/create-account';
-import { Route as MerchantCreatePaymentLinkRouteImport } from './routes/merchant/create-payment-link';
-import { Route as WithdrawalsMoneyIndexRouteImport } from './routes/withdrawals/money/index';
-import { Route as WithdrawalsListIndexRouteImport } from './routes/withdrawals/list/index';
-import { Route as WithdrawalsBeneficiariesIndexRouteImport } from './routes/withdrawals/beneficiaries/index';
-import { Route as SettingsVerificationsIndexRouteImport } from './routes/settings/verifications/index';
-import { Route as SettingsUpgradeAccountIndexRouteImport } from './routes/settings/upgrade-account/index';
-import { Route as SettingsSecurityIndexRouteImport } from './routes/settings/security/index';
-import { Route as SettingsPaymentMethodIndexRouteImport } from './routes/settings/payment-method/index';
-import { Route as SettingsMyProfileIndexRouteImport } from './routes/settings/my-profile/index';
-import { Route as MerchantProductServicesIndexRouteImport } from './routes/merchant/product-services/index';
-import { Route as MerchantPosIndexRouteImport } from './routes/merchant/pos/index';
-import { Route as SettingsVerificationsPoliticalExposureRouteImport } from './routes/settings/verifications/political-exposure';
-import { Route as SettingsVerificationsPersonalInformationRouteImport } from './routes/settings/verifications/personal-information';
-import { Route as SettingsVerificationsIdentityDocumentRouteImport } from './routes/settings/verifications/identity-document';
-import { Route as SettingsVerificationsFinancialInformationRouteImport } from './routes/settings/verifications/financial-information';
-import { Route as SettingsVerificationsDeclarationsRouteImport } from './routes/settings/verifications/declarations';
-import { Route as SettingsVerificationsContactDetailsRouteImport } from './routes/settings/verifications/contact-details';
-import { Route as SettingsVerificationsBankingInformationRouteImport } from './routes/settings/verifications/banking-information';
-import { Route as SettingsSecurityAppRouteImport } from './routes/settings/security/app';
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as WalletIndexRouteImport } from './routes/wallet/index'
+import { Route as TransferIndexRouteImport } from './routes/transfer/index'
+import { Route as TransactionsIndexRouteImport } from './routes/transactions/index'
+import { Route as TicketIndexRouteImport } from './routes/ticket/index'
+import { Route as SettingsIndexRouteImport } from './routes/settings/index'
+import { Route as MerchantIndexRouteImport } from './routes/merchant/index'
+import { Route as ExchangeIndexRouteImport } from './routes/exchange/index'
+import { Route as DepositIndexRouteImport } from './routes/deposit/index'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as CrossPaymentIndexRouteImport } from './routes/cross-payment/index'
+import { Route as CreditCardIndexRouteImport } from './routes/credit-card/index'
+import { Route as BillPaymentIndexRouteImport } from './routes/bill-payment/index'
+import { Route as ticketIndexRouteImport } from './routes/ ticket/index'
+import { Route as TransferSingleRouteImport } from './routes/transfer/single'
+import { Route as TransferMultipleRouteImport } from './routes/transfer/multiple'
+import { Route as TransferBulkRouteImport } from './routes/transfer/bulk'
+import { Route as TicketIdRouteImport } from './routes/ticket/$id'
+import { Route as OnboardingVerifyResetPasswordRouteImport } from './routes/onboarding/verify-reset-password'
+import { Route as OnboardingResetPasswordRouteImport } from './routes/onboarding/reset-password'
+import { Route as OnboardingRegisterMerchantRouteImport } from './routes/onboarding/register-merchant'
+import { Route as OnboardingPasswordResetRouteImport } from './routes/onboarding/password-reset'
+import { Route as OnboardingLoginRouteImport } from './routes/onboarding/login'
+import { Route as OnboardingGetStartedRouteImport } from './routes/onboarding/get-started'
+import { Route as OnboardingForgotPasswordRouteImport } from './routes/onboarding/forgot-password'
+import { Route as OnboardingCreateAccountRouteImport } from './routes/onboarding/create-account'
+import { Route as MerchantCreatePaymentLinkRouteImport } from './routes/merchant/create-payment-link'
+import { Route as WithdrawalsMoneyIndexRouteImport } from './routes/withdrawals/money/index'
+import { Route as WithdrawalsListIndexRouteImport } from './routes/withdrawals/list/index'
+import { Route as WithdrawalsBeneficiariesIndexRouteImport } from './routes/withdrawals/beneficiaries/index'
+import { Route as SettingsVerificationsIndexRouteImport } from './routes/settings/verifications/index'
+import { Route as SettingsUpgradeAccountIndexRouteImport } from './routes/settings/upgrade-account/index'
+import { Route as SettingsSecurityIndexRouteImport } from './routes/settings/security/index'
+import { Route as SettingsPaymentMethodIndexRouteImport } from './routes/settings/payment-method/index'
+import { Route as SettingsMyProfileIndexRouteImport } from './routes/settings/my-profile/index'
+import { Route as MerchantProductServicesIndexRouteImport } from './routes/merchant/product-services/index'
+import { Route as MerchantPosIndexRouteImport } from './routes/merchant/pos/index'
+import { Route as SettingsVerificationsPoliticalExposureRouteImport } from './routes/settings/verifications/political-exposure'
+import { Route as SettingsVerificationsPersonalInformationRouteImport } from './routes/settings/verifications/personal-information'
+import { Route as SettingsVerificationsIdentityDocumentRouteImport } from './routes/settings/verifications/identity-document'
+import { Route as SettingsVerificationsFinancialInformationRouteImport } from './routes/settings/verifications/financial-information'
+import { Route as SettingsVerificationsDeclarationsRouteImport } from './routes/settings/verifications/declarations'
+import { Route as SettingsVerificationsContactDetailsRouteImport } from './routes/settings/verifications/contact-details'
+import { Route as SettingsVerificationsBankingInformationRouteImport } from './routes/settings/verifications/banking-information'
+import { Route as SettingsSecurityAppRouteImport } from './routes/settings/security/app'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WalletIndexRoute = WalletIndexRouteImport.update({
   id: '/wallet/',
   path: '/wallet/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TransferIndexRoute = TransferIndexRouteImport.update({
   id: '/transfer/',
   path: '/transfer/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TransactionsIndexRoute = TransactionsIndexRouteImport.update({
   id: '/transactions/',
   path: '/transactions/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TicketIndexRoute = TicketIndexRouteImport.update({
   id: '/ticket/',
   path: '/ticket/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsIndexRoute = SettingsIndexRouteImport.update({
   id: '/settings/',
   path: '/settings/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MerchantIndexRoute = MerchantIndexRouteImport.update({
   id: '/merchant/',
   path: '/merchant/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExchangeIndexRoute = ExchangeIndexRouteImport.update({
   id: '/exchange/',
   path: '/exchange/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DepositIndexRoute = DepositIndexRouteImport.update({
   id: '/deposit/',
   path: '/deposit/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/dashboard/',
   path: '/dashboard/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CrossPaymentIndexRoute = CrossPaymentIndexRouteImport.update({
   id: '/cross-payment/',
   path: '/cross-payment/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CreditCardIndexRoute = CreditCardIndexRouteImport.update({
   id: '/credit-card/',
   path: '/credit-card/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BillPaymentIndexRoute = BillPaymentIndexRouteImport.update({
   id: '/bill-payment/',
   path: '/bill-payment/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ticketIndexRoute = ticketIndexRouteImport.update({
   id: '/ ticket/',
   path: '/ ticket/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TransferSingleRoute = TransferSingleRouteImport.update({
   id: '/transfer/single',
   path: '/transfer/single',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TransferMultipleRoute = TransferMultipleRouteImport.update({
   id: '/transfer/multiple',
   path: '/transfer/multiple',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TransferBulkRoute = TransferBulkRouteImport.update({
   id: '/transfer/bulk',
   path: '/transfer/bulk',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TicketIdRoute = TicketIdRouteImport.update({
   id: '/ticket/$id',
   path: '/ticket/$id',
-  getParentRoute: () => rootRouteImport
-} as any);
-const OnboardingVerifyResetPasswordRoute = OnboardingVerifyResetPasswordRouteImport.update({
-  id: '/onboarding/verify-reset-password',
-  path: '/onboarding/verify-reset-password',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingVerifyResetPasswordRoute =
+  OnboardingVerifyResetPasswordRouteImport.update({
+    id: '/onboarding/verify-reset-password',
+    path: '/onboarding/verify-reset-password',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const OnboardingResetPasswordRoute = OnboardingResetPasswordRouteImport.update({
   id: '/onboarding/reset-password',
   path: '/onboarding/reset-password',
-  getParentRoute: () => rootRouteImport
-} as any);
-const OnboardingRegisterMerchantRoute = OnboardingRegisterMerchantRouteImport.update({
-  id: '/onboarding/register-merchant',
-  path: '/onboarding/register-merchant',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRegisterMerchantRoute =
+  OnboardingRegisterMerchantRouteImport.update({
+    id: '/onboarding/register-merchant',
+    path: '/onboarding/register-merchant',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const OnboardingPasswordResetRoute = OnboardingPasswordResetRouteImport.update({
   id: '/onboarding/password-reset',
   path: '/onboarding/password-reset',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardingLoginRoute = OnboardingLoginRouteImport.update({
   id: '/onboarding/login',
   path: '/onboarding/login',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardingGetStartedRoute = OnboardingGetStartedRouteImport.update({
   id: '/onboarding/get-started',
   path: '/onboarding/get-started',
-  getParentRoute: () => rootRouteImport
-} as any);
-const OnboardingForgotPasswordRoute = OnboardingForgotPasswordRouteImport.update({
-  id: '/onboarding/forgot-password',
-  path: '/onboarding/forgot-password',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingForgotPasswordRoute =
+  OnboardingForgotPasswordRouteImport.update({
+    id: '/onboarding/forgot-password',
+    path: '/onboarding/forgot-password',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const OnboardingCreateAccountRoute = OnboardingCreateAccountRouteImport.update({
   id: '/onboarding/create-account',
   path: '/onboarding/create-account',
-  getParentRoute: () => rootRouteImport
-} as any);
-const MerchantCreatePaymentLinkRoute = MerchantCreatePaymentLinkRouteImport.update({
-  id: '/merchant/create-payment-link',
-  path: '/merchant/create-payment-link',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MerchantCreatePaymentLinkRoute =
+  MerchantCreatePaymentLinkRouteImport.update({
+    id: '/merchant/create-payment-link',
+    path: '/merchant/create-payment-link',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const WithdrawalsMoneyIndexRoute = WithdrawalsMoneyIndexRouteImport.update({
   id: '/withdrawals/money/',
   path: '/withdrawals/money/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WithdrawalsListIndexRoute = WithdrawalsListIndexRouteImport.update({
   id: '/withdrawals/list/',
   path: '/withdrawals/list/',
-  getParentRoute: () => rootRouteImport
-} as any);
-const WithdrawalsBeneficiariesIndexRoute = WithdrawalsBeneficiariesIndexRouteImport.update({
-  id: '/withdrawals/beneficiaries/',
-  path: '/withdrawals/beneficiaries/',
-  getParentRoute: () => rootRouteImport
-} as any);
-const SettingsVerificationsIndexRoute = SettingsVerificationsIndexRouteImport.update({
-  id: '/settings/verifications/',
-  path: '/settings/verifications/',
-  getParentRoute: () => rootRouteImport
-} as any);
-const SettingsUpgradeAccountIndexRoute = SettingsUpgradeAccountIndexRouteImport.update({
-  id: '/settings/upgrade-account/',
-  path: '/settings/upgrade-account/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WithdrawalsBeneficiariesIndexRoute =
+  WithdrawalsBeneficiariesIndexRouteImport.update({
+    id: '/withdrawals/beneficiaries/',
+    path: '/withdrawals/beneficiaries/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const SettingsVerificationsIndexRoute =
+  SettingsVerificationsIndexRouteImport.update({
+    id: '/settings/verifications/',
+    path: '/settings/verifications/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const SettingsUpgradeAccountIndexRoute =
+  SettingsUpgradeAccountIndexRouteImport.update({
+    id: '/settings/upgrade-account/',
+    path: '/settings/upgrade-account/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const SettingsSecurityIndexRoute = SettingsSecurityIndexRouteImport.update({
   id: '/settings/security/',
   path: '/settings/security/',
-  getParentRoute: () => rootRouteImport
-} as any);
-const SettingsPaymentMethodIndexRoute = SettingsPaymentMethodIndexRouteImport.update({
-  id: '/settings/payment-method/',
-  path: '/settings/payment-method/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsPaymentMethodIndexRoute =
+  SettingsPaymentMethodIndexRouteImport.update({
+    id: '/settings/payment-method/',
+    path: '/settings/payment-method/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const SettingsMyProfileIndexRoute = SettingsMyProfileIndexRouteImport.update({
   id: '/settings/my-profile/',
   path: '/settings/my-profile/',
-  getParentRoute: () => rootRouteImport
-} as any);
-const MerchantProductServicesIndexRoute = MerchantProductServicesIndexRouteImport.update({
-  id: '/merchant/product-services/',
-  path: '/merchant/product-services/',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MerchantProductServicesIndexRoute =
+  MerchantProductServicesIndexRouteImport.update({
+    id: '/merchant/product-services/',
+    path: '/merchant/product-services/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const MerchantPosIndexRoute = MerchantPosIndexRouteImport.update({
   id: '/merchant/pos/',
   path: '/merchant/pos/',
-  getParentRoute: () => rootRouteImport
-} as any);
-const SettingsVerificationsPoliticalExposureRoute = SettingsVerificationsPoliticalExposureRouteImport.update({
-  id: '/settings/verifications/political-exposure',
-  path: '/settings/verifications/political-exposure',
-  getParentRoute: () => rootRouteImport
-} as any);
-const SettingsVerificationsPersonalInformationRoute = SettingsVerificationsPersonalInformationRouteImport.update({
-  id: '/settings/verifications/personal-information',
-  path: '/settings/verifications/personal-information',
-  getParentRoute: () => rootRouteImport
-} as any);
-const SettingsVerificationsIdentityDocumentRoute = SettingsVerificationsIdentityDocumentRouteImport.update({
-  id: '/settings/verifications/identity-document',
-  path: '/settings/verifications/identity-document',
-  getParentRoute: () => rootRouteImport
-} as any);
-const SettingsVerificationsFinancialInformationRoute = SettingsVerificationsFinancialInformationRouteImport.update({
-  id: '/settings/verifications/financial-information',
-  path: '/settings/verifications/financial-information',
-  getParentRoute: () => rootRouteImport
-} as any);
-const SettingsVerificationsDeclarationsRoute = SettingsVerificationsDeclarationsRouteImport.update({
-  id: '/settings/verifications/declarations',
-  path: '/settings/verifications/declarations',
-  getParentRoute: () => rootRouteImport
-} as any);
-const SettingsVerificationsContactDetailsRoute = SettingsVerificationsContactDetailsRouteImport.update({
-  id: '/settings/verifications/contact-details',
-  path: '/settings/verifications/contact-details',
-  getParentRoute: () => rootRouteImport
-} as any);
-const SettingsVerificationsBankingInformationRoute = SettingsVerificationsBankingInformationRouteImport.update({
-  id: '/settings/verifications/banking-information',
-  path: '/settings/verifications/banking-information',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsVerificationsPoliticalExposureRoute =
+  SettingsVerificationsPoliticalExposureRouteImport.update({
+    id: '/settings/verifications/political-exposure',
+    path: '/settings/verifications/political-exposure',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const SettingsVerificationsPersonalInformationRoute =
+  SettingsVerificationsPersonalInformationRouteImport.update({
+    id: '/settings/verifications/personal-information',
+    path: '/settings/verifications/personal-information',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const SettingsVerificationsIdentityDocumentRoute =
+  SettingsVerificationsIdentityDocumentRouteImport.update({
+    id: '/settings/verifications/identity-document',
+    path: '/settings/verifications/identity-document',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const SettingsVerificationsFinancialInformationRoute =
+  SettingsVerificationsFinancialInformationRouteImport.update({
+    id: '/settings/verifications/financial-information',
+    path: '/settings/verifications/financial-information',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const SettingsVerificationsDeclarationsRoute =
+  SettingsVerificationsDeclarationsRouteImport.update({
+    id: '/settings/verifications/declarations',
+    path: '/settings/verifications/declarations',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const SettingsVerificationsContactDetailsRoute =
+  SettingsVerificationsContactDetailsRouteImport.update({
+    id: '/settings/verifications/contact-details',
+    path: '/settings/verifications/contact-details',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const SettingsVerificationsBankingInformationRoute =
+  SettingsVerificationsBankingInformationRouteImport.update({
+    id: '/settings/verifications/banking-information',
+    path: '/settings/verifications/banking-information',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const SettingsSecurityAppRoute = SettingsSecurityAppRouteImport.update({
   id: '/settings/security/app',
   path: '/settings/security/app',
-  getParentRoute: () => rootRouteImport
-} as any);
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute;
-  '/merchant/create-payment-link': typeof MerchantCreatePaymentLinkRoute;
-  '/onboarding/create-account': typeof OnboardingCreateAccountRoute;
-  '/onboarding/forgot-password': typeof OnboardingForgotPasswordRoute;
-  '/onboarding/get-started': typeof OnboardingGetStartedRoute;
-  '/onboarding/login': typeof OnboardingLoginRoute;
-  '/onboarding/password-reset': typeof OnboardingPasswordResetRoute;
-  '/onboarding/register-merchant': typeof OnboardingRegisterMerchantRoute;
-  '/onboarding/reset-password': typeof OnboardingResetPasswordRoute;
-  '/onboarding/verify-reset-password': typeof OnboardingVerifyResetPasswordRoute;
-  '/ticket/$id': typeof TicketIdRoute;
-  '/transfer/bulk': typeof TransferBulkRoute;
-  '/transfer/multiple': typeof TransferMultipleRoute;
-  '/transfer/single': typeof TransferSingleRoute;
-  '/ ticket/': typeof ticketIndexRoute;
-  '/bill-payment/': typeof BillPaymentIndexRoute;
-  '/credit-card/': typeof CreditCardIndexRoute;
-  '/cross-payment/': typeof CrossPaymentIndexRoute;
-  '/dashboard/': typeof DashboardIndexRoute;
-  '/deposit/': typeof DepositIndexRoute;
-  '/exchange/': typeof ExchangeIndexRoute;
-  '/merchant/': typeof MerchantIndexRoute;
-  '/settings/': typeof SettingsIndexRoute;
-  '/ticket/': typeof TicketIndexRoute;
-  '/transactions/': typeof TransactionsIndexRoute;
-  '/transfer/': typeof TransferIndexRoute;
-  '/wallet/': typeof WalletIndexRoute;
-  '/settings/security/app': typeof SettingsSecurityAppRoute;
-  '/settings/verifications/banking-information': typeof SettingsVerificationsBankingInformationRoute;
-  '/settings/verifications/contact-details': typeof SettingsVerificationsContactDetailsRoute;
-  '/settings/verifications/declarations': typeof SettingsVerificationsDeclarationsRoute;
-  '/settings/verifications/financial-information': typeof SettingsVerificationsFinancialInformationRoute;
-  '/settings/verifications/identity-document': typeof SettingsVerificationsIdentityDocumentRoute;
-  '/settings/verifications/personal-information': typeof SettingsVerificationsPersonalInformationRoute;
-  '/settings/verifications/political-exposure': typeof SettingsVerificationsPoliticalExposureRoute;
-  '/merchant/pos/': typeof MerchantPosIndexRoute;
-  '/merchant/product-services/': typeof MerchantProductServicesIndexRoute;
-  '/settings/my-profile/': typeof SettingsMyProfileIndexRoute;
-  '/settings/payment-method/': typeof SettingsPaymentMethodIndexRoute;
-  '/settings/security/': typeof SettingsSecurityIndexRoute;
-  '/settings/upgrade-account/': typeof SettingsUpgradeAccountIndexRoute;
-  '/settings/verifications/': typeof SettingsVerificationsIndexRoute;
-  '/withdrawals/beneficiaries/': typeof WithdrawalsBeneficiariesIndexRoute;
-  '/withdrawals/list/': typeof WithdrawalsListIndexRoute;
-  '/withdrawals/money/': typeof WithdrawalsMoneyIndexRoute;
+  '/': typeof IndexRoute
+  '/merchant/create-payment-link': typeof MerchantCreatePaymentLinkRoute
+  '/onboarding/create-account': typeof OnboardingCreateAccountRoute
+  '/onboarding/forgot-password': typeof OnboardingForgotPasswordRoute
+  '/onboarding/get-started': typeof OnboardingGetStartedRoute
+  '/onboarding/login': typeof OnboardingLoginRoute
+  '/onboarding/password-reset': typeof OnboardingPasswordResetRoute
+  '/onboarding/register-merchant': typeof OnboardingRegisterMerchantRoute
+  '/onboarding/reset-password': typeof OnboardingResetPasswordRoute
+  '/onboarding/verify-reset-password': typeof OnboardingVerifyResetPasswordRoute
+  '/ticket/$id': typeof TicketIdRoute
+  '/transfer/bulk': typeof TransferBulkRoute
+  '/transfer/multiple': typeof TransferMultipleRoute
+  '/transfer/single': typeof TransferSingleRoute
+  '/ ticket/': typeof ticketIndexRoute
+  '/bill-payment/': typeof BillPaymentIndexRoute
+  '/credit-card/': typeof CreditCardIndexRoute
+  '/cross-payment/': typeof CrossPaymentIndexRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/deposit/': typeof DepositIndexRoute
+  '/exchange/': typeof ExchangeIndexRoute
+  '/merchant/': typeof MerchantIndexRoute
+  '/settings/': typeof SettingsIndexRoute
+  '/ticket/': typeof TicketIndexRoute
+  '/transactions/': typeof TransactionsIndexRoute
+  '/transfer/': typeof TransferIndexRoute
+  '/wallet/': typeof WalletIndexRoute
+  '/settings/security/app': typeof SettingsSecurityAppRoute
+  '/settings/verifications/banking-information': typeof SettingsVerificationsBankingInformationRoute
+  '/settings/verifications/contact-details': typeof SettingsVerificationsContactDetailsRoute
+  '/settings/verifications/declarations': typeof SettingsVerificationsDeclarationsRoute
+  '/settings/verifications/financial-information': typeof SettingsVerificationsFinancialInformationRoute
+  '/settings/verifications/identity-document': typeof SettingsVerificationsIdentityDocumentRoute
+  '/settings/verifications/personal-information': typeof SettingsVerificationsPersonalInformationRoute
+  '/settings/verifications/political-exposure': typeof SettingsVerificationsPoliticalExposureRoute
+  '/merchant/pos/': typeof MerchantPosIndexRoute
+  '/merchant/product-services/': typeof MerchantProductServicesIndexRoute
+  '/settings/my-profile/': typeof SettingsMyProfileIndexRoute
+  '/settings/payment-method/': typeof SettingsPaymentMethodIndexRoute
+  '/settings/security/': typeof SettingsSecurityIndexRoute
+  '/settings/upgrade-account/': typeof SettingsUpgradeAccountIndexRoute
+  '/settings/verifications/': typeof SettingsVerificationsIndexRoute
+  '/withdrawals/beneficiaries/': typeof WithdrawalsBeneficiariesIndexRoute
+  '/withdrawals/list/': typeof WithdrawalsListIndexRoute
+  '/withdrawals/money/': typeof WithdrawalsMoneyIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute;
-  '/merchant/create-payment-link': typeof MerchantCreatePaymentLinkRoute;
-  '/onboarding/create-account': typeof OnboardingCreateAccountRoute;
-  '/onboarding/forgot-password': typeof OnboardingForgotPasswordRoute;
-  '/onboarding/get-started': typeof OnboardingGetStartedRoute;
-  '/onboarding/login': typeof OnboardingLoginRoute;
-  '/onboarding/password-reset': typeof OnboardingPasswordResetRoute;
-  '/onboarding/register-merchant': typeof OnboardingRegisterMerchantRoute;
-  '/onboarding/reset-password': typeof OnboardingResetPasswordRoute;
-  '/onboarding/verify-reset-password': typeof OnboardingVerifyResetPasswordRoute;
-  '/ticket/$id': typeof TicketIdRoute;
-  '/transfer/bulk': typeof TransferBulkRoute;
-  '/transfer/multiple': typeof TransferMultipleRoute;
-  '/transfer/single': typeof TransferSingleRoute;
-  '/ ticket': typeof ticketIndexRoute;
-  '/bill-payment': typeof BillPaymentIndexRoute;
-  '/credit-card': typeof CreditCardIndexRoute;
-  '/cross-payment': typeof CrossPaymentIndexRoute;
-  '/dashboard': typeof DashboardIndexRoute;
-  '/deposit': typeof DepositIndexRoute;
-  '/exchange': typeof ExchangeIndexRoute;
-  '/merchant': typeof MerchantIndexRoute;
-  '/settings': typeof SettingsIndexRoute;
-  '/ticket': typeof TicketIndexRoute;
-  '/transactions': typeof TransactionsIndexRoute;
-  '/transfer': typeof TransferIndexRoute;
-  '/wallet': typeof WalletIndexRoute;
-  '/settings/security/app': typeof SettingsSecurityAppRoute;
-  '/settings/verifications/banking-information': typeof SettingsVerificationsBankingInformationRoute;
-  '/settings/verifications/contact-details': typeof SettingsVerificationsContactDetailsRoute;
-  '/settings/verifications/declarations': typeof SettingsVerificationsDeclarationsRoute;
-  '/settings/verifications/financial-information': typeof SettingsVerificationsFinancialInformationRoute;
-  '/settings/verifications/identity-document': typeof SettingsVerificationsIdentityDocumentRoute;
-  '/settings/verifications/personal-information': typeof SettingsVerificationsPersonalInformationRoute;
-  '/settings/verifications/political-exposure': typeof SettingsVerificationsPoliticalExposureRoute;
-  '/merchant/pos': typeof MerchantPosIndexRoute;
-  '/merchant/product-services': typeof MerchantProductServicesIndexRoute;
-  '/settings/my-profile': typeof SettingsMyProfileIndexRoute;
-  '/settings/payment-method': typeof SettingsPaymentMethodIndexRoute;
-  '/settings/security': typeof SettingsSecurityIndexRoute;
-  '/settings/upgrade-account': typeof SettingsUpgradeAccountIndexRoute;
-  '/settings/verifications': typeof SettingsVerificationsIndexRoute;
-  '/withdrawals/beneficiaries': typeof WithdrawalsBeneficiariesIndexRoute;
-  '/withdrawals/list': typeof WithdrawalsListIndexRoute;
-  '/withdrawals/money': typeof WithdrawalsMoneyIndexRoute;
+  '/': typeof IndexRoute
+  '/merchant/create-payment-link': typeof MerchantCreatePaymentLinkRoute
+  '/onboarding/create-account': typeof OnboardingCreateAccountRoute
+  '/onboarding/forgot-password': typeof OnboardingForgotPasswordRoute
+  '/onboarding/get-started': typeof OnboardingGetStartedRoute
+  '/onboarding/login': typeof OnboardingLoginRoute
+  '/onboarding/password-reset': typeof OnboardingPasswordResetRoute
+  '/onboarding/register-merchant': typeof OnboardingRegisterMerchantRoute
+  '/onboarding/reset-password': typeof OnboardingResetPasswordRoute
+  '/onboarding/verify-reset-password': typeof OnboardingVerifyResetPasswordRoute
+  '/ticket/$id': typeof TicketIdRoute
+  '/transfer/bulk': typeof TransferBulkRoute
+  '/transfer/multiple': typeof TransferMultipleRoute
+  '/transfer/single': typeof TransferSingleRoute
+  '/ ticket': typeof ticketIndexRoute
+  '/bill-payment': typeof BillPaymentIndexRoute
+  '/credit-card': typeof CreditCardIndexRoute
+  '/cross-payment': typeof CrossPaymentIndexRoute
+  '/dashboard': typeof DashboardIndexRoute
+  '/deposit': typeof DepositIndexRoute
+  '/exchange': typeof ExchangeIndexRoute
+  '/merchant': typeof MerchantIndexRoute
+  '/settings': typeof SettingsIndexRoute
+  '/ticket': typeof TicketIndexRoute
+  '/transactions': typeof TransactionsIndexRoute
+  '/transfer': typeof TransferIndexRoute
+  '/wallet': typeof WalletIndexRoute
+  '/settings/security/app': typeof SettingsSecurityAppRoute
+  '/settings/verifications/banking-information': typeof SettingsVerificationsBankingInformationRoute
+  '/settings/verifications/contact-details': typeof SettingsVerificationsContactDetailsRoute
+  '/settings/verifications/declarations': typeof SettingsVerificationsDeclarationsRoute
+  '/settings/verifications/financial-information': typeof SettingsVerificationsFinancialInformationRoute
+  '/settings/verifications/identity-document': typeof SettingsVerificationsIdentityDocumentRoute
+  '/settings/verifications/personal-information': typeof SettingsVerificationsPersonalInformationRoute
+  '/settings/verifications/political-exposure': typeof SettingsVerificationsPoliticalExposureRoute
+  '/merchant/pos': typeof MerchantPosIndexRoute
+  '/merchant/product-services': typeof MerchantProductServicesIndexRoute
+  '/settings/my-profile': typeof SettingsMyProfileIndexRoute
+  '/settings/payment-method': typeof SettingsPaymentMethodIndexRoute
+  '/settings/security': typeof SettingsSecurityIndexRoute
+  '/settings/upgrade-account': typeof SettingsUpgradeAccountIndexRoute
+  '/settings/verifications': typeof SettingsVerificationsIndexRoute
+  '/withdrawals/beneficiaries': typeof WithdrawalsBeneficiariesIndexRoute
+  '/withdrawals/list': typeof WithdrawalsListIndexRoute
+  '/withdrawals/money': typeof WithdrawalsMoneyIndexRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  '/': typeof IndexRoute;
-  '/merchant/create-payment-link': typeof MerchantCreatePaymentLinkRoute;
-  '/onboarding/create-account': typeof OnboardingCreateAccountRoute;
-  '/onboarding/forgot-password': typeof OnboardingForgotPasswordRoute;
-  '/onboarding/get-started': typeof OnboardingGetStartedRoute;
-  '/onboarding/login': typeof OnboardingLoginRoute;
-  '/onboarding/password-reset': typeof OnboardingPasswordResetRoute;
-  '/onboarding/register-merchant': typeof OnboardingRegisterMerchantRoute;
-  '/onboarding/reset-password': typeof OnboardingResetPasswordRoute;
-  '/onboarding/verify-reset-password': typeof OnboardingVerifyResetPasswordRoute;
-  '/ticket/$id': typeof TicketIdRoute;
-  '/transfer/bulk': typeof TransferBulkRoute;
-  '/transfer/multiple': typeof TransferMultipleRoute;
-  '/transfer/single': typeof TransferSingleRoute;
-  '/ ticket/': typeof ticketIndexRoute;
-  '/bill-payment/': typeof BillPaymentIndexRoute;
-  '/credit-card/': typeof CreditCardIndexRoute;
-  '/cross-payment/': typeof CrossPaymentIndexRoute;
-  '/dashboard/': typeof DashboardIndexRoute;
-  '/deposit/': typeof DepositIndexRoute;
-  '/exchange/': typeof ExchangeIndexRoute;
-  '/merchant/': typeof MerchantIndexRoute;
-  '/settings/': typeof SettingsIndexRoute;
-  '/ticket/': typeof TicketIndexRoute;
-  '/transactions/': typeof TransactionsIndexRoute;
-  '/transfer/': typeof TransferIndexRoute;
-  '/wallet/': typeof WalletIndexRoute;
-  '/settings/security/app': typeof SettingsSecurityAppRoute;
-  '/settings/verifications/banking-information': typeof SettingsVerificationsBankingInformationRoute;
-  '/settings/verifications/contact-details': typeof SettingsVerificationsContactDetailsRoute;
-  '/settings/verifications/declarations': typeof SettingsVerificationsDeclarationsRoute;
-  '/settings/verifications/financial-information': typeof SettingsVerificationsFinancialInformationRoute;
-  '/settings/verifications/identity-document': typeof SettingsVerificationsIdentityDocumentRoute;
-  '/settings/verifications/personal-information': typeof SettingsVerificationsPersonalInformationRoute;
-  '/settings/verifications/political-exposure': typeof SettingsVerificationsPoliticalExposureRoute;
-  '/merchant/pos/': typeof MerchantPosIndexRoute;
-  '/merchant/product-services/': typeof MerchantProductServicesIndexRoute;
-  '/settings/my-profile/': typeof SettingsMyProfileIndexRoute;
-  '/settings/payment-method/': typeof SettingsPaymentMethodIndexRoute;
-  '/settings/security/': typeof SettingsSecurityIndexRoute;
-  '/settings/upgrade-account/': typeof SettingsUpgradeAccountIndexRoute;
-  '/settings/verifications/': typeof SettingsVerificationsIndexRoute;
-  '/withdrawals/beneficiaries/': typeof WithdrawalsBeneficiariesIndexRoute;
-  '/withdrawals/list/': typeof WithdrawalsListIndexRoute;
-  '/withdrawals/money/': typeof WithdrawalsMoneyIndexRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/merchant/create-payment-link': typeof MerchantCreatePaymentLinkRoute
+  '/onboarding/create-account': typeof OnboardingCreateAccountRoute
+  '/onboarding/forgot-password': typeof OnboardingForgotPasswordRoute
+  '/onboarding/get-started': typeof OnboardingGetStartedRoute
+  '/onboarding/login': typeof OnboardingLoginRoute
+  '/onboarding/password-reset': typeof OnboardingPasswordResetRoute
+  '/onboarding/register-merchant': typeof OnboardingRegisterMerchantRoute
+  '/onboarding/reset-password': typeof OnboardingResetPasswordRoute
+  '/onboarding/verify-reset-password': typeof OnboardingVerifyResetPasswordRoute
+  '/ticket/$id': typeof TicketIdRoute
+  '/transfer/bulk': typeof TransferBulkRoute
+  '/transfer/multiple': typeof TransferMultipleRoute
+  '/transfer/single': typeof TransferSingleRoute
+  '/ ticket/': typeof ticketIndexRoute
+  '/bill-payment/': typeof BillPaymentIndexRoute
+  '/credit-card/': typeof CreditCardIndexRoute
+  '/cross-payment/': typeof CrossPaymentIndexRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/deposit/': typeof DepositIndexRoute
+  '/exchange/': typeof ExchangeIndexRoute
+  '/merchant/': typeof MerchantIndexRoute
+  '/settings/': typeof SettingsIndexRoute
+  '/ticket/': typeof TicketIndexRoute
+  '/transactions/': typeof TransactionsIndexRoute
+  '/transfer/': typeof TransferIndexRoute
+  '/wallet/': typeof WalletIndexRoute
+  '/settings/security/app': typeof SettingsSecurityAppRoute
+  '/settings/verifications/banking-information': typeof SettingsVerificationsBankingInformationRoute
+  '/settings/verifications/contact-details': typeof SettingsVerificationsContactDetailsRoute
+  '/settings/verifications/declarations': typeof SettingsVerificationsDeclarationsRoute
+  '/settings/verifications/financial-information': typeof SettingsVerificationsFinancialInformationRoute
+  '/settings/verifications/identity-document': typeof SettingsVerificationsIdentityDocumentRoute
+  '/settings/verifications/personal-information': typeof SettingsVerificationsPersonalInformationRoute
+  '/settings/verifications/political-exposure': typeof SettingsVerificationsPoliticalExposureRoute
+  '/merchant/pos/': typeof MerchantPosIndexRoute
+  '/merchant/product-services/': typeof MerchantProductServicesIndexRoute
+  '/settings/my-profile/': typeof SettingsMyProfileIndexRoute
+  '/settings/payment-method/': typeof SettingsPaymentMethodIndexRoute
+  '/settings/security/': typeof SettingsSecurityIndexRoute
+  '/settings/upgrade-account/': typeof SettingsUpgradeAccountIndexRoute
+  '/settings/verifications/': typeof SettingsVerificationsIndexRoute
+  '/withdrawals/beneficiaries/': typeof WithdrawalsBeneficiariesIndexRoute
+  '/withdrawals/list/': typeof WithdrawalsListIndexRoute
+  '/withdrawals/money/': typeof WithdrawalsMoneyIndexRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
+  fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/merchant/create-payment-link'
@@ -470,8 +486,8 @@ export interface FileRouteTypes {
     | '/settings/verifications/'
     | '/withdrawals/beneficiaries/'
     | '/withdrawals/list/'
-    | '/withdrawals/money/';
-  fileRoutesByTo: FileRoutesByTo;
+    | '/withdrawals/money/'
+  fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/merchant/create-payment-link'
@@ -517,7 +533,7 @@ export interface FileRouteTypes {
     | '/settings/verifications'
     | '/withdrawals/beneficiaries'
     | '/withdrawals/list'
-    | '/withdrawals/money';
+    | '/withdrawals/money'
   id:
     | '__root__'
     | '/'
@@ -564,374 +580,374 @@ export interface FileRouteTypes {
     | '/settings/verifications/'
     | '/withdrawals/beneficiaries/'
     | '/withdrawals/list/'
-    | '/withdrawals/money/';
-  fileRoutesById: FileRoutesById;
+    | '/withdrawals/money/'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  MerchantCreatePaymentLinkRoute: typeof MerchantCreatePaymentLinkRoute;
-  OnboardingCreateAccountRoute: typeof OnboardingCreateAccountRoute;
-  OnboardingForgotPasswordRoute: typeof OnboardingForgotPasswordRoute;
-  OnboardingGetStartedRoute: typeof OnboardingGetStartedRoute;
-  OnboardingLoginRoute: typeof OnboardingLoginRoute;
-  OnboardingPasswordResetRoute: typeof OnboardingPasswordResetRoute;
-  OnboardingRegisterMerchantRoute: typeof OnboardingRegisterMerchantRoute;
-  OnboardingResetPasswordRoute: typeof OnboardingResetPasswordRoute;
-  OnboardingVerifyResetPasswordRoute: typeof OnboardingVerifyResetPasswordRoute;
-  TicketIdRoute: typeof TicketIdRoute;
-  TransferBulkRoute: typeof TransferBulkRoute;
-  TransferMultipleRoute: typeof TransferMultipleRoute;
-  TransferSingleRoute: typeof TransferSingleRoute;
-  ticketIndexRoute: typeof ticketIndexRoute;
-  BillPaymentIndexRoute: typeof BillPaymentIndexRoute;
-  CreditCardIndexRoute: typeof CreditCardIndexRoute;
-  CrossPaymentIndexRoute: typeof CrossPaymentIndexRoute;
-  DashboardIndexRoute: typeof DashboardIndexRoute;
-  DepositIndexRoute: typeof DepositIndexRoute;
-  ExchangeIndexRoute: typeof ExchangeIndexRoute;
-  MerchantIndexRoute: typeof MerchantIndexRoute;
-  SettingsIndexRoute: typeof SettingsIndexRoute;
-  TicketIndexRoute: typeof TicketIndexRoute;
-  TransactionsIndexRoute: typeof TransactionsIndexRoute;
-  TransferIndexRoute: typeof TransferIndexRoute;
-  WalletIndexRoute: typeof WalletIndexRoute;
-  SettingsSecurityAppRoute: typeof SettingsSecurityAppRoute;
-  SettingsVerificationsBankingInformationRoute: typeof SettingsVerificationsBankingInformationRoute;
-  SettingsVerificationsContactDetailsRoute: typeof SettingsVerificationsContactDetailsRoute;
-  SettingsVerificationsDeclarationsRoute: typeof SettingsVerificationsDeclarationsRoute;
-  SettingsVerificationsFinancialInformationRoute: typeof SettingsVerificationsFinancialInformationRoute;
-  SettingsVerificationsIdentityDocumentRoute: typeof SettingsVerificationsIdentityDocumentRoute;
-  SettingsVerificationsPersonalInformationRoute: typeof SettingsVerificationsPersonalInformationRoute;
-  SettingsVerificationsPoliticalExposureRoute: typeof SettingsVerificationsPoliticalExposureRoute;
-  MerchantPosIndexRoute: typeof MerchantPosIndexRoute;
-  MerchantProductServicesIndexRoute: typeof MerchantProductServicesIndexRoute;
-  SettingsMyProfileIndexRoute: typeof SettingsMyProfileIndexRoute;
-  SettingsPaymentMethodIndexRoute: typeof SettingsPaymentMethodIndexRoute;
-  SettingsSecurityIndexRoute: typeof SettingsSecurityIndexRoute;
-  SettingsUpgradeAccountIndexRoute: typeof SettingsUpgradeAccountIndexRoute;
-  SettingsVerificationsIndexRoute: typeof SettingsVerificationsIndexRoute;
-  WithdrawalsBeneficiariesIndexRoute: typeof WithdrawalsBeneficiariesIndexRoute;
-  WithdrawalsListIndexRoute: typeof WithdrawalsListIndexRoute;
-  WithdrawalsMoneyIndexRoute: typeof WithdrawalsMoneyIndexRoute;
+  IndexRoute: typeof IndexRoute
+  MerchantCreatePaymentLinkRoute: typeof MerchantCreatePaymentLinkRoute
+  OnboardingCreateAccountRoute: typeof OnboardingCreateAccountRoute
+  OnboardingForgotPasswordRoute: typeof OnboardingForgotPasswordRoute
+  OnboardingGetStartedRoute: typeof OnboardingGetStartedRoute
+  OnboardingLoginRoute: typeof OnboardingLoginRoute
+  OnboardingPasswordResetRoute: typeof OnboardingPasswordResetRoute
+  OnboardingRegisterMerchantRoute: typeof OnboardingRegisterMerchantRoute
+  OnboardingResetPasswordRoute: typeof OnboardingResetPasswordRoute
+  OnboardingVerifyResetPasswordRoute: typeof OnboardingVerifyResetPasswordRoute
+  TicketIdRoute: typeof TicketIdRoute
+  TransferBulkRoute: typeof TransferBulkRoute
+  TransferMultipleRoute: typeof TransferMultipleRoute
+  TransferSingleRoute: typeof TransferSingleRoute
+  ticketIndexRoute: typeof ticketIndexRoute
+  BillPaymentIndexRoute: typeof BillPaymentIndexRoute
+  CreditCardIndexRoute: typeof CreditCardIndexRoute
+  CrossPaymentIndexRoute: typeof CrossPaymentIndexRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+  DepositIndexRoute: typeof DepositIndexRoute
+  ExchangeIndexRoute: typeof ExchangeIndexRoute
+  MerchantIndexRoute: typeof MerchantIndexRoute
+  SettingsIndexRoute: typeof SettingsIndexRoute
+  TicketIndexRoute: typeof TicketIndexRoute
+  TransactionsIndexRoute: typeof TransactionsIndexRoute
+  TransferIndexRoute: typeof TransferIndexRoute
+  WalletIndexRoute: typeof WalletIndexRoute
+  SettingsSecurityAppRoute: typeof SettingsSecurityAppRoute
+  SettingsVerificationsBankingInformationRoute: typeof SettingsVerificationsBankingInformationRoute
+  SettingsVerificationsContactDetailsRoute: typeof SettingsVerificationsContactDetailsRoute
+  SettingsVerificationsDeclarationsRoute: typeof SettingsVerificationsDeclarationsRoute
+  SettingsVerificationsFinancialInformationRoute: typeof SettingsVerificationsFinancialInformationRoute
+  SettingsVerificationsIdentityDocumentRoute: typeof SettingsVerificationsIdentityDocumentRoute
+  SettingsVerificationsPersonalInformationRoute: typeof SettingsVerificationsPersonalInformationRoute
+  SettingsVerificationsPoliticalExposureRoute: typeof SettingsVerificationsPoliticalExposureRoute
+  MerchantPosIndexRoute: typeof MerchantPosIndexRoute
+  MerchantProductServicesIndexRoute: typeof MerchantProductServicesIndexRoute
+  SettingsMyProfileIndexRoute: typeof SettingsMyProfileIndexRoute
+  SettingsPaymentMethodIndexRoute: typeof SettingsPaymentMethodIndexRoute
+  SettingsSecurityIndexRoute: typeof SettingsSecurityIndexRoute
+  SettingsUpgradeAccountIndexRoute: typeof SettingsUpgradeAccountIndexRoute
+  SettingsVerificationsIndexRoute: typeof SettingsVerificationsIndexRoute
+  WithdrawalsBeneficiariesIndexRoute: typeof WithdrawalsBeneficiariesIndexRoute
+  WithdrawalsListIndexRoute: typeof WithdrawalsListIndexRoute
+  WithdrawalsMoneyIndexRoute: typeof WithdrawalsMoneyIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
-      id: '/';
-      path: '/';
-      fullPath: '/';
-      preLoaderRoute: typeof IndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/wallet/': {
-      id: '/wallet/';
-      path: '/wallet';
-      fullPath: '/wallet/';
-      preLoaderRoute: typeof WalletIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/wallet/'
+      path: '/wallet'
+      fullPath: '/wallet/'
+      preLoaderRoute: typeof WalletIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/transfer/': {
-      id: '/transfer/';
-      path: '/transfer';
-      fullPath: '/transfer/';
-      preLoaderRoute: typeof TransferIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/transfer/'
+      path: '/transfer'
+      fullPath: '/transfer/'
+      preLoaderRoute: typeof TransferIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/transactions/': {
-      id: '/transactions/';
-      path: '/transactions';
-      fullPath: '/transactions/';
-      preLoaderRoute: typeof TransactionsIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/transactions/'
+      path: '/transactions'
+      fullPath: '/transactions/'
+      preLoaderRoute: typeof TransactionsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ticket/': {
-      id: '/ticket/';
-      path: '/ticket';
-      fullPath: '/ticket/';
-      preLoaderRoute: typeof TicketIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/ticket/'
+      path: '/ticket'
+      fullPath: '/ticket/'
+      preLoaderRoute: typeof TicketIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings/': {
-      id: '/settings/';
-      path: '/settings';
-      fullPath: '/settings/';
-      preLoaderRoute: typeof SettingsIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/settings/'
+      path: '/settings'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof SettingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/merchant/': {
-      id: '/merchant/';
-      path: '/merchant';
-      fullPath: '/merchant/';
-      preLoaderRoute: typeof MerchantIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/merchant/'
+      path: '/merchant'
+      fullPath: '/merchant/'
+      preLoaderRoute: typeof MerchantIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/exchange/': {
-      id: '/exchange/';
-      path: '/exchange';
-      fullPath: '/exchange/';
-      preLoaderRoute: typeof ExchangeIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/exchange/'
+      path: '/exchange'
+      fullPath: '/exchange/'
+      preLoaderRoute: typeof ExchangeIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/deposit/': {
-      id: '/deposit/';
-      path: '/deposit';
-      fullPath: '/deposit/';
-      preLoaderRoute: typeof DepositIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/deposit/'
+      path: '/deposit'
+      fullPath: '/deposit/'
+      preLoaderRoute: typeof DepositIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/': {
-      id: '/dashboard/';
-      path: '/dashboard';
-      fullPath: '/dashboard/';
-      preLoaderRoute: typeof DashboardIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cross-payment/': {
-      id: '/cross-payment/';
-      path: '/cross-payment';
-      fullPath: '/cross-payment/';
-      preLoaderRoute: typeof CrossPaymentIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/cross-payment/'
+      path: '/cross-payment'
+      fullPath: '/cross-payment/'
+      preLoaderRoute: typeof CrossPaymentIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/credit-card/': {
-      id: '/credit-card/';
-      path: '/credit-card';
-      fullPath: '/credit-card/';
-      preLoaderRoute: typeof CreditCardIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/credit-card/'
+      path: '/credit-card'
+      fullPath: '/credit-card/'
+      preLoaderRoute: typeof CreditCardIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/bill-payment/': {
-      id: '/bill-payment/';
-      path: '/bill-payment';
-      fullPath: '/bill-payment/';
-      preLoaderRoute: typeof BillPaymentIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/bill-payment/'
+      path: '/bill-payment'
+      fullPath: '/bill-payment/'
+      preLoaderRoute: typeof BillPaymentIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ ticket/': {
-      id: '/ ticket/';
-      path: '/ ticket';
-      fullPath: '/ ticket/';
-      preLoaderRoute: typeof ticketIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/ ticket/'
+      path: '/ ticket'
+      fullPath: '/ ticket/'
+      preLoaderRoute: typeof ticketIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/transfer/single': {
-      id: '/transfer/single';
-      path: '/transfer/single';
-      fullPath: '/transfer/single';
-      preLoaderRoute: typeof TransferSingleRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/transfer/single'
+      path: '/transfer/single'
+      fullPath: '/transfer/single'
+      preLoaderRoute: typeof TransferSingleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/transfer/multiple': {
-      id: '/transfer/multiple';
-      path: '/transfer/multiple';
-      fullPath: '/transfer/multiple';
-      preLoaderRoute: typeof TransferMultipleRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/transfer/multiple'
+      path: '/transfer/multiple'
+      fullPath: '/transfer/multiple'
+      preLoaderRoute: typeof TransferMultipleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/transfer/bulk': {
-      id: '/transfer/bulk';
-      path: '/transfer/bulk';
-      fullPath: '/transfer/bulk';
-      preLoaderRoute: typeof TransferBulkRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/transfer/bulk'
+      path: '/transfer/bulk'
+      fullPath: '/transfer/bulk'
+      preLoaderRoute: typeof TransferBulkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ticket/$id': {
-      id: '/ticket/$id';
-      path: '/ticket/$id';
-      fullPath: '/ticket/$id';
-      preLoaderRoute: typeof TicketIdRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/ticket/$id'
+      path: '/ticket/$id'
+      fullPath: '/ticket/$id'
+      preLoaderRoute: typeof TicketIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding/verify-reset-password': {
-      id: '/onboarding/verify-reset-password';
-      path: '/onboarding/verify-reset-password';
-      fullPath: '/onboarding/verify-reset-password';
-      preLoaderRoute: typeof OnboardingVerifyResetPasswordRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/onboarding/verify-reset-password'
+      path: '/onboarding/verify-reset-password'
+      fullPath: '/onboarding/verify-reset-password'
+      preLoaderRoute: typeof OnboardingVerifyResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding/reset-password': {
-      id: '/onboarding/reset-password';
-      path: '/onboarding/reset-password';
-      fullPath: '/onboarding/reset-password';
-      preLoaderRoute: typeof OnboardingResetPasswordRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/onboarding/reset-password'
+      path: '/onboarding/reset-password'
+      fullPath: '/onboarding/reset-password'
+      preLoaderRoute: typeof OnboardingResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding/register-merchant': {
-      id: '/onboarding/register-merchant';
-      path: '/onboarding/register-merchant';
-      fullPath: '/onboarding/register-merchant';
-      preLoaderRoute: typeof OnboardingRegisterMerchantRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/onboarding/register-merchant'
+      path: '/onboarding/register-merchant'
+      fullPath: '/onboarding/register-merchant'
+      preLoaderRoute: typeof OnboardingRegisterMerchantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding/password-reset': {
-      id: '/onboarding/password-reset';
-      path: '/onboarding/password-reset';
-      fullPath: '/onboarding/password-reset';
-      preLoaderRoute: typeof OnboardingPasswordResetRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/onboarding/password-reset'
+      path: '/onboarding/password-reset'
+      fullPath: '/onboarding/password-reset'
+      preLoaderRoute: typeof OnboardingPasswordResetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding/login': {
-      id: '/onboarding/login';
-      path: '/onboarding/login';
-      fullPath: '/onboarding/login';
-      preLoaderRoute: typeof OnboardingLoginRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/onboarding/login'
+      path: '/onboarding/login'
+      fullPath: '/onboarding/login'
+      preLoaderRoute: typeof OnboardingLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding/get-started': {
-      id: '/onboarding/get-started';
-      path: '/onboarding/get-started';
-      fullPath: '/onboarding/get-started';
-      preLoaderRoute: typeof OnboardingGetStartedRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/onboarding/get-started'
+      path: '/onboarding/get-started'
+      fullPath: '/onboarding/get-started'
+      preLoaderRoute: typeof OnboardingGetStartedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding/forgot-password': {
-      id: '/onboarding/forgot-password';
-      path: '/onboarding/forgot-password';
-      fullPath: '/onboarding/forgot-password';
-      preLoaderRoute: typeof OnboardingForgotPasswordRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/onboarding/forgot-password'
+      path: '/onboarding/forgot-password'
+      fullPath: '/onboarding/forgot-password'
+      preLoaderRoute: typeof OnboardingForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding/create-account': {
-      id: '/onboarding/create-account';
-      path: '/onboarding/create-account';
-      fullPath: '/onboarding/create-account';
-      preLoaderRoute: typeof OnboardingCreateAccountRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/onboarding/create-account'
+      path: '/onboarding/create-account'
+      fullPath: '/onboarding/create-account'
+      preLoaderRoute: typeof OnboardingCreateAccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/merchant/create-payment-link': {
-      id: '/merchant/create-payment-link';
-      path: '/merchant/create-payment-link';
-      fullPath: '/merchant/create-payment-link';
-      preLoaderRoute: typeof MerchantCreatePaymentLinkRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/merchant/create-payment-link'
+      path: '/merchant/create-payment-link'
+      fullPath: '/merchant/create-payment-link'
+      preLoaderRoute: typeof MerchantCreatePaymentLinkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/withdrawals/money/': {
-      id: '/withdrawals/money/';
-      path: '/withdrawals/money';
-      fullPath: '/withdrawals/money/';
-      preLoaderRoute: typeof WithdrawalsMoneyIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/withdrawals/money/'
+      path: '/withdrawals/money'
+      fullPath: '/withdrawals/money/'
+      preLoaderRoute: typeof WithdrawalsMoneyIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/withdrawals/list/': {
-      id: '/withdrawals/list/';
-      path: '/withdrawals/list';
-      fullPath: '/withdrawals/list/';
-      preLoaderRoute: typeof WithdrawalsListIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/withdrawals/list/'
+      path: '/withdrawals/list'
+      fullPath: '/withdrawals/list/'
+      preLoaderRoute: typeof WithdrawalsListIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/withdrawals/beneficiaries/': {
-      id: '/withdrawals/beneficiaries/';
-      path: '/withdrawals/beneficiaries';
-      fullPath: '/withdrawals/beneficiaries/';
-      preLoaderRoute: typeof WithdrawalsBeneficiariesIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/withdrawals/beneficiaries/'
+      path: '/withdrawals/beneficiaries'
+      fullPath: '/withdrawals/beneficiaries/'
+      preLoaderRoute: typeof WithdrawalsBeneficiariesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings/verifications/': {
-      id: '/settings/verifications/';
-      path: '/settings/verifications';
-      fullPath: '/settings/verifications/';
-      preLoaderRoute: typeof SettingsVerificationsIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/settings/verifications/'
+      path: '/settings/verifications'
+      fullPath: '/settings/verifications/'
+      preLoaderRoute: typeof SettingsVerificationsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings/upgrade-account/': {
-      id: '/settings/upgrade-account/';
-      path: '/settings/upgrade-account';
-      fullPath: '/settings/upgrade-account/';
-      preLoaderRoute: typeof SettingsUpgradeAccountIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/settings/upgrade-account/'
+      path: '/settings/upgrade-account'
+      fullPath: '/settings/upgrade-account/'
+      preLoaderRoute: typeof SettingsUpgradeAccountIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings/security/': {
-      id: '/settings/security/';
-      path: '/settings/security';
-      fullPath: '/settings/security/';
-      preLoaderRoute: typeof SettingsSecurityIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/settings/security/'
+      path: '/settings/security'
+      fullPath: '/settings/security/'
+      preLoaderRoute: typeof SettingsSecurityIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings/payment-method/': {
-      id: '/settings/payment-method/';
-      path: '/settings/payment-method';
-      fullPath: '/settings/payment-method/';
-      preLoaderRoute: typeof SettingsPaymentMethodIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/settings/payment-method/'
+      path: '/settings/payment-method'
+      fullPath: '/settings/payment-method/'
+      preLoaderRoute: typeof SettingsPaymentMethodIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings/my-profile/': {
-      id: '/settings/my-profile/';
-      path: '/settings/my-profile';
-      fullPath: '/settings/my-profile/';
-      preLoaderRoute: typeof SettingsMyProfileIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/settings/my-profile/'
+      path: '/settings/my-profile'
+      fullPath: '/settings/my-profile/'
+      preLoaderRoute: typeof SettingsMyProfileIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/merchant/product-services/': {
-      id: '/merchant/product-services/';
-      path: '/merchant/product-services';
-      fullPath: '/merchant/product-services/';
-      preLoaderRoute: typeof MerchantProductServicesIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/merchant/product-services/'
+      path: '/merchant/product-services'
+      fullPath: '/merchant/product-services/'
+      preLoaderRoute: typeof MerchantProductServicesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/merchant/pos/': {
-      id: '/merchant/pos/';
-      path: '/merchant/pos';
-      fullPath: '/merchant/pos/';
-      preLoaderRoute: typeof MerchantPosIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/merchant/pos/'
+      path: '/merchant/pos'
+      fullPath: '/merchant/pos/'
+      preLoaderRoute: typeof MerchantPosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings/verifications/political-exposure': {
-      id: '/settings/verifications/political-exposure';
-      path: '/settings/verifications/political-exposure';
-      fullPath: '/settings/verifications/political-exposure';
-      preLoaderRoute: typeof SettingsVerificationsPoliticalExposureRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/settings/verifications/political-exposure'
+      path: '/settings/verifications/political-exposure'
+      fullPath: '/settings/verifications/political-exposure'
+      preLoaderRoute: typeof SettingsVerificationsPoliticalExposureRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings/verifications/personal-information': {
-      id: '/settings/verifications/personal-information';
-      path: '/settings/verifications/personal-information';
-      fullPath: '/settings/verifications/personal-information';
-      preLoaderRoute: typeof SettingsVerificationsPersonalInformationRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/settings/verifications/personal-information'
+      path: '/settings/verifications/personal-information'
+      fullPath: '/settings/verifications/personal-information'
+      preLoaderRoute: typeof SettingsVerificationsPersonalInformationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings/verifications/identity-document': {
-      id: '/settings/verifications/identity-document';
-      path: '/settings/verifications/identity-document';
-      fullPath: '/settings/verifications/identity-document';
-      preLoaderRoute: typeof SettingsVerificationsIdentityDocumentRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/settings/verifications/identity-document'
+      path: '/settings/verifications/identity-document'
+      fullPath: '/settings/verifications/identity-document'
+      preLoaderRoute: typeof SettingsVerificationsIdentityDocumentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings/verifications/financial-information': {
-      id: '/settings/verifications/financial-information';
-      path: '/settings/verifications/financial-information';
-      fullPath: '/settings/verifications/financial-information';
-      preLoaderRoute: typeof SettingsVerificationsFinancialInformationRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/settings/verifications/financial-information'
+      path: '/settings/verifications/financial-information'
+      fullPath: '/settings/verifications/financial-information'
+      preLoaderRoute: typeof SettingsVerificationsFinancialInformationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings/verifications/declarations': {
-      id: '/settings/verifications/declarations';
-      path: '/settings/verifications/declarations';
-      fullPath: '/settings/verifications/declarations';
-      preLoaderRoute: typeof SettingsVerificationsDeclarationsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/settings/verifications/declarations'
+      path: '/settings/verifications/declarations'
+      fullPath: '/settings/verifications/declarations'
+      preLoaderRoute: typeof SettingsVerificationsDeclarationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings/verifications/contact-details': {
-      id: '/settings/verifications/contact-details';
-      path: '/settings/verifications/contact-details';
-      fullPath: '/settings/verifications/contact-details';
-      preLoaderRoute: typeof SettingsVerificationsContactDetailsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/settings/verifications/contact-details'
+      path: '/settings/verifications/contact-details'
+      fullPath: '/settings/verifications/contact-details'
+      preLoaderRoute: typeof SettingsVerificationsContactDetailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings/verifications/banking-information': {
-      id: '/settings/verifications/banking-information';
-      path: '/settings/verifications/banking-information';
-      fullPath: '/settings/verifications/banking-information';
-      preLoaderRoute: typeof SettingsVerificationsBankingInformationRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/settings/verifications/banking-information'
+      path: '/settings/verifications/banking-information'
+      fullPath: '/settings/verifications/banking-information'
+      preLoaderRoute: typeof SettingsVerificationsBankingInformationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings/security/app': {
-      id: '/settings/security/app';
-      path: '/settings/security/app';
-      fullPath: '/settings/security/app';
-      preLoaderRoute: typeof SettingsSecurityAppRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/settings/security/app'
+      path: '/settings/security/app'
+      fullPath: '/settings/security/app'
+      preLoaderRoute: typeof SettingsSecurityAppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -964,13 +980,20 @@ const rootRouteChildren: RootRouteChildren = {
   TransferIndexRoute: TransferIndexRoute,
   WalletIndexRoute: WalletIndexRoute,
   SettingsSecurityAppRoute: SettingsSecurityAppRoute,
-  SettingsVerificationsBankingInformationRoute: SettingsVerificationsBankingInformationRoute,
-  SettingsVerificationsContactDetailsRoute: SettingsVerificationsContactDetailsRoute,
-  SettingsVerificationsDeclarationsRoute: SettingsVerificationsDeclarationsRoute,
-  SettingsVerificationsFinancialInformationRoute: SettingsVerificationsFinancialInformationRoute,
-  SettingsVerificationsIdentityDocumentRoute: SettingsVerificationsIdentityDocumentRoute,
-  SettingsVerificationsPersonalInformationRoute: SettingsVerificationsPersonalInformationRoute,
-  SettingsVerificationsPoliticalExposureRoute: SettingsVerificationsPoliticalExposureRoute,
+  SettingsVerificationsBankingInformationRoute:
+    SettingsVerificationsBankingInformationRoute,
+  SettingsVerificationsContactDetailsRoute:
+    SettingsVerificationsContactDetailsRoute,
+  SettingsVerificationsDeclarationsRoute:
+    SettingsVerificationsDeclarationsRoute,
+  SettingsVerificationsFinancialInformationRoute:
+    SettingsVerificationsFinancialInformationRoute,
+  SettingsVerificationsIdentityDocumentRoute:
+    SettingsVerificationsIdentityDocumentRoute,
+  SettingsVerificationsPersonalInformationRoute:
+    SettingsVerificationsPersonalInformationRoute,
+  SettingsVerificationsPoliticalExposureRoute:
+    SettingsVerificationsPoliticalExposureRoute,
   MerchantPosIndexRoute: MerchantPosIndexRoute,
   MerchantProductServicesIndexRoute: MerchantProductServicesIndexRoute,
   SettingsMyProfileIndexRoute: SettingsMyProfileIndexRoute,
@@ -980,6 +1003,8 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsVerificationsIndexRoute: SettingsVerificationsIndexRoute,
   WithdrawalsBeneficiariesIndexRoute: WithdrawalsBeneficiariesIndexRoute,
   WithdrawalsListIndexRoute: WithdrawalsListIndexRoute,
-  WithdrawalsMoneyIndexRoute: WithdrawalsMoneyIndexRoute
-};
-export const routeTree = rootRouteImport._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();
+  WithdrawalsMoneyIndexRoute: WithdrawalsMoneyIndexRoute,
+}
+export const routeTree = rootRouteImport
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()

@@ -20,6 +20,7 @@ import { IconArrowRight } from 'k-polygon-assets/icons';
 import { Eye, EyeOff } from 'lucide-react';
 import { Loading, Head } from '@/components/common';
 import { Button } from '@/components/ui/button';
+import { Loader } from '@repo/ui';
 
 function Login() {
   const { t } = useTranslation();
@@ -175,7 +176,7 @@ function Login() {
           </p>
         </form>
       </Form>
-      <Loading isLoading={loading} />
+      {loading && <Loader />}
     </OnboardingLayout>
   );
 }

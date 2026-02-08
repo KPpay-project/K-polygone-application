@@ -16,6 +16,7 @@ import { TransferConfirmation } from '@/components/modules/transfer/transfer-con
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { TRANSFER_METHOD_ENUM } from '@/enums';
 import ErrorAndSuccessFallback from '@/components/sub-modules/modal-contents/error-success-fallback.tsx';
+import { Loader } from '@repo/ui';
 
 type CurrencyOption = {
   currencyCode: string;
@@ -72,7 +73,7 @@ const BankTransferAction = ({ onSuccess }: Props) => {
   });
 
   const [resolveAccount, { data: accountData, loading: resolving }] = useLazyQuery(RESOLVE_BANK_ACCOUNT);
-  const [getQuote, { loading: quoting }] = useMutation(FLW_BANK_WITHDRAWAL_QUOTE_QUERY, {
+  const [getQuote, { loading: quoting }] = useLazyQuery(FLW_BANK_WITHDRAWAL_QUOTE_QUERY, {
     errorPolicy: 'all'
   });
   const [withdrawToBank, { loading: withdrawing }] = useMutation(WITHDRAW_TO_BANK);
@@ -204,13 +205,12 @@ const BankTransferAction = ({ onSuccess }: Props) => {
     }
   };
 
+  const actionIsLoading = banksLoading || resolving || quoting || withdrawing;
+
   return (
     <>
       <form onSubmit={handleSubmit(openConfirm)} className="px-4 pb-6 space-y-6" autoComplete="on">
-        <Loading
-          isLoading={banksLoading || resolving || quoting || withdrawing}
-          text={t('common.processing') || 'Processing...'}
-        />
+        {actionIsLoading && <Loader />}
 
         {/* Bank Selection */}
         <div>

@@ -11,7 +11,7 @@ export function Loader({ className, size = 24, ...props }: LoaderProps) {
     <div
       className={cn(
         `flex items-center  flex-col 
-    justify-center bg-white fixed top-0 left-0 w-full h-full`,
+    justify-center bg-white fixed top-0 left-0 w-full h-full z-50`,
         className,
       )}
       {...props}
