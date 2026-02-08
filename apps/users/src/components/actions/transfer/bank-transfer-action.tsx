@@ -4,19 +4,15 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { Input, Button } from 'k-polygon-assets';
-import { NumberInput, Currency } from '@/components/ui/input';
+import { NumberInput, Currency, Dialog, DialogContent, Loader, Input, Button } from '@repo/ui';
 import UsersCurrencyDropdown from '@/components/currency-dropdown/users-currency-dropdown';
 import { useProfileStore } from '@/store/profile-store';
 import { toast } from 'sonner';
-import Loading from '@/components/common/loading';
 import { Typography } from '@/components/sub-modules/typography/typography';
 import { FLW_BANKS, RESOLVE_BANK_ACCOUNT, FLW_BANK_WITHDRAWAL_QUOTE_QUERY, WITHDRAW_TO_BANK } from '@repo/api';
 import { TransferConfirmation } from '@/components/modules/transfer/transfer-confirmation.tsx';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { TRANSFER_METHOD_ENUM } from '@/enums';
 import ErrorAndSuccessFallback from '@/components/sub-modules/modal-contents/error-success-fallback.tsx';
-import { Loader } from '@repo/ui';
 
 type CurrencyOption = {
   currencyCode: string;
@@ -85,7 +81,7 @@ const BankTransferAction = ({ onSuccess }: Props) => {
 
   const [resultMessage, setResultMessage] = useState<string>('');
   const [selectedCurrencyOption, setSelectedCurrencyOption] = useState<CurrencyOption | null>(null);
-  const [currentQuote, setCurrentQuote] = useState<any>(null); // Store latest quote
+  const [currentQuote, setCurrentQuote] = useState<any>(null);
 
   const accountName = accountData?.resolveBankAccountName?.accountName || '';
 
@@ -96,7 +92,6 @@ const BankTransferAction = ({ onSuccess }: Props) => {
     return banks.filter((b: any) => b.name.toLowerCase().includes(lower));
   }, [banksData?.flutterwaveBanks, searchTerm]);
 
-  // Resolve account name on valid input
   useEffect(() => {
     if (watchedAccountNumber.length === 10 && watchedBankCode) {
       const timer = setTimeout(() => {
@@ -211,8 +206,6 @@ const BankTransferAction = ({ onSuccess }: Props) => {
     <>
       <form onSubmit={handleSubmit(openConfirm)} className="px-4 pb-6 space-y-6" autoComplete="on">
         {actionIsLoading && <Loader />}
-
-        {/* Bank Selection */}
         <div>
           <Typography className="text-sm font-medium text-gray-700 mb-2">
             {t('transfer.selectBank') || 'Select Bank'}
@@ -234,7 +227,6 @@ const BankTransferAction = ({ onSuccess }: Props) => {
           {errors.bankCode && <Typography className="text-red-500 text-xs mt-1">{errors.bankCode.message}</Typography>}
         </div>
 
-        {/* Account Number */}
         <div>
           <Typography className="text-sm font-medium text-gray-700 mb-2">
             {t('transfer.accountNumber') || 'Account Number'}
@@ -254,7 +246,6 @@ const BankTransferAction = ({ onSuccess }: Props) => {
           )}
         </div>
 
-        {/* Amount */}
         <div>
           <Typography className="text-sm font-medium text-gray-700 mb-2">{t('transfer.amount') || 'Amount'}</Typography>
           <NumberInput
@@ -279,7 +270,6 @@ const BankTransferAction = ({ onSuccess }: Props) => {
           }}
         />
 
-        {/* Narration */}
         <div>
           <Typography className="text-sm font-medium text-gray-700 mb-2">
             {t('transfer.narration') || 'Narration (optional)'}
