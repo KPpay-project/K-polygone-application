@@ -25,13 +25,10 @@ export const ExpiryDateInput: React.FC<ExpiryDateInputProps> = ({
   }, [value]);
 
   const formatExpiryDate = (input: string): string => {
-    
     const numericOnly = input.replace(/\D/g, '');
 
-    
     const limited = numericOnly.slice(0, 4);
 
-    
     if (limited.length >= 2) {
       return `${limited.slice(0, 2)}/${limited.slice(2)}`;
     }
@@ -48,22 +45,18 @@ export const ExpiryDateInput: React.FC<ExpiryDateInputProps> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    
     if ([8, 9, 27, 13, 46].includes(e.keyCode)) {
       return;
     }
 
-    
     if (e.ctrlKey && [65, 67, 86, 88].includes(e.keyCode)) {
       return;
     }
 
-    
     if (e.keyCode >= 35 && e.keyCode <= 40) {
       return;
     }
 
-    
     if ((e.keyCode < 48 || e.keyCode > 57) && (e.keyCode < 96 || e.keyCode > 105)) {
       e.preventDefault();
     }
@@ -78,7 +71,7 @@ export const ExpiryDateInput: React.FC<ExpiryDateInputProps> = ({
       className={className}
       autoComplete={autoComplete}
       name={name}
-      maxLength={5} 
+      maxLength={5}
     />
   );
 };

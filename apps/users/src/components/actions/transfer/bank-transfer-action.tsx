@@ -4,7 +4,17 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { NumberInput, Currency, Dialog, DialogContent, Loader, Input, Button, InputWithSearch, Skeleton } from '@repo/ui';
+import {
+  NumberInput,
+  Currency,
+  Dialog,
+  DialogContent,
+  Loader,
+  Input,
+  Button,
+  InputWithSearch,
+  Skeleton
+} from '@repo/ui';
 import UsersCurrencyDropdown from '@/components/currency-dropdown/users-currency-dropdown';
 import { useProfileStore } from '@/store/profile-store';
 import { toast } from 'sonner';
@@ -12,8 +22,9 @@ import { Typography } from '@/components/sub-modules/typography/typography';
 import { FLW_BANK_WITHDRAWAL_QUOTE, WITHDRAW_TO_BANK } from '@repo/api';
 import { TransferConfirmation } from '@/components/modules/transfer/transfer-confirmation.tsx';
 import { TRANSFER_METHOD_ENUM } from '@/enums';
+import { PAYSTACK_TEST_KEY } from '@/constant';
 import ErrorAndSuccessFallback from '@/components/sub-modules/modal-contents/error-success-fallback.tsx';
-import { useUnifiedBanks } from '@/hooks/bank/use-unified-banks';
+import { useUnifiedBanks } from '@repo/common';
 
 type CurrencyOption = {
   currencyCode: string;
@@ -65,7 +76,7 @@ const BankTransferAction = ({ onSuccess }: Props) => {
   const watchedBankCode = watch('bankCode');
   const watchedAccountNumber = watch('accountNumber');
 
-  const { banks, loading: banksLoading, resolveBankAccount } = useUnifiedBanks( 'paystack', 'NG');
+  const { banks, loading: banksLoading, resolveBankAccount } = useUnifiedBanks('paystack', PAYSTACK_TEST_KEY, 'NG');
 
   const [getQuote, { loading: quoting }] = useMutation(FLW_BANK_WITHDRAWAL_QUOTE, {
     errorPolicy: 'all'
@@ -255,9 +266,7 @@ const BankTransferAction = ({ onSuccess }: Props) => {
           {resolving ? (
             <Skeleton className="h-4 w-1/2 mt-2" />
           ) : (
-            accountName && (
-              <Typography className="text-green-600 text-sm font-medium mt-1">{accountName}</Typography>
-            )
+            accountName && <Typography className="text-green-600 text-sm font-medium mt-1">{accountName}</Typography>
           )}
           {errors.accountNumber && (
             <Typography className="text-red-500 text-xs mt-1">{errors.accountNumber.message}</Typography>
