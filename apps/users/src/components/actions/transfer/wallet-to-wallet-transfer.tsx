@@ -246,13 +246,12 @@ export function WalletToWalletTransferAction({ onSuccess }: WalletToWalletTransf
     <>
       <form onSubmit={handleSubmit(handleTransfer)} className="space-y-4">
         <div>
+          <ListBeneficiariesPanel
+            selectedBeneficiary={selectedBeneficiary}
+            onSelectBeneficiary={handleSelectBeneficiary}
+            beneficiaryType={BENEFICIARY_TYPE_ENUM.WALLET_CODE}
+          />
 
-            <ListBeneficiariesPanel
-          selectedBeneficiary={selectedBeneficiary}
-          onSelectBeneficiary={handleSelectBeneficiary}
-          beneficiaryType={BENEFICIARY_TYPE_ENUM.WALLET_CODE}
-        />
-        
           <UsersCurrencyDropdown />
           <Label>{t('transfer.amount')}</Label>
           <NumberInput
@@ -296,8 +295,6 @@ export function WalletToWalletTransferAction({ onSuccess }: WalletToWalletTransf
           <Input {...register('description')} placeholder={t('transfer.enterDescription')} className="w-full" />
           {errors.description && <span className="text-red-500 text-sm">{errors.description.message}</span>}
         </div>
-
-      
 
         <Button
           type="button"

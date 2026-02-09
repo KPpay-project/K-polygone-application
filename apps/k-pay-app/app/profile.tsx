@@ -191,7 +191,7 @@ export default function ProfileScreen() {
           <ProfileItem
             icon={<Sms size={20} color="#6B7280" variant="Outline" />}
             label="Email Address"
-            value={meData?.user?.email || 'user@example.com'}
+            value={meData?.user?.email || 'UnAuthenticated'}
             onPress={() => handleEditField('Email Address')}
             verified={true}
           />

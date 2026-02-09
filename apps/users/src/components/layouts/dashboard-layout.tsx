@@ -16,13 +16,15 @@ interface IDashboardLayout {
 
 const DashboardLayout: FC<IDashboardLayout> = ({ children, fullContainer }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isChecking, setIsChecking] = useState(false);
+  const [isChecking, setIsChecking] = useState(true);
   const navigate = useNavigate();
   const { checkSession } = useAuth();
 
   useEffect(() => {
     if (checkSession()) {
       setIsChecking(false);
+    } else {
+      navigate({ to: '/onboarding/login', replace: true });
     }
   }, [navigate]);
 

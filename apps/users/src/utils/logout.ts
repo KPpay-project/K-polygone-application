@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 import { useUserStore } from '@/store/user-store';
-import { JWT_TOKEN_NAME, JWT_REFRESH_TOKEN_NAME } from '@/constant';
+import { JWT_TOKEN_NAME, JWT_REFRESH_TOKEN_NAME, USER_ROLE } from '@/constant';
 import { useNavigate } from '@tanstack/react-router';
 
 export const useLogout = () => {
@@ -10,6 +10,7 @@ export const useLogout = () => {
   const logout = () => {
     Cookies.remove(JWT_TOKEN_NAME);
     Cookies.remove(JWT_REFRESH_TOKEN_NAME);
+    Cookies.remove(USER_ROLE);
 
     clearUserAccount();
     localStorage.clear();
