@@ -1,18 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { NumberInput, Currency, Dialog, DialogContent, Loader, Input, Button, InputWithSearch } from '@repo/ui';
+import { NumberInput, Currency, Dialog, DialogContent, Loader, Input, Button, InputWithSearch, Skeleton } from '@repo/ui';
 import UsersCurrencyDropdown from '@/components/currency-dropdown/users-currency-dropdown';
 import { useProfileStore } from '@/store/profile-store';
 import { toast } from 'sonner';
 import { Typography } from '@/components/sub-modules/typography/typography';
-import { FLW_BANKS, RESOLVE_BANK_ACCOUNT, FLW_BANK_WITHDRAWAL_QUOTE_QUERY, WITHDRAW_TO_BANK } from '@repo/api';
+import { FLW_BANK_WITHDRAWAL_QUOTE, WITHDRAW_TO_BANK } from '@repo/api';
 import { TransferConfirmation } from '@/components/modules/transfer/transfer-confirmation.tsx';
 import { TRANSFER_METHOD_ENUM } from '@/enums';
 import ErrorAndSuccessFallback from '@/components/sub-modules/modal-contents/error-success-fallback.tsx';
+import { useUnifiedBanks } from '@/hooks/bank/use-unified-banks';
 
 type CurrencyOption = {
   currencyCode: string;
@@ -64,16 +65,15 @@ const BankTransferAction = ({ onSuccess }: Props) => {
   const watchedBankCode = watch('bankCode');
   const watchedAccountNumber = watch('accountNumber');
 
-  const { data: banksData, loading: banksLoading } = useQuery(FLW_BANKS, {
-    variables: { countryCode: 'NG' }
-  });
+  const { banks, loading: banksLoading, resolveBankAccount } = useUnifiedBanks( 'paystack', 'NG');
 
-  const [resolveAccount, { data: accountData, loading: resolving }] = useLazyQuery(RESOLVE_BANK_ACCOUNT);
-  const [getQuote, { loading: quoting }] = useLazyQuery(FLW_BANK_WITHDRAWAL_QUOTE_QUERY, {
+  const [getQuote, { loading: quoting }] = useMutation(FLW_BANK_WITHDRAWAL_QUOTE, {
     errorPolicy: 'all'
   });
   const [withdrawToBank, { loading: withdrawing }] = useMutation(WITHDRAW_TO_BANK);
 
+  const [resolving, setResolving] = useState(false);
+  const [accountName, setAccountName] = useState('');
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [pendingValues, setPendingValues] = useState<FormData | null>(null);
   const [resultStatus, setResultStatus] = useState<'success' | 'error' | null>(null);
@@ -82,25 +82,44 @@ const BankTransferAction = ({ onSuccess }: Props) => {
   const [selectedCurrencyOption, setSelectedCurrencyOption] = useState<CurrencyOption | null>(null);
   const [currentQuote, setCurrentQuote] = useState<any>(null);
 
-  const accountName = accountData?.resolveBankAccountName?.accountName || '';
-
   const bankOptions = useMemo(() => {
-    return (banksData?.flutterwaveBanks || []).map((b: any) => ({
+    return banks.map((b: any) => ({
       label: b.name,
       value: b.code
     }));
-  }, [banksData?.flutterwaveBanks]);
+  }, [banks]);
 
   useEffect(() => {
     if (watchedAccountNumber.length === 10 && watchedBankCode) {
-      const timer = setTimeout(() => {
-        resolveAccount({
-          variables: { accountNumber: watchedAccountNumber, bankCode: watchedBankCode }
-        });
+      const timer = setTimeout(async () => {
+        setResolving(true);
+        try {
+          const details = await resolveBankAccount(watchedAccountNumber, watchedBankCode);
+          if (details) {
+            setAccountName(details.accountName);
+            clearErrors('accountNumber');
+          } else {
+            setAccountName('');
+            setError('accountNumber', {
+              type: 'manual',
+              message: 'Invalid account number'
+            });
+          }
+        } catch (error) {
+          setAccountName('');
+          setError('accountNumber', {
+            type: 'manual',
+            message: 'Error resolving account'
+          });
+        } finally {
+          setResolving(false);
+        }
       }, 500);
       return () => clearTimeout(timer);
+    } else {
+      setAccountName('');
     }
-  }, [watchedAccountNumber, watchedBankCode, resolveAccount]);
+  }, [watchedAccountNumber, watchedBankCode, resolveBankAccount, setError, clearErrors]);
 
   const openConfirm = async (values: FormData) => {
     const walletId = selectedCurrencyOption?.walletId || defaultWalletId;
@@ -199,8 +218,7 @@ const BankTransferAction = ({ onSuccess }: Props) => {
     }
   };
 
-  const actionIsLoading = banksLoading || resolving || quoting || withdrawing;
-
+  const actionIsLoading = quoting || withdrawing;
   return (
     <>
       <form onSubmit={handleSubmit(openConfirm)} className="px-4 pb-6 space-y-6" autoComplete="on">
@@ -209,14 +227,18 @@ const BankTransferAction = ({ onSuccess }: Props) => {
           <Typography className="text-sm font-medium text-gray-700 mb-2">
             {t('transfer.selectBank') || 'Select Bank'}
           </Typography>
-          <InputWithSearch
-            options={bankOptions}
-            value={watchedBankCode}
-            onChange={(val) => setValue('bankCode', val, { shouldValidate: true })}
-            placeholder={t('transfer.selectBank') || 'Select Bank'}
-            emptyMessage="No bank found."
-            className="w-full"
-          />
+          {banksLoading ? (
+            <Skeleton className="h-10 w-full" />
+          ) : (
+            <InputWithSearch
+              options={bankOptions}
+              value={watchedBankCode}
+              onChange={(val) => setValue('bankCode', val, { shouldValidate: true })}
+              placeholder={t('transfer.selectBank') || 'Select Bank'}
+              emptyMessage="No bank found."
+              className="w-full"
+            />
+          )}
           {errors.bankCode && <Typography className="text-red-500 text-xs mt-1">{errors.bankCode.message}</Typography>}
         </div>
 
@@ -230,9 +252,12 @@ const BankTransferAction = ({ onSuccess }: Props) => {
             maxLength={10}
             className="w-full"
           />
-          {resolving && <Typography className="text-sm text-gray-500 mt-1">Verifying...</Typography>}
-          {accountName && !resolving && (
-            <Typography className="text-green-600 text-sm font-medium mt-1">{accountName}</Typography>
+          {resolving ? (
+            <Skeleton className="h-4 w-1/2 mt-2" />
+          ) : (
+            accountName && (
+              <Typography className="text-green-600 text-sm font-medium mt-1">{accountName}</Typography>
+            )
           )}
           {errors.accountNumber && (
             <Typography className="text-red-500 text-xs mt-1">{errors.accountNumber.message}</Typography>

@@ -15,16 +15,16 @@ import {
 } from '@ui/components/ui/sheet';
 import { useIsMobile } from '@ui/hooks/use-mobile';
 import { cn } from '@ui/lib/utils';
+import { Button } from '@ui/components/ui/button';
+import { Input } from '@ui/components/ui/input';
+import { Separator } from '@ui/components/ui/separator';
+import { Skeleton } from '@ui/components/ui/skeleton';
 import {
-  Button,
-  Input,
-  Separator,
-  Skeleton,
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from 'k-polygon-assets/components';
+} from '@ui/components/ui/tooltip';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -271,7 +271,7 @@ const SidebarTrigger = React.forwardRef<
       variant="ghost"
       size="icon"
       className={cn('h-7 w-7', className)}
-      onClick={(event) => {
+      onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
         onClick?.(event);
         toggleSidebar();
       }}
