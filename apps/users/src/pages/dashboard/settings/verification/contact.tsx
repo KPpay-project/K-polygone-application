@@ -255,6 +255,7 @@ const ContactVerificationScreen = () => {
                         disabled={createContactDetailLoading}
                       />
                     </FormControl>
+                    {/*@ts-ignore */}
                     <CustomFormMessage message={form.formState.errors.addressProofUrl} scope="error" />
                   </FormItem>
                 )}
