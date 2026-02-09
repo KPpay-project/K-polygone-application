@@ -3,7 +3,6 @@ import { PaystackBankService } from './paystack';
 import { BankServiceConfig, UnifiedAccountDetails, UnifiedBank } from './types';
 import { BANK_SERVICE_PROVIDER_ENUM } from '../../enums/service-enums';
 
-
 export class UnifiedBankService {
   private config: BankServiceConfig;
   private flutterwaveService: FlutterwaveBankService;

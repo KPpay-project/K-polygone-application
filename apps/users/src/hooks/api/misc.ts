@@ -1,6 +1,5 @@
 import { USER_ROLE } from '@/constant';
 import Cookies from 'js-cookie';
-
 type AccountRole = 'user' | 'merchant' | null;
 export const getRoleFromCookie = (): AccountRole => {
   const raw = Cookies.get(USER_ROLE) || '';
