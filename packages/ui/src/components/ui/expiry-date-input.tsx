@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Input } from 'k-polygon-assets';
+import { Input } from '@ui/components/ui/input';
 
 interface ExpiryDateInputProps {
   value: string;

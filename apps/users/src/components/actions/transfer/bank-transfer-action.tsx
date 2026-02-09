@@ -9,7 +9,7 @@ import UsersCurrencyDropdown from '@/components/currency-dropdown/users-currency
 import { useProfileStore } from '@/store/profile-store';
 import { toast } from 'sonner';
 import { Typography } from '@/components/sub-modules/typography/typography';
-import { FLW_BANK_WITHDRAWAL_QUOTE_QUERY, WITHDRAW_TO_BANK } from '@repo/api';
+import { FLW_BANK_WITHDRAWAL_QUOTE, WITHDRAW_TO_BANK } from '@repo/api';
 import { TransferConfirmation } from '@/components/modules/transfer/transfer-confirmation.tsx';
 import { TRANSFER_METHOD_ENUM } from '@/enums';
 import ErrorAndSuccessFallback from '@/components/sub-modules/modal-contents/error-success-fallback.tsx';
@@ -67,7 +67,7 @@ const BankTransferAction = ({ onSuccess }: Props) => {
 
   const { banks, loading: banksLoading, resolveBankAccount } = useUnifiedBanks( 'paystack', 'NG');
 
-  const [getQuote, { loading: quoting }] = useLazyQuery(FLW_BANK_WITHDRAWAL_QUOTE_QUERY, {
+  const [getQuote, { loading: quoting }] = useMutation(FLW_BANK_WITHDRAWAL_QUOTE, {
     errorPolicy: 'all'
   });
   const [withdrawToBank, { loading: withdrawing }] = useMutation(WITHDRAW_TO_BANK);
