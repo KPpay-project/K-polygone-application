@@ -120,7 +120,6 @@ export const PrimaryPhoneNumberInput: FC<PrimaryPhoneNumberInputProps> = ({
     if (value) {
       validatePhoneNumber(value, selectedCountry);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, selectedCountry]);
 
   const handleChange = (

@@ -1,8 +1,8 @@
 import { useState, useEffect, forwardRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { countries } from '@repo/utils';
-
+import { useUserCountry } from '@repo/common';
+import { InputWithSearch } from './input-with-search';
 export interface CountryOption {
   code: string;
   name: string;
@@ -40,26 +40,42 @@ export const CountrySelector = forwardRef<HTMLButtonElement, CountrySelectorProp
     ref,
   ) => {
     const { t } = useTranslation();
+    const { countryCode: userCountryCode, loading: userCountryLoading } = useUserCountry();
 
     const getCountryByCode = (codeOrName?: string) =>
       customCountries.find((c) => c.code === codeOrName || c.name === codeOrName);
-    const defaultCountry = getCountryByCode(value) || customCountries[0];
+    const defaultCountry =
+      getCountryByCode(value) || (!userCountryLoading ? getCountryByCode(userCountryCode) : undefined);
     const [selectedCountry, setSelectedCountry] = useState<CountryOption | undefined>(
       defaultCountry,
     );
-    const [search, setSearch] = useState('');
 
     useEffect(() => {
-      const country = getCountryByCode(value);
-      if (country && country.code !== selectedCountry?.code) {
-        setSelectedCountry(country);
-        onValueChange?.(country.name, country);
-      } else if (!country && selectedCountry?.code !== customCountries[0]?.code) {
+      if (value) {
+        const country = getCountryByCode(value);
+        if (country && country.code !== selectedCountry?.code) {
+          setSelectedCountry(country);
+          onValueChange?.(country.name, country);
+        } else if (!country && selectedCountry?.code !== customCountries[0]?.code) {
+          setSelectedCountry(customCountries[0]);
+          onValueChange?.(customCountries[0].name, customCountries[0]);
+        }
+        return;
+      }
+
+      if (userCountryLoading) {
+        return;
+      }
+
+      const userCountry = getCountryByCode(userCountryCode);
+      if (userCountry && userCountry.code !== selectedCountry?.code) {
+        setSelectedCountry(userCountry);
+        onValueChange?.(userCountry.name, userCountry);
+      } else if (!userCountry && selectedCountry?.code !== customCountries[0]?.code) {
         setSelectedCountry(customCountries[0]);
         onValueChange?.(customCountries[0].name, customCountries[0]);
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [value, customCountries]);
+    }, [value, customCountries, userCountryCode, userCountryLoading]);
 
     const handleValueChange = (countryCode: string) => {
       const country = getCountryByCode(countryCode);
@@ -69,69 +85,37 @@ export const CountrySelector = forwardRef<HTMLButtonElement, CountrySelectorProp
       }
     };
 
-    const filteredCountries = customCountries.filter((country) => {
-      const searchLower = search.toLowerCase();
-      return (
-        country.name?.toLowerCase().includes(searchLower) ||
-        country.code?.toLowerCase().includes(searchLower) ||
-        country.prefix?.toLowerCase().includes(searchLower)
-      );
-    });
+    const getCountryLabel = (country: CountryOption) => {
+      const translatedName = t(`countries.${country.code}`, { defaultValue: country.name });
+      const parts: string[] = [];
+      if (hasFlag) {
+        parts.push(country.flag);
+      }
+      if (showName) {
+        parts.push(translatedName);
+      }
+      if (showPrefix) {
+        parts.push(`(${country.prefix})`);
+      }
+      return parts.join(' ');
+    };
 
     return (
-      <Select onValueChange={handleValueChange} value={selectedCountry?.code} disabled={disabled}>
-        <SelectTrigger
-          ref={ref}
-          className={`focus:outline-none focus:ring-0 focus:ring-offset-0 outline-none ring-0 ring-offset-0 ${triggerClassName}`}
-        >
-          <SelectValue placeholder={placeholder}>
-            {selectedCountry && (
-              <div className="flex items-center gap-2">
-                {hasFlag && <span>{selectedCountry.flag}</span>}
-                {showName && (
-                  <span className="text-sm">
-                    {t(`countries.${selectedCountry.code}`, { defaultValue: selectedCountry.name })}
-                  </span>
-                )}
-                {showPrefix && (
-                  <span className="text-gray-400 text-xs">({selectedCountry.prefix})</span>
-                )}
-              </div>
-            )}
-          </SelectValue>
-        </SelectTrigger>
-        <SelectContent className={className}>
-          <div className="px-2 py-2">
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder={t('common.search') || 'Search...'}
-              className="w-full px-2 py-1 rounded border border-gray-200 focus:outline-none focus:ring-0 text-sm mb-2"
-              autoFocus
-            />
-          </div>
-          {filteredCountries.length === 0 && (
-            <div className="px-4 py-2 text-gray-400 text-sm">
-              {t('common.noResults') || 'No results found'}
-            </div>
-          )}
-          {filteredCountries.map((country) => (
-            <SelectItem key={country.code} value={country.code}>
-              <div className="flex items-center gap-2">
-                <span>{country.flag}</span>
-                {showName && (
-                  <span className="text-sm">
-                    {t(`countries.${country.code}`, { defaultValue: country.name })}
-                  </span>
-                )}
-                {showPrefix && <span className="text-gray-400 text-xs">({country.prefix})</span>}
-                {/* {country.code} {country.prefix} */}
-              </div>
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <InputWithSearch
+        ref={ref}
+        options={customCountries.map((country) => ({
+          value: country.code,
+          label: getCountryLabel(country),
+        }))}
+        value={selectedCountry?.code}
+        onChange={handleValueChange}
+        placeholder={placeholder}
+        searchPlaceholder={t('common.search') || 'Search...'}
+        emptyMessage={t('common.noResults') || 'No results found'}
+        disabled={disabled}
+        className={`focus:outline-none focus:ring-0 focus:ring-offset-0 outline-none ring-0 ring-offset-0 ${triggerClassName}`}
+        contentClassName={className}
+      />
     );
   },
 );

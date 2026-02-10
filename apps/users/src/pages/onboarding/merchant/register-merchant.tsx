@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import { useNavigate } from '@tanstack/react-router';
 import OnboardingLayout from '@/components/layouts/onboarding-layout';
 import { CustomFormMessage } from '@/components/common/forms/form-message';
-import { CountrySelector } from '@/components/common/country-selector';
+import { CountrySelector } from '@repo/ui';
 import { handleGraphQLError } from '@/utils/error-handling';
 import { Link } from '@tanstack/react-router';
 import { Button, Form, FormControl, FormField, FormItem, FormLabel, Input } from 'k-polygon-assets/components';
@@ -196,7 +196,6 @@ const RegisterMerchantPage: React.FC = () => {
                       onChange={(v) => field.onChange(v)}
                       placeholder={t('auth.createAccount.enterPhoneNumber') || 'Enter phone number'}
                       className="w-full"
-                      country={form.watch('country')?.toLowerCase()}
                     />
                   </FormControl>
                   <CustomFormMessage message={form.formState.errors.phone} scope="error" />
