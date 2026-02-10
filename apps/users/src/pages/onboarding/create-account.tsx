@@ -162,7 +162,6 @@ function CreateAccount() {
                     setSelectedCountryCode(country.code);
                     field.onChange(value);
                   }}
-                  
                   showPrefix={false}
                   placeholder={t('auth.createAccount.selectCountry')}
                 />

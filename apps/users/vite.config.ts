@@ -3,18 +3,57 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { defineConfig } from 'vite';
+import { VitePWA } from 'vite-plugin-pwa';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [
     tanstackRouter({
       target: 'react',
       autoCodeSplitting: false
     }),
-    react()
+    react(),
+    VitePWA({
+      registerType: 'prompt',
+      includeAssets: ['vite.svg', 'pwa-icon-192.png', 'pwa-icon-512.png'],
+      devOptions: {
+        enabled: true
+      },
+      manifest: {
+        name: 'KP-Pay',
+        short_name: 'KP-Pay',
+        description: 'KP-Pay Internet banking application',
+        theme_color: '#125bc9',
+        background_color: '#FFFFFF',
+        display: 'standalone',
+        scope: '/',
+        start_url: '/',
+        orientation: 'portrait',
+        icons: [
+          {
+            src: '/pwa-icon-192.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: '/pwa-icon-512.png',
+            sizes: '512x512',
+            type: 'image/png'
+          },
+          {
+            src: '/pwa-icon-512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable'
+          }
+        ]
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpeg,jpg,woff2}']
+      }
+    })
   ],
 
   define: {

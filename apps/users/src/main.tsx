@@ -6,8 +6,11 @@ import ReactDOM from 'react-dom/client';
 import './styles/index.css';
 import { Toaster } from 'sonner';
 import { TourGuildProvider } from '@/providers/tour-guild-provider';
+import { registerSW } from 'virtual:pwa-register';
 
 const queryClient = new QueryClient();
+
+registerSW({ immediate: true });
 
 const rootElement = document.getElementById('root')!;
 if (!rootElement.innerHTML) {
