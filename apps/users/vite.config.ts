@@ -12,7 +12,10 @@ export default defineConfig({
   plugins: [
     tanstackRouter({
       target: 'react',
-      autoCodeSplitting: false
+      autoCodeSplitting: true,
+      codeSplittingOptions: {
+        defaultBehavior: [['component', 'pendingComponent', 'errorComponent', 'notFoundComponent']]
+      }
     }),
     react(),
     VitePWA({
@@ -51,7 +54,8 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpeg,jpg,woff2}']
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpeg,jpg,woff2}'],
+        maximumFileSizeToCacheInBytes: 8 * 1024 * 1024
       }
     })
   ],
@@ -77,11 +81,15 @@ export default defineConfig({
   },
 
   build: {
+    chunkSizeWarningLimit: 5000,
     rollupOptions: {
       output: {
         manualChunks: (id) => {
           if (id.includes('k-polygon-assets')) {
             return 'k-polygon-assets';
+          }
+          if (id.includes('node_modules')) {
+            return 'vendor';
           }
         }
       }
