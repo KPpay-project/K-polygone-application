@@ -22,6 +22,7 @@ export default defineConfig({
   },
 
   resolve: {
+    dedupe: ['react-hook-form', 'react', 'react-dom'],
     alias: {
       '@': path.resolve(__dirname, './src'),
       '@ui': path.resolve(__dirname, '../../packages/ui/src'),

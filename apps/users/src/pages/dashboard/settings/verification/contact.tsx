@@ -15,7 +15,7 @@ import React from 'react';
 import { useKycContactInfoStore } from '@/store/kyc';
 import { CountrySelector } from '@/components/common';
 import { StateSelector } from '@/components/common/state-selector';
-import { PrimaryPhoneNumberInput } from '@/components/common/inputs/primary-phone-number-input';
+import { PrimaryPhoneNumberInput } from '@repo/ui';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { Dialog, DialogContent } from '@/components/ui/dialog';

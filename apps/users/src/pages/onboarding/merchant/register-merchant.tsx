@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@apollo/client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { REGISTER_MERCHANT } from '@repo/api';
@@ -16,8 +16,9 @@ import { Button, Form, FormControl, FormField, FormItem, FormLabel, Input } from
 import { IconArrowRight } from 'k-polygon-assets/icons';
 import { Eye, EyeOff } from 'lucide-react';
 import { Loading } from '@/components/common';
-import { PrimaryPhoneNumberInput } from '@/components/common/inputs/primary-phone-number-input';
+import { PrimaryPhoneNumberInput } from '@repo/ui';
 import { SearchableSelect } from '@/components/common/searchable-select';
+import { useUserCountry } from '@repo/common';
 
 const BUSINESS_TYPES = [
   { value: 'retail', label: 'Retail' },
@@ -83,6 +84,8 @@ const RegisterMerchantPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const { countryCode } = useUserCountry();
+
   const form = useForm<FormValues>({
     resolver: zodResolver(merchantSchema),
     defaultValues: {
@@ -101,6 +104,12 @@ const RegisterMerchantPage: React.FC = () => {
       group: ''
     }
   });
+
+  useEffect(() => {
+    if (countryCode && !form.getValues('country')) {
+      form.setValue('country', countryCode.toUpperCase());
+    }
+  }, [countryCode, form]);
 
   const [registerMerchant, { loading }] = useMutation(REGISTER_MERCHANT as any);
 
@@ -187,6 +196,7 @@ const RegisterMerchantPage: React.FC = () => {
                       onChange={(v) => field.onChange(v)}
                       placeholder={t('auth.createAccount.enterPhoneNumber') || 'Enter phone number'}
                       className="w-full"
+                      country={form.watch('country')?.toLowerCase()}
                     />
                   </FormControl>
                   <CustomFormMessage message={form.formState.errors.phone} scope="error" />
@@ -251,12 +261,12 @@ const RegisterMerchantPage: React.FC = () => {
             name="businessType"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="!text-black">{!t('merchant.register.businessType') || 'Business Type'}</FormLabel>
+                <FormLabel className="!text-black">{t('merchant.register.businessType') || 'Business Type'}</FormLabel>
                 <SearchableSelect
                   options={BUSINESS_TYPES}
                   value={field.value}
                   onValueChange={(value) => field.onChange(value as z.infer<typeof businessTypeEnum>)}
-                  placeholder={!t('merchant.register.selectBusinessType') || 'Select business type'}
+                  placeholder={t('merchant.register.selectBusinessType') || 'Select business type'}
                   searchPlaceholder={t('common.search') || 'Search business types...'}
                 />
                 <CustomFormMessage message={form.formState.errors.businessType} scope="error" />

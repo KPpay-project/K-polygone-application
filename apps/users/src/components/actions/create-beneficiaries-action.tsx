@@ -13,7 +13,7 @@ import ErrorAndSuccessFallback from '../sub-modules/modal-contents/error-success
 import { useMutation } from '@apollo/client';
 import { BENEFICIARY_TYPE_ENUM } from '@/enums';
 import { PROVIDER_LABELS } from '@/constant';
-import { PrimaryPhoneNumberInput } from '../common/inputs/primary-phone-number-input';
+import { PrimaryPhoneNumberInput } from '@repo/ui';
 
 const beneficiaryTypes = ['bank_transfer', 'kpay_user', 'mobile_money', 'airtime'] as const;
 
