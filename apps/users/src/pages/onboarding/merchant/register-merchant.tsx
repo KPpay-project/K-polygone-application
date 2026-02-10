@@ -13,7 +13,7 @@ import { CountrySelector } from '@repo/ui';
 import { handleGraphQLError } from '@/utils/error-handling';
 import { Link } from '@tanstack/react-router';
 import { Button, Form, FormControl, FormField, FormItem, FormLabel, Input } from 'k-polygon-assets/components';
-import { IconArrowRight } from 'k-polygon-assets/icons';
+import { ArrowLeft as IconArrowRight } from 'lucide-react';
 import { Eye, EyeOff } from 'lucide-react';
 import { Loading } from '@/components/common';
 import { PrimaryPhoneNumberInput } from '@repo/ui';

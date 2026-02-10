@@ -6,14 +6,14 @@ import { useTranslation } from 'react-i18next';
 import { REGISTER_USER } from '@repo/api';
 import type { UserInput, RegisterUserResponse } from '@repo/types';
 import { CustomFormMessage } from '@/components/common/forms/form-message';
-import { CountrySelector } from '@/components/common/country-selector';
+import { CountrySelector } from '@repo/ui';
 import OnboardingLayout from '@/components/layouts/onboarding-layout';
 import { createAccountSchema } from '@/schema/auth';
 import { countries, ENV } from '@/utils/constants';
 import { handleGraphQLError } from '@/utils/error-handling';
 import { Link } from '@tanstack/react-router';
 import { Button, Form, FormControl, FormField, FormItem, FormLabel, Input } from '@repo/ui';
-import { IconArrowRight } from 'k-polygon-assets/icons';
+import { ArrowLeft as IconArrowRight } from 'lucide-react';
 import { Eye, EyeOff } from 'lucide-react';
 import z from 'zod';
 import { toast } from 'sonner';
@@ -157,12 +157,12 @@ function CreateAccount() {
               <FormItem>
                 <FormLabel className="!text-black">{t('auth.createAccount.country')}</FormLabel>
                 <CountrySelector
-                  value={selectedCountryCode}
+                  // value={selectedCountryCode}
                   onValueChange={(value, country) => {
                     setSelectedCountryCode(country.code);
                     field.onChange(value);
                   }}
-                  hasFlag={false}
+                  
                   showPrefix={false}
                   placeholder={t('auth.createAccount.selectCountry')}
                 />
