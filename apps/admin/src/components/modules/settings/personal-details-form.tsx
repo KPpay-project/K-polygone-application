@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -23,7 +22,7 @@ import { toast } from 'sonner';
 const personalDetailsSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
   lastName: z.string().min(2, 'Last name must be at least 2 characters'),
-  email: z.email('Please enter a valid email address'),
+  email: z.string().email('Please enter a valid email address'),
   phoneNumber: z.string().min(10, 'Phone number must be at least 10 digits'),
   gender: z.string().optional(),
   language: z.string().optional()
@@ -39,12 +38,10 @@ export const PersonalDetailsForm: React.FC<PersonalDetailsFormProps> = ({ classN
   const { userAccount } = useUserStore();
   const [isLoading, setIsLoading] = useState(false);
 
-  // Get user data from the store
   const user = userAccount?.user;
   const admin = userAccount?.admin;
   const merchant = userAccount?.merchant;
 
-  // Determine which profile to use
   const profile = user || admin || merchant;
   const fullName = profile
     ? 'firstName' in profile

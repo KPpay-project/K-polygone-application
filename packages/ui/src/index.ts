@@ -29,4 +29,5 @@ export * from './components/ui/tabs';
 export * from './components/ui/tooltip';
 export * from './components/ui/command';
 export * from './components/misc/input-with-search';
+export * from './components/misc/primary-phone-number-input';
 export * from './hooks/use-mobile';
