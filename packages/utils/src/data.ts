@@ -2,7 +2,9 @@ import { getMultiPropertyByPath } from './object';
 import { formatDate } from './date';
 
 export function normalizePages<T>(pages?: any[]): T[] {
-  return pages && pages?.length > 0 ? pages?.reduce((prev: T[], current) => [...prev, ...current.pages], []) : [];
+  return pages && pages?.length > 0
+    ? pages?.reduce((prev: T[], current) => [...prev, ...current.pages], [])
+    : [];
 }
 
 export function normalizePaginated<T>(data: {
@@ -20,7 +22,11 @@ export type TTransformableTableData<T> = {
   action?: (item: any) => any;
 };
 
-export const transformTableData = <T>({ data, fields, action }: TTransformableTableData<T>): any[] => {
+export const transformTableData = <T>({
+  data,
+  fields,
+  action,
+}: TTransformableTableData<T>): any[] => {
   data = data ?? [];
 
   const tableData = data.map((item: any) => {
@@ -66,9 +72,14 @@ export const transformTableData = <T>({ data, fields, action }: TTransformableTa
 
         if (typeof value == 'number') {
           value = String(value);
-        } else if (typeof value === 'string' && value.includes('T') && value.includes('Z') && !isNaN(Date.parse(value))) {
-             // Replaced moment(value).format('YYYY-MM-DD') with formatDate helper
-             value = formatDate(value);
+        } else if (
+          typeof value === 'string' &&
+          value.includes('T') &&
+          value.includes('Z') &&
+          !isNaN(Date.parse(value))
+        ) {
+          // Replaced moment(value).format('YYYY-MM-DD') with formatDate helper
+          value = formatDate(value);
         }
 
         row.push(value);

@@ -1,0 +1,400 @@
+scalar Decimal
+scalar DateTime
+scalar Date
+scalar JSON
+
+type Beneficiary {
+  id: ID!
+  name: String!
+  number: String!
+  type: String!
+  providerName: String
+  insertedAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type BeneficiaryPage {
+  entries: [Beneficiary!]!
+  totalEntries: Int!
+}
+
+input CreateUserInput {
+  email: String!
+  firstName: String!
+  lastName: String!
+  phone: String!
+}
+
+input UpdateUserInput {
+  id: ID!
+  email: String
+  firstName: String
+  lastName: String
+  phone: String
+}
+
+type PaymentPinStatus {
+  hasPin: Boolean!
+  isLocked: Boolean!
+  lockedUntilSeconds: Int
+}
+
+input FreezeWalletInput {
+  reason: String
+}
+
+input CrossCurrencyQuoteInput {
+  amount: String
+  fromWalletId: ID
+  toWalletId: ID
+  fromCurrencyCode: String
+  toCurrencyCode: String
+}
+
+input ExchangeCurrencyInput {
+  amount: String
+  fromWalletId: ID
+  toWalletId: ID
+}
+
+input CrossCurrencyTransferInput {
+  amount: String
+  fromWalletId: ID
+  toWalletId: ID
+  pin: String
+}
+
+input WalletToWalletInput {
+  amount: String!
+  description: String
+  quoteId: String
+  receiversWalletCode: String!
+  sendersWalletId: String!
+  paymentPin: String!
+}
+
+input TransferQuoteInput {
+  amount: String!
+  currencyCode: String!
+  fromWalletId: String!
+  paymentType: String!
+  toWalletCode: String!
+}
+
+input FlutterwaveBankWithdrawalInput {
+  amount: String!
+  currencyCode: String
+  accountNumber: String
+  bankCode: String
+}
+
+input FlutterwaveBankWithdrawalQuoteInput {
+  amount: String!
+  currencyCode: String
+  bankCode: String
+}
+
+input FlutterwaveCardDepositQuoteInput {
+  amount: String!
+  currencyCode: String!
+}
+
+input WithdrawInput {
+  amount: String!
+  walletId: ID!
+}
+
+input WithdrawalInput {
+  amount: String!
+  walletId: ID!
+  provider: String
+}
+
+type CrossCurrencyQuoteResponse {
+  exchangeRate: String
+  expiresAt: DateTime
+  feeAmount: String
+  fromCurrencyCode: String
+  fromWalletId: ID
+  netDebit: String
+  receiveAmount: String
+  sendAmount: String
+  toCurrencyCode: String
+  toWalletId: ID
+}
+
+type GenericResponse {
+  success: Boolean!
+  message: String
+  expiresAt: DateTime
+}
+
+type WalletToWalletResponse {
+  expiresAt: DateTime
+  message: String
+  success: Boolean!
+}
+
+type TransferQuoteResponse {
+  amount: String
+  applies: Boolean
+  currencyCode: String
+  expiresAt: DateTime
+  feeAmount: String
+  feeCurrencyCode: String
+  paymentType: String
+  quoteId: String
+  tier: String
+  totalDebit: String
+}
+
+type WithdrawToBankResponse {
+  fee: String
+  flutterwaveTransferId: String
+  message: String
+  reference: String
+  status: String
+  success: Boolean!
+}
+
+type WithdrawResponse {
+  success: Boolean!
+  message: String
+  balance: Balance
+  transaction: Transaction
+}
+
+type WithdrawOrTransferResponse {
+  success: Boolean!
+  message: String
+  balance: Balance
+  transaction: Transaction
+}
+
+type FlutterwaveCardDepositQuoteResponse {
+  quoteId: String
+  amount: String
+  currencyCode: String
+  feeAmount: String
+  netAmount: String
+  totalDebit: String
+  expiresAt: DateTime
+}
+
+type FlutterwaveBankWithdrawalQuoteResponse {
+  quoteId: String
+  amount: String
+  currencyCode: String
+  feeAmount: String
+  netAmount: String
+  totalDebit: String
+  expiresAt: DateTime
+  applies: Boolean
+  paymentType: String
+  tier: String
+}
+
+type ResolveBankAccountResponse {
+  accountNumber: String
+  accountName: String
+  bankCode: String
+}
+
+type VirtualAccountResponse {
+  accountName: String
+  accountNumber: String
+  accountReference: String
+  bankCode: String
+  bankName: String
+  createdAtFlutterwave: DateTime
+  currency: String
+  deactivatedAt: DateTime
+  deactivationReason: String
+  expiresAt: DateTime
+  flutterwaveAccountId: String
+  flwRef: String
+  id: ID
+  insertedAt: DateTime
+  isActive: Boolean
+  isPermanent: Boolean
+  lastDepositAt: DateTime
+  metadata: JSON
+  orderRef: String
+  totalDepositsAmount: String
+  totalDepositsCount: Int
+  updatedAt: DateTime
+  userAccountId: String
+  walletId: String
+}
+
+type Bank {
+  id: ID!
+  code: String!
+  name: String!
+}
+
+extend type RootQueryType {
+  myBeneficiaries(page: Int, perPage: Int): BeneficiaryPage
+  getKycApplicationById(kycApplicationId: ID!): KycApplication
+  getAllKycApplications(page: Int, perPage: Int): KycApplicationPage
+  hasPaymentPin: PaymentPinStatus
+  getTicketById(ticketId: ID!): Ticket
+  getUsersTickets: [Ticket]
+  getUserByWalletCode(walletCode: String!): UserAccount
+  resolveBankAccountName(accountNumber: String!, accountBank: String!): ResolveBankAccountResponse
+  flutterwaveCardDepositQuote(input: FlutterwaveCardDepositQuoteInput!): FlutterwaveCardDepositQuoteResponse
+  flutterwaveBanks(countryCode: String!): [Bank]
+  flutterwaveBankWithdrawalQuote(input: FlutterwaveBankWithdrawalQuoteInput!): FlutterwaveBankWithdrawalQuoteResponse
+  getVirtualAccount(currencyCode: String!, walletId: ID!): VirtualAccountResponse
+  users(limit: Int, offset: Int): [User]
+  user(id: ID!): User
+}
+
+extend type RootMutationType {
+  createUser(input: CreateUserInput!): UserPayload
+  deleteUser(id: ID!): UserPayload
+  freezeWallet(walletId: ID!, input: FreezeWalletInput!): Wallet
+  crossCurrencyQuote(input: CrossCurrencyQuoteInput!): CrossCurrencyQuoteResponse
+  exchangeCurrencyViaWallet(input: ExchangeCurrencyInput!): GenericResponse
+  crossCurrencyTransfer(input: CrossCurrencyTransferInput!): GenericResponse
+  walletToWalletTransfer(input: WalletToWalletInput!): WalletToWalletResponse
+  transferQuote(input: TransferQuoteInput!): TransferQuoteResponse
+  withdrawToBank(input: FlutterwaveBankWithdrawalInput!): WithdrawToBankResponse
+  withdraw(input: WithdrawInput!): WithdrawResponse
+  withdrawOrTransfer(input: WithdrawalInput!): WithdrawOrTransferResponse
+}
+
+extend type UserAccount {
+  firstName: String
+  lastName: String
+  email: String
+  name: String
+  user: User
+}
+
+extend type BankInfo {
+  bankName: String
+  bankCode: String
+}
+
+extend type ContactDetail {
+  email: String
+  phone: String
+  address: String
+}
+
+extend type DeclarationsAndCommitment {
+  isPoliticallyExposed: Boolean
+  isSanctioned: Boolean
+}
+
+extend type FinancialInfo {
+  incomeSource: String
+  annualIncome: String
+}
+
+extend type IdentityDocument {
+  issueDate: Date
+}
+
+extend type PoliticalExposure {
+  isPoliticallyExposed: Boolean
+  position: String
+}
+
+# Assuming UserPage exists
+extend type UserPage {
+  email: String
+  createdAt: DateTime
+}
+
+# Defined as Type because likely missing or incompatible
+type UserPayload {
+  user: User
+  success: Boolean
+  message: String
+  errors: [FieldError]
+  id: ID
+  email: String
+  name: String
+  createdAt: DateTime
+}
+
+# Extend KycApplicationPage to match User App response structure
+extend type KycApplicationPage {
+  id: ID
+  kycClientId: ID
+  kycClientType: String
+  message: String
+  errors: [String]
+  contactInfoStatus: String
+  financialInfoStatus: String
+  identityStatus: String
+  insertedAt: DateTime
+  updatedAt: DateTime
+  bankInfo: BankInfo
+  contactDetail: ContactDetail
+  declarationsAndCommitments: DeclarationsAndCommitment
+  financialInfo: FinancialInfo
+  identityDocument: IdentityDocument
+  politicalExposure: PoliticalExposure
+  userAccount: UserAccount
+}
+
+type Ticket {
+  id: ID!
+  title: String!
+  description: String
+  status: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  # Extensions for User App
+  insertedAt: DateTime
+  ticketNumber: String
+  ticketSubject: String
+  ticketType: String
+  messages: [TicketMessage]
+  priority: String
+  resolvedAt: DateTime
+  message: String
+  attachmentUrl: Attachment
+}
+
+type Attachment {
+  original: String
+  thumb: String
+}
+
+type TicketMessage {
+  id: ID!
+  message: String
+  insertedAt: DateTime
+  updatedAt: DateTime
+  senderType: String
+  sender: UserAccount
+}
+
+type TicketPage {
+  entries: [Ticket!]!
+  totalEntries: Int!
+}
+
+type FieldError {
+  field: String!
+  message: String!
+}
+
+type User {
+  id: ID!
+  email: String!
+  firstName: String
+  lastName: String
+  name: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+extend type TransactionPagedResult {
+  page: Int
+  perPage: Int
+}

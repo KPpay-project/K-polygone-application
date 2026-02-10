@@ -1,0 +1,249 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@apollo/client';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { REGISTER_USER } from '@repo/api';
+import type { UserInput, RegisterUserResponse } from '@repo/types';
+import { CustomFormMessage } from '@/components/common/forms/form-message';
+import { CountrySelector, PhoneCountrySelector } from '@/components/common/country-selector';
+import OnboardingLayout from '@/components/layouts/onboarding-layout';
+import { createAccountSchema } from '@/schema/auth';
+import { countries } from '@/utils/constants';
+import { handleGraphQLError } from '@/utils/error-handling';
+import { Link } from '@tanstack/react-router';
+import { Button, Form, FormControl, FormField, FormItem, FormLabel, Input } from 'k-polygon-assets/components';
+import { IconArrowRight } from 'k-polygon-assets/icons';
+import { Eye, EyeOff } from 'lucide-react';
+import z from 'zod';
+import { toast } from 'sonner';
+import { useNavigate } from '@tanstack/react-router';
+
+function CreateAccount() {
+  const { t } = useTranslation();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [selectedPhoneCountry, setSelectedPhoneCountry] = useState(countries[0]);
+  const navigate = useNavigate();
+
+  const getPhonePlaceholder = () => {
+    return t('auth.createAccount.enterPhoneNumber');
+  };
+
+  const formSchema = createAccountSchema();
+  type FormValues = z.infer<typeof formSchema>;
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      country: 'US',
+      password: '',
+      confirmPassword: ''
+    }
+  });
+
+  const [registerUser, { loading }] = useMutation<{ registerUser: RegisterUserResponse }, { input: UserInput }>(
+    REGISTER_USER
+  );
+
+  async function onSubmit(values: FormValues) {
+    try {
+      const { firstName, lastName, email, phone, password, country } = values;
+
+      const response = await registerUser({
+        variables: {
+          input: {
+            firstName,
+            lastName,
+            email,
+            phone,
+            password,
+            passwordConfirmation: values.confirmPassword,
+            country
+          }
+        }
+      });
+
+      if (response.data?.registerUser) {
+        toast.success('User registered successfully');
+        navigate({
+          to: '/dashboard'
+        });
+      } else if (response.errors && response.errors.length > 0) {
+        handleGraphQLError(response, 'Registration failed');
+      }
+    } catch (error: any) {
+      handleGraphQLError(error, 'An error occurred during registration');
+    }
+  }
+
+  return (
+    <OnboardingLayout title={t('auth.createAccount.title')} description={t('auth.createAccount.description')} canGoBack>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <div className="grid grid-cols-1 gap-4">
+            <FormField
+              control={form.control}
+              name="firstName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="!text-black">{t('auth.createAccount.firstName')}</FormLabel>
+                  <FormControl>
+                    <Input placeholder={t('placeholders.firstName')} {...field} />
+                  </FormControl>
+                  <CustomFormMessage message={form.formState.errors.firstName} scope="error" />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="!text-black">{t('auth.createAccount.lastName')}</FormLabel>
+                  <FormControl>
+                    <Input placeholder={t('placeholders.lastName')} {...field} />
+                  </FormControl>
+                  <CustomFormMessage message={form.formState.errors.lastName} scope="error" />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="!text-black">{t('auth.createAccount.email')}</FormLabel>
+                <FormControl>
+                  <Input placeholder={t('placeholders.email')} {...field} />
+                </FormControl>
+                <CustomFormMessage message={form.formState.errors.email} scope="error" />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="!text-black">{t('auth.createAccount.phone')}</FormLabel>
+                <div className="flex items-center relative">
+                  <div className="absolute flex items-center ">
+                    <PhoneCountrySelector
+                      value={selectedPhoneCountry.code}
+                      onCountryChange={(country) => {
+                        setSelectedPhoneCountry(country);
+                      }}
+                    />
+                    <span className="text-sm text-[#6C727F]">{selectedPhoneCountry.prefix}</span>
+                  </div>
+                  <div className="flex-1">
+                    <Input className="pl-24 !rounded-0" type="tel" placeholder={getPhonePlaceholder()} {...field} />
+                  </div>
+                </div>
+                <CustomFormMessage message={form.formState.errors.phone} scope="error" />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="country"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="!text-black">{t('auth.createAccount.country')}</FormLabel>
+                <CountrySelector
+                  value={field.value}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                  }}
+                  placeholder={t('auth.createAccount.selectCountry')}
+                />
+                <CustomFormMessage message={form.formState.errors.country} scope="error" />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="!text-black">{t('auth.createAccount.password')}</FormLabel>
+                <div className="relative">
+                  <FormControl>
+                    <Input
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder={t('placeholders.password')}
+                      {...field}
+                    />
+                  </FormControl>
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+                <CustomFormMessage message={form.formState.errors.password} scope="error" />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="!text-black">{t('auth.createAccount.confirmPassword')}</FormLabel>
+                <div className="relative">
+                  <FormControl>
+                    <Input
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      placeholder={t('placeholders.password')}
+                      {...field}
+                    />
+                  </FormControl>
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+                <CustomFormMessage message={form.formState.errors.confirmPassword} scope="error" />
+              </FormItem>
+            )}
+          />
+
+          <Button
+            type="submit"
+            className="w-full mt-[32px] bg-primary hover:bg-brandBlue-600"
+            icon={<IconArrowRight />}
+            disabled={loading}
+          >
+            {loading ? t('common.loading') : t('auth.createAccount.signIn')}
+          </Button>
+
+          <p className="text-center text-sm text-gray-600 mt-[32px]">
+            {t('auth.createAccount.alreadyHaveAccount')}{' '}
+            <Link to="/onboarding/login" className="text-primary font-medium hover:underline">
+              {t('auth.createAccount.signIn')}
+            </Link>
+          </p>
+        </form>
+      </Form>
+    </OnboardingLayout>
+  );
+}
+
+export default CreateAccount;

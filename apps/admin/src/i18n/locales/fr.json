@@ -1,0 +1,442 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur s'est produite",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "submit": "Soumettre",
+    "close": "Fermer",
+    "yes": "Oui",
+    "no": "Non",
+    "required": "Requis",
+    "proceed": "Procéder",
+    "create": "Créer",
+    "creating": "Création...",
+    "status": "Statut",
+    "page": "Page",
+    "of": "sur",
+    "loadingUsers": "Chargement des utilisateurs...",
+    "errorLoadingUsers": "Erreur : {{message}}",
+    "notifications": {
+      "loginSuccessful": "Connexion réussie",
+      "loginFailed": "Échec de la connexion"
+    }
+  },
+  "dashboard": {
+    "header": {
+      "welcomeBack": "Bon Retour",
+      "profile": "Profil",
+      "settings": "Paramètres",
+      "logout": "Déconnexion"
+    },
+    "card": {
+      "title": "Carte",
+      "createCard": "Créer une Carte",
+      "addCard": "Ajouter une carte",
+      "addNewCard": "Ajouter une nouvelle carte",
+      "cardNumber": "Numéro de carte",
+      "expiryDate": "Date d'expiration",
+      "cvv": "CVV",
+      "cardAddedSuccessfully": "Carte ajoutée avec succès",
+      "cardAddedDescription": "Votre carte a été enregistrée et est maintenant disponible pour les paiements.",
+      "noCardsFound": "Désolé ! Aucune carte de crédit trouvée.",
+      "noCardsDescription": "Vous n'avez pas encore ajouté de cartes de crédit.",
+      "placeholders": {
+        "cardNumber": "Entrez le numéro de carte",
+        "expiryDate": "MM/AA",
+        "cvv": "Entrez le CVV"
+      }
+    },
+    "quickAccess": {
+      "title": "Accès Rapide",
+      "deposit": "Dépôt",
+      "withdraw": "Retrait",
+      "exchange": "Échange",
+      "transfer": "Transfert",
+      "beneficiary": "Bénéficiaire"
+    },
+    "transactions": {
+      "title": "Transactions Récentes",
+      "searchPlaceholder": "Rechercher des transactions",
+      "pickDate": "Choisir une date",
+      "type": "Type",
+      "status": "Statut",
+      "currency": "Devise",
+      "paymentCategory": "Catégorie de Paiement",
+      "transactionId": "ID de Transaction",
+      "transactionType": "Type de Transaction",
+      "transactionTypes": {
+        "withdrawal": "Retrait d'Argent"
+      },
+      "paymentMethods": {
+        "mobileMoney": "Argent Mobile"
+      },
+      "amount": "Montant",
+      "date": "Date",
+      "time": {
+        "am": "AM",
+        "pm": "PM"
+      },
+      "statuses": {
+        "completed": "Terminé",
+        "pending": "En attente",
+        "failed": "Échoué",
+        "approved": "Approuvé"
+      },
+      "noTransactions": "Aucune transaction trouvée"
+    }
+  },
+  "wallet": {
+    "title": "Mes Portefeuilles",
+    "totalWallets": "Total {{count}} Portefeuilles",
+    "createWallet": "Créer un Portefeuille",
+    "createWalletTitle": "Créer un Nouveau Portefeuille",
+    "deposit": {
+      "title": "Déposer des Fonds",
+      "description": "Entrez le montant et sélectionnez une méthode pour déposer des fonds dans votre portefeuille.",
+      "amountPlaceholder": "Entrez le montant",
+      "confirmButton": "Confirmer le Dépôt",
+      "depositMoney": "Déposer de l'Argent",
+      "methods": {
+        "mobileMoney": {
+          "title": "Ajouter via Argent Mobile",
+          "description": "Alimentez votre compte en envoyant de l'argent via votre réseau d'argent mobile"
+        },
+        "card": {
+          "title": "Ajouter via Carte",
+          "description": "Alimentez votre compte en utilisant votre carte de crédit ou de débit"
+        }
+      },
+      "form": {
+        "amount": "Montant",
+        "phoneNumber": "Numéro de Téléphone",
+        "enterAmount": "Entrez le montant",
+        "enterPhoneNumber": "Entrez le numéro de téléphone",
+        "proceed": "Procéder"
+      }
+    },
+    "withdraw": "Retirer",
+    "availableBalance": "Solde Disponible {{currency}}",
+    "walletId": "Identifiant : {{id}}",
+    "status": {
+      "default": "Par Défaut",
+      "limit": "Limite : 600 $"
+    }
+  },
+  "auth": {
+    "createAccount": {
+      "title": "Créer un Compte",
+      "description": "Veuillez remplir vos détails correctement",
+      "firstName": "Prénom",
+      "lastName": "Nom de famille",
+      "email": "Email",
+      "phone": "Numéro de téléphone",
+      "country": "Pays de résidence",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "enterPhoneNumber": "Entrez le numéro de téléphone",
+      "selectCountry": "Sélectionner un pays",
+      "passwordsDontMatch": "Les mots de passe ne correspondent pas",
+      "alreadyHaveAccount": "Vous avez déjà un compte ?",
+      "signIn": "Se connecter"
+    },
+    "login": {
+      "title": "Bon Retour",
+      "description": "Connectez-vous à votre compte",
+      "email": "Email",
+      "emailOrPhone": "Email ou Téléphone",
+      "password": "Mot de passe",
+      "forgotPassword": "Mot de passe oublié ?",
+      "dontHaveAccount": "Vous n'avez pas de compte ?",
+      "createAccount": "Créer un compte",
+      "signIn": "Se connecter"
+    },
+    "forgotPassword": {
+      "title": "Mot de passe oublié",
+      "description": "Entrez votre email pour réinitialiser votre mot de passe",
+      "email": "Email",
+      "sendResetLink": "Envoyer le lien de réinitialisation",
+      "backToLogin": "Retour à la connexion"
+    },
+    "resetPassword": {
+      "title": "Réinitialiser le mot de passe",
+      "description": "Entrez votre nouveau mot de passe",
+      "password": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le nouveau mot de passe",
+      "resetPassword": "Réinitialiser le mot de passe"
+    },
+    "verifyReset": {
+      "title": "Vérifier le code de réinitialisation",
+      "description": "Entrez le code à 6 chiffres envoyé à votre email",
+      "otp": "Code de vérification",
+      "verify": "Vérifier",
+      "resendCode": "Renvoyer le code"
+    },
+    "passwordResetSuccess": {
+      "title": "Réinitialisation du mot de passe",
+      "description": "Votre mot de passe a été modifié avec succès.",
+      "continueToLogin": "Continuer vers la connexion"
+    }
+  },
+  "onboarding": {
+    "getStarted": {
+      "title": "Rejoignez-nous !",
+      "description": "Pour commencer ce voyage, dites-nous quel type de compte vous ouvririez.",
+      "user": {
+        "title": "Utilisateur",
+        "description": "Compte personnel pour gérer toutes vos activités."
+      },
+      "merchant": {
+        "title": "Marchand",
+        "description": "Compte professionnel pour gérer toutes vos activités."
+      }
+    },
+    "sidebar": {
+      "title": "La plateforme de transaction d'argent la plus sûre et la plus fiable.",
+      "subtitle": "Rejoignez la communauté Kpay maintenant !"
+    }
+  },
+  "userManagement": {
+    "title": "Gestion des utilisateurs",
+    "createNewUser": "Créer un nouvel utilisateur",
+    "name": "Nom",
+    "email": "Email",
+    "password": "Mot de passe",
+    "createUser": "Créer un utilisateur",
+    "creating": "Création...",
+    "users": "Utilisateurs",
+    "created": "Créé",
+    "loadingUsers": "Chargement des utilisateurs...",
+    "errorLoadingUsers": "Erreur : {{message}}"
+  },
+  "countries": {
+    "US": "États-Unis",
+    "GB": "Royaume-Uni",
+    "CA": "Canada",
+    "AU": "Australie",
+    "NG": "Nigeria",
+    "IN": "Inde",
+    "DE": "Allemagne",
+    "FR": "France",
+    "JP": "Japon",
+    "BR": "Brésil"
+  },
+  "validation": {
+    "required": "Ce champ est requis",
+    "email": "Veuillez entrer une adresse email valide",
+    "minLength": "Doit contenir au moins {{min}} caractères",
+    "maxLength": "Ne doit pas dépasser {{max}} caractères",
+    "passwordRequirements": "Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule et un chiffre",
+    "phoneNumber": "Veuillez entrer un numéro de téléphone valide",
+    "otpLength": "Le code OTP doit contenir 6 chiffres",
+    "otpFormat": "Le code OTP doit être un nombre à 6 chiffres",
+    "selectValidCountry": "Veuillez sélectionner un pays valide",
+    "selectValidCurrency": "Veuillez sélectionner une devise valide",
+    "selectValidPaymentMethod": "Veuillez sélectionner une méthode de paiement valide",
+    "selectValidNetwork": "Veuillez sélectionner un réseau valide",
+    "amountRequired": "Le montant est requis",
+    "amountNumeric": "Le montant doit être numérique",
+    "amountMinimum": "Le montant doit être d'au moins 1",
+    "accountNumberRequired": "Le numéro de compte est requis",
+    "accountNumberNumeric": "Le numéro de compte doit être numérique",
+    "firstName": "Le prénom est requis",
+    "lastName": "Le nom de famille est requis",
+    "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
+    "cardNumber": {
+      "length": "Le numéro de carte doit contenir entre 13 et 19 chiffres",
+      "format": "Le numéro de carte ne doit contenir que des chiffres",
+      "invalid": "Numéro de carte invalide",
+      "valid": "Le numéro de carte est valide"
+    },
+    "expiryDate": {
+      "format": "Veuillez entrer la date d'expiration au format MM/AA",
+      "expired": "La carte a expiré",
+      "valid": "La date d'expiration est valide"
+    },
+    "cvv": {
+      "length": "Le CVV doit contenir entre 3 et 4 chiffres",
+      "format": "Le CVV ne doit contenir que des chiffres",
+      "valid": "Le CVV est valide"
+    },
+    "status": "Statut de validation"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "dashboard": "Tableau de bord",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "logout": "Déconnexion",
+    "dashboard": "Tableau de Bord",
+    "wallet": "Portefeuille",
+    "deposit": "Dépôt",
+    "billPayment": "Paiement de Factures",
+    "creditCard": "Carte de Crédit",
+    "withdrawals": "Retraits",
+    "transfer": "Transfert",
+    "exchangeMoney": "Échange d'Argent",
+    "transactionHistory": "Historique des Transactions",
+    "ticket": "Ticket",
+    "settings": "Paramètres"
+  },
+  "placeholders": {
+    "firstName": "Jean",
+    "lastName": "Dupont",
+    "email": "jean.dupont@exemple.com",
+    "emailOrPhone": "Entrez email ou numéro de téléphone",
+    "password": "••••••••",
+    "phoneNumber": "Entrez le numéro de téléphone",
+    "selectCountry": "Sélectionner un pays",
+    "selectCurrency": "Sélectionner une devise",
+    "selectPaymentMethod": "Sélectionner une méthode de paiement",
+    "selectNetwork": "Sélectionner un réseau",
+    "enterAmount": "Entrez le montant",
+    "enterAccountNumber": "Entrez le numéro de compte"
+  },
+  "billPayment": {
+    "title": "Paiement de Factures",
+    "purchaseAirtime": "Acheter du Crédit",
+    "selectedService": "Service Sélectionné",
+    "confirmPayment": "Confirmer le Paiement de Facture",
+    "paymentSuccessful": "Paiement Réussi",
+    "paymentSuccessMessage": "Votre paiement de facture a été traité avec succès.",
+    "confirmYourRequest": "Confirmez votre Demande",
+    "amount": "Montant",
+    "fee": "Frais",
+    "destination": "Destination",
+    "service": "Service",
+    "total": "Total",
+    "confirmAndSend": "Confirmer et Envoyer",
+    "services": {
+      "airtime": "Crédit Téléphonique",
+      "airtimeDescription": "Rechargez votre téléphone mobile avec du crédit",
+      "data": "Données",
+      "dataDescription": "Achetez des forfaits de données mobiles",
+      "electricity": "Électricité",
+      "electricityDescription": "Payez vos factures d'électricité",
+      "cabletv": "Télévision par Câble",
+      "cabletvDescription": "Payez votre abonnement TV par câble",
+      "betting": "Paris",
+      "bettingDescription": "Alimentez votre compte de paris",
+      "giftcard": "Carte Cadeau",
+      "giftcardDescription": "Envoyez des cartes cadeaux à vos amis et famille",
+      "cableTv": "Télévision par Câble",
+      "giftCard": "Carte Cadeau"
+    },
+    "form": {
+      "countryOfResidence": "Pays de Résidence",
+      "selectCurrency": "Sélectionner la Devise",
+      "paymentMethod": "Méthode de Paiement",
+      "networkType": "Type de Réseau",
+      "amount": "Montant",
+      "accountNumber": "Numéro de Compte",
+      "proceed": "Procéder"
+    },
+    "countries": {
+      "nigeria": "Nigeria",
+      "ghana": "Ghana",
+      "kenya": "Kenya"
+    },
+    "currencies": {
+      "usd": "USD",
+      "ngn": "NGN",
+      "eur": "EUR"
+    },
+    "paymentMethods": {
+      "mobile": "Argent Mobile",
+      "card": "Carte de Crédit",
+      "bank": "Virement Bancaire"
+    },
+    "networks": {
+      "mtn": "MTN",
+      "airtel": "Airtel",
+      "glo": "Glo",
+      "9mobile": "9mobile",
+      "sbee": "SBEE",
+      "ekedc": "EKEDC",
+      "ikedc": "IKEDC",
+      "bet9ja": "Bet9ja"
+    }
+  },
+  "pagination": {
+    "previous": "Précédent",
+    "next": "Suivant",
+    "page": "Page {{current}} sur {{total}}"
+  },
+  "sidebar": {
+    "logo": "Logo",
+    "dashboard": "Tableau de Bord",
+    "wallet": "Portefeuille",
+    "deposit": "Dépôt",
+    "billPayment": "Paiement de Factures",
+    "creditCard": "Carte de Crédit",
+    "withdrawals": "Retraits",
+    "withdrawMoney": "Retirer de l'Argent",
+    "withdrawList": "Liste des Retraits",
+    "beneficiaries": "Bénéficiaires",
+    "transfer": "Transfert",
+    "exchangeMoney": "Échange d'Argent",
+    "transactionHistory": "Historique des Transactions",
+    "ticket": "Ticket",
+    "settings": "Paramètres"
+  },
+  "balance": {
+    "totalBalance": "Solde Total",
+    "availableBalance": "Solde Disponible",
+    "deposit": "Dépôt",
+    "withdraw": "Retrait",
+    "viewAll": "Voir Tout",
+    "wallet": "Portefeuille",
+    "totalWallets": "Total {{count}} Portefeuilles",
+    "createWallet": "Créer un Portefeuille",
+    "default": "Par Défaut",
+    "walletId": "ID: {{id}}",
+    "showBalance": "Afficher le Solde",
+    "hideBalance": "Masquer le Solde"
+  },
+  "transfer": {
+    "title": "Transférer de l'argent",
+    "description": "Envoyer de l'argent à vos amis et votre famille",
+    "whoToSend": "À qui voulez-vous envoyer ?",
+    "payWithBankTransfer": "Payer par virement bancaire",
+    "payWithCard": "Payer par carte",
+    "bankTransferDescription": "Envoyer de l'argent à un nouveau destinataire ou bénéficiaire par virement bancaire",
+    "cardDescription": "Envoyer de l'argent à un nouveau destinataire ou bénéficiaire par virement bancaire",
+    "cardEndingIn": "Carte se terminant par {{lastFour}}",
+    "searchCards": "Rechercher",
+    "amount": "Montant",
+    "destination": "Destination",
+    "enterAmount": "Entrer le montant",
+    "enterDestination": "Entrer la destination",
+    "confirmTransfer": "Confirmer le transfert",
+    "transferSuccessful": "Transfert réussi",
+    "transferSuccessMessage": "Votre demande de transfert a été traitée. Les fonds seront reflétés sous peu, selon votre fournisseur de paiement.",
+    "cancel": "Annuler",
+    "enterDetails": "Entrer les détails",
+    "currency": "Devise",
+    "changeCurrency": "Changer",
+    "proceed": "Continuer",
+    "confirm": "Confirmer le transfert",
+    "success": "Transfert réussi",
+    "bankAccount": "Compte bancaire",
+    "enterBankAccount": "Entrer le numéro de compte bancaire",
+    "recipientName": "Nom du destinataire",
+    "enterRecipientName": "Entrer le nom du destinataire",
+    "bankName": "Nom de la banque",
+    "enterBankName": "Entrer le nom de la banque",
+    "routingNumber": "Numéro de routage",
+    "enterRoutingNumber": "Entrer le numéro de routage",
+    "cardNumber": "Numéro de carte",
+    "expiryDate": "Date d'expiration",
+    "saveCard": "Enregistrer cette carte pour une utilisation future",
+    "equivalentAmounts": "Montants équivalents dans d'autres devises"
+  },
+  "footer": {
+    "copyright": "Copyright © 2025 KPpay | Tous Droits Réservés."
+  }
+}

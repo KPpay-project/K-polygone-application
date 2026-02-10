@@ -1,0 +1,27 @@
+version = 0.1
+
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "kpay-user-webapp-prod"
+s3_prefix = "kpay-user-webapp-prod"
+region = "eu-north-1"
+confirm_changeset = false
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "Environment=\"prod\""
+resolve_s3 = true
+disable_rollback = true
+image_repositories = []
+
+[dev]
+[dev.deploy]
+[dev.deploy.parameters]
+stack_name = "kpay-user-webapp-dev"
+s3_prefix = "kpay-user-webapp-dev"
+region = "eu-north-1"
+confirm_changeset = false
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "Environment=\"dev\""
+resolve_s3 = true
+disable_rollback = true
+image_repositories = []

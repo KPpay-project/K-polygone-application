@@ -1,8 +1,14 @@
+// WARNING: Financial Calculation Safety
+// This file currently uses the 'number' type for currency amounts, which is prone to floating-point errors.
+// For a production fintech application, it is strongly recommended to use a library like 'decimal.js' or 'dinero.js',
+// or to handle all amounts as integers (cents) to ensure precision.
+// TODO: Refactor to use a safe decimal type or integer math.
+
 export function formatCurrency(
   amount: number | string,
   currency: string = 'USD',
   locale: string = 'en-US',
-  options?: Intl.NumberFormatOptions
+  options?: Intl.NumberFormatOptions,
 ): string {
   const numericAmount = typeof amount === 'number' ? amount : Number(amount);
   if (!Number.isFinite(numericAmount)) {
@@ -14,7 +20,7 @@ export function formatCurrency(
     currency,
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
-    ...options
+    ...options,
   });
 
   return formatter.format(numericAmount);
@@ -42,18 +48,6 @@ export const formatBalance = (balance: number): string => {
   return balance.toFixed(2);
 };
 
-export const calculateInterest = (principal: number, rate: number, time: number, compound = false): number => {
-  if (compound) {
-    return principal * (1 + rate / 100) ** time - principal;
-  }
+export const calculateInterest = (principal: number, rate: number, time: number): number => {
   return (principal * rate * time) / 100;
-};
-
-export const formatCurrencyWithCode = (amount: number, currency = 'USD', locale = 'en-US'): string => {
-  try {
-    const formatted = formatCurrency(Number(amount), currency, locale);
-    return `${formatted} ${currency}`;
-  } catch {
-    return `${amount} ${currency}`;
-  }
 };

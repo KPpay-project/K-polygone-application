@@ -1,0 +1,9 @@
+select:focus,
+button:focus,
+[role='option']:focus,
+[role='listbox']:focus,
+[tabindex]:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}

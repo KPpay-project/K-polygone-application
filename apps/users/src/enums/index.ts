@@ -1,0 +1,48 @@
+enum PRIORITY_ENUM {
+  HIGH = 'HIGH',
+  MEDIUM = 'MEDIUM',
+  LOW = 'LOW'
+}
+
+enum BENEFICIARY_TYPE_ENUM {
+  BANK = 'BANK',
+  MOBILE_MONEY = 'MOBILE_MONEY',
+  AIRTIME = 'AIRTIME',
+  WALLET_CODE = 'WALLET_CODE'
+}
+
+const TICKET_TYPE_ENUM = {
+  CUSTOM: 'CUSTOM',
+  TRANSACTION: 'TRANSACTION'
+};
+
+enum TRANSFER_METHOD_ENUM {
+  BANK = 'bank',
+  CARD = 'card',
+  WALLET = 'wallet',
+  KPAY = 'kpay',
+  PROVIDERS = 'providers'
+}
+
+enum TRANSFER_MODE_ENUM {
+  SINGLE = 'SINGLE',
+  MULTIPLE = 'MULTIPLE',
+  BULK = 'BULK'
+}
+
+enum DEPOSITE_METHOD_ENUM {
+  BANK = 'bank',
+  CARD = 'card',
+  WALLET = 'wallet',
+  KPAY = 'kpay',
+  PROVIDERS = 'providers'
+}
+
+export {
+  PRIORITY_ENUM,
+  TRANSFER_MODE_ENUM,
+  TICKET_TYPE_ENUM,
+  TRANSFER_METHOD_ENUM,
+  DEPOSITE_METHOD_ENUM,
+  BENEFICIARY_TYPE_ENUM
+};

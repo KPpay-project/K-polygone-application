@@ -1,0 +1,1 @@
+- Fix key description on mobile

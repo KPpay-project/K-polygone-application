@@ -27,7 +27,7 @@ export interface GraphQLResponse<T = any> {
  */
 export function handleGraphQLError(
   error: ApolloError | GraphQLResponse | any,
-  fallbackMessage: string = 'An error occurred'
+  fallbackMessage: string = 'An error occurred',
 ): void {
   console.error('GraphQL Error:', error);
 

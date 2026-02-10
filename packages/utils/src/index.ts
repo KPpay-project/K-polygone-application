@@ -1,3 +1,4 @@
+/// <reference path="./declarations.d.ts" />
 export * from './currency';
 export * from './masking';
 export * from './validation';
@@ -9,3 +10,4 @@ export * from './string';
 export * from './country';
 export * from './card-formatters';
 export * from './error-handling';
+export * from './constants';

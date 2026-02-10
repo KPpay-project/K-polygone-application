@@ -18,13 +18,17 @@ export function getPropertyByPath<T>(obj: any, path: string): { value?: T; error
   }
 }
 
-export function getMultiPropertyByPath<T>(obj: any, pathQuery: string): { values?: T[]; error?: string } {
+export function getMultiPropertyByPath<T>(
+  obj: any,
+  pathQuery: string,
+): { values?: T[]; error?: string } {
   try {
     const paths = pathQuery.split(',').map((path) => path.trim());
     const values: T[] = [];
 
     paths.forEach((path) => {
-      const { value, error }: { value?: T | undefined; error?: string | undefined } = getPropertyByPath<T>(obj, path);
+      const { value, error }: { value?: T | undefined; error?: string | undefined } =
+        getPropertyByPath<T>(obj, path);
       if (error) {
         throw new Error(error);
       }
@@ -40,7 +44,7 @@ export function getMultiPropertyByPath<T>(obj: any, pathQuery: string): { values
 
 export function stripSensitiveProperties<T extends Record<string, any>, K extends keyof T>(
   object: T,
-  propertiesArray: K[]
+  propertiesArray: K[],
 ): Omit<T, K> {
   const result = { ...object };
 

@@ -10,7 +10,8 @@ export function shortenEmail(email: string, maxLength = 25): string {
   const domainNameLength = Math.ceil(maxLength * 0.3 - 3);
   const domainRestLength = Math.ceil(maxLength * 0.3 - 3);
 
-  const shortLocalPart = localPart.length > localPartLength ? localPart.slice(0, localPartLength) + '-' : localPart;
+  const shortLocalPart =
+    localPart.length > localPartLength ? localPart.slice(0, localPartLength) + '-' : localPart;
 
   const shortDomainName =
     domainName.length > domainNameLength ? domainName.slice(0, domainNameLength) + '-' : domainName;

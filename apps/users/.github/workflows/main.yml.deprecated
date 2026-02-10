@@ -1,0 +1,71 @@
+name: Deploy KPay User Frontend to S3 and Invalidate CloudFront
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Upload to S3 & Invalidate CloudFront
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📦 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🔑 Setup SSH Key
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: 📦 Initialize Submodules with SSH
+        run: |
+          git config --global url."git@github.com:".insteadOf "https://github.com/"
+          # Force clean any existing submodule state
+          git submodule deinit --force --all || true
+          rm -rf .git/modules/assets || true
+          rm -rf assets || true
+          # Initialize and update submodules
+          git submodule sync --recursive
+          git submodule update --init --recursive --force
+
+      - name: 🔐 Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1
+
+      - name: 🧰 Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: 📥 Install Dependencies
+        run: pnpm install --force
+
+      - name: 🛠️ Build Vite App
+        run: pnpm run build
+
+      - name: ⬆️ Upload Files to S3
+        run: |
+          echo "Uploading dist/ to s3://${{ secrets.S3_BUCKET_NAME }}"
+          aws s3 sync dist/ s3://${{ secrets.S3_BUCKET_NAME }} --delete
+
+      - name: 🧹 Invalidate CloudFront Cache
+        run: |
+          echo "Invalidating CloudFront cache for distribution: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}"
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
+
+      - name: ✅ Deployment Complete
+        run: |
+          echo "✅ Deployment complete!"
