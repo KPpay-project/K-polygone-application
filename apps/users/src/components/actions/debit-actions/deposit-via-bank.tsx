@@ -2,7 +2,7 @@ import { useMutation } from '@apollo/client';
 import { useState } from 'react';
 import { DEPOSIT_VIA_BANK } from '@repo/api';
 import { Button } from 'k-polygon-assets/components';
-import UsersCurrencyDropdown from '@/components/currency-dropdown/users-currency-dropdown.tsx';
+import { UsersCurrencyDropdown } from '@repo/ui';
 import { toast } from 'sonner';
 import DefaultModal from '@/components/sub-modules/popups/modal.tsx';
 import { copyToClipboard } from '@/utils/copy-to-clipboard.tsx';
