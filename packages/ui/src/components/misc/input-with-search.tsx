@@ -47,45 +47,49 @@ export const InputWithSearch = React.forwardRef<HTMLButtonElement, InputWithSear
     },
     ref,
   ) => {
-  const [open, setOpen] = React.useState(false);
-  const [internalValue, setInternalValue] = React.useState(value || '');
+    const [open, setOpen] = React.useState(false);
+    const [internalValue, setInternalValue] = React.useState(value || '');
 
-  React.useEffect(() => {
-    if (value !== undefined) {
-      setInternalValue(value);
-    }
-  }, [value]);
+    React.useEffect(() => {
+      if (value !== undefined) {
+        setInternalValue(value);
+      }
+    }, [value]);
 
-  const selectedValue = value !== undefined ? value : internalValue;
+    const selectedValue = value !== undefined ? value : internalValue;
 
-  const handleSelect = (currentValue: string) => {
-    const newValue = currentValue === selectedValue ? '' : currentValue;
-    if (value === undefined) {
-      setInternalValue(newValue);
-    }
-    onChange?.(newValue);
-    setOpen(false);
-  };
+    const handleSelect = (currentValue: string) => {
+      const newValue = currentValue === selectedValue ? '' : currentValue;
+      if (value === undefined) {
+        setInternalValue(newValue);
+      }
+      onChange?.(newValue);
+      setOpen(false);
+    };
 
-  const selectedLabel = options.find((option) => option.value === selectedValue)?.label;
+    const selectedLabel = options.find((option) => option.value === selectedValue)?.label;
 
     return (
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
+      <Popover open={open}  onOpenChange={setOpen}>
+        <PopoverTrigger  asChild>
           <Button
             ref={ref}
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className={cn('justify-between border-black text-black', width, className)}
+            className={cn('justify-between bg-gray-100 border-black text-black', width, className)}
             disabled={disabled}
           >
             {selectedValue ? selectedLabel : placeholder}
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className={cn('p-0', width, contentClassName)}>
-          <Command>
+        <PopoverContent className={cn('p-0 ', width, contentClassName)}>
+          <Command style={
+            {
+              width: "250px"
+            }
+          } >
             <CommandInput placeholder={searchPlaceholder} />
             <CommandList>
               <CommandEmpty>{emptyMessage}</CommandEmpty>

@@ -45,7 +45,8 @@ export const CountrySelector = forwardRef<HTMLButtonElement, CountrySelectorProp
     const getCountryByCode = (codeOrName?: string) =>
       customCountries.find((c) => c.code === codeOrName || c.name === codeOrName);
     const defaultCountry =
-      getCountryByCode(value) || (!userCountryLoading ? getCountryByCode(userCountryCode) : undefined);
+      getCountryByCode(value) ||
+      (!userCountryLoading ? getCountryByCode(userCountryCode) : undefined);
     const [selectedCountry, setSelectedCountry] = useState<CountryOption | undefined>(
       defaultCountry,
     );

@@ -32,3 +32,4 @@ export * from './components/misc/input-with-search';
 export * from './components/misc/primary-phone-number-input';
 export * from './hooks/use-mobile';
 export * from './components/misc/country-selector';
+export * from './components/misc/users-currency-dropdown';
