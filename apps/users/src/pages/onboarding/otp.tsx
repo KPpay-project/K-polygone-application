@@ -12,8 +12,6 @@ import { useMutation } from '@apollo/client';
 import { VERIFY_OTP } from '@repo/api';
 import { toast } from 'sonner';
 
-
-
 function OTPPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -60,7 +58,11 @@ function OTPPage() {
   }
 
   return (
-    <OnboardingLayout title={t('auth.verifyOtp.title', { defaultValue: 'Verify OTP' })} className="!items-start" canGoBack>
+    <OnboardingLayout
+      title={t('auth.verifyOtp.title', { defaultValue: 'Verify OTP' })}
+      className="!items-start"
+      canGoBack
+    >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
@@ -85,13 +87,10 @@ function OTPPage() {
             )}
           />
 
-          <Button
-            type="submit"
-            className="w-full mt-[32px] bg-primary hover:bg-brandBlue-600"
-         
-            disabled={loading}
-          >
-            {loading ? t('common.processing', { defaultValue: 'Verifying...' }) : t('auth.verifyOtp.submit', { defaultValue: 'Verify Code' })}
+          <Button type="submit" className="w-full mt-[32px] bg-primary hover:bg-brandBlue-600" disabled={loading}>
+            {loading
+              ? t('common.processing', { defaultValue: 'Verifying...' })
+              : t('auth.verifyOtp.submit', { defaultValue: 'Verify Code' })}
           </Button>
         </form>
       </Form>

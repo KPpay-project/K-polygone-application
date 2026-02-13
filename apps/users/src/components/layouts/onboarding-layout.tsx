@@ -52,7 +52,6 @@ const OnboardingLayout: FC<IProps> = ({ children, description, title, canGoBack,
 
   return (
     <div className="h-screen bg-white flex flex-col overflow-hidden">
-    
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
         <motion.div
           className={cn(
@@ -61,13 +60,14 @@ const OnboardingLayout: FC<IProps> = ({ children, description, title, canGoBack,
             'px-4 py-6 sm:px-6 sm:py-8 md:px-8 lg:px-12',
             'h-full overflow-hidden'
           )}
-          
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: 'easeOut' }}
         >
-          <div className="w-full xl:w-[55%] max-w-sm sm:max-w-md 
-          lg:max-w-lg xl:max-w-md mx-auto flex flex-col h-full">
+          <div
+            className="w-full xl:w-[55%] max-w-sm sm:max-w-md 
+          lg:max-w-lg xl:max-w-md mx-auto flex flex-col h-full"
+          >
             <motion.div
               className="mb-6 mt-8 sm:mt-12  lg:mt-4 xl:mt-2 flex-shrink-0"
               initial={{ opacity: 0, y: 10 }}
@@ -87,10 +87,7 @@ const OnboardingLayout: FC<IProps> = ({ children, description, title, canGoBack,
                 </motion.div>
               )}
 
-
-              <Typography variant={"h3"}>
-                {title}
-              </Typography>
+              <Typography variant={'h3'}>{title}</Typography>
 
               {description && (
                 <motion.p
@@ -129,8 +126,10 @@ const OnboardingLayout: FC<IProps> = ({ children, description, title, canGoBack,
           <div className="text-center max-w-md xl:max-w-lg flex flex-col items-center">
             <div className="mb-6 w-[90%]">
               <h3 className="text-xl xl:text-xl font-semibold leading-tight">{t('onboarding.sidebar.title')}</h3>
-              <p className="mt-3 xl:mt-4 font-medium text-white/80 text-base
-               xl:text-md mb-6 xl:mb-8 leading-relaxed">
+              <p
+                className="mt-3 xl:mt-4 font-medium text-white/80 text-base
+               xl:text-md mb-6 xl:mb-8 leading-relaxed"
+              >
                 {t('onboarding.sidebar.subtitle')}
               </p>
             </div>
@@ -145,7 +144,7 @@ const OnboardingLayout: FC<IProps> = ({ children, description, title, canGoBack,
           </div>
         </motion.div>
       </div>
-      
+
       <Footer />
     </div>
   );

@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState,  useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import Turnstile from 'react-turnstile';
@@ -18,7 +18,7 @@ import { Link, useNavigate } from '@tanstack/react-router';
 import { Form, FormControl, FormField, FormItem, FormLabel, Input } from '@repo/ui';
 
 import { Eye, EyeOff } from 'lucide-react';
-import {  Head } from '@/components/common';
+import { Head } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { Loader } from '@repo/ui';
 

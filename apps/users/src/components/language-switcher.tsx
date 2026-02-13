@@ -54,9 +54,7 @@ export function LanguageSwitcher() {
             <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-blue-50 to-indigo-50 text-base transition-transform duration-200 group-hover:scale-110 dark:from-blue-900/30 dark:to-indigo-900/30">
               {currentLanguage.flag}
             </div>
-            <Typography variant={'small'}>
-              {currentLanguage.nativeName}
-            </Typography>
+            <Typography variant={'small'}>{currentLanguage.nativeName}</Typography>
             <Globe className="ml-auto h-4 w-4 text-gray-400 transition-colors duration-200 group-hover:text-blue-500" />
           </div>
         </SelectValue>

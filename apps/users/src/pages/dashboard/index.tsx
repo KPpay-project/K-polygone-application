@@ -75,9 +75,9 @@ function DashboardHome() {
 
   return (
     <DashboardLayout>
-      <div className="p-4 md:p-6 max-w-full overflow-hidden">
-        <div className="flex flex-col 2xl:flex-row gap-4 2xl:gap-6 max-w-full">
-          <div className="flex-1 2xl:w-[720px] min-w-0">
+      <div className="max-w-full overflow-hidden">
+        <div className="flex flex-col xl:flex-row gap-4 xl:gap-6 max-w-full">
+          <div className="flex-1 min-w-0">
             {kycRequired && (
               <div data-tour="account-verification">
                 <KycStatusBanner className="mb-4 md:mb-6 py-[1rem]" />

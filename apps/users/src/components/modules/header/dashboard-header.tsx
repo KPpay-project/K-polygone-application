@@ -12,7 +12,13 @@ import { useLogout } from '@/utils/logout';
 import { ArrowDown2 } from 'iconsax-reactjs';
 import { LanguageSwitcher } from '@/components/language-switcher';
 
-const DashboardHeader = () => {
+interface DashboardHeaderProps {
+  onMenuClick?: () => void;
+}
+
+import { Menu } from 'lucide-react';
+
+const DashboardHeader = ({ onMenuClick }: DashboardHeaderProps) => {
   const { t } = useTranslation();
   const user = useUser();
   const { logout } = useLogout();
@@ -32,9 +38,14 @@ const DashboardHeader = () => {
   };
 
   return (
-    <div className={'bg-white w-full h-[70px] px-6 flex items-center justify-between'}>
-      <div>
-        <h3 className={'font-bold text-lg'}>{t('dashboard.header.welcomeBack')}</h3>
+    <div className={'bg-white w-full h-[60px] px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30'}>
+      <div className="flex items-center gap-3">
+        {onMenuClick && (
+          <button onClick={onMenuClick} className="lg:hidden">
+            <Menu className="w-5 h-5 text-gray-700" />
+          </button>
+        )}
+        <h3 className={'font-bold text-base hidden sm:block'}>{t('dashboard.header.welcomeBack')}</h3>
       </div>
 
       <div className="flex items-center gap-3">

@@ -92,10 +92,7 @@ function ForgotPassword() {
             </Link>
           </p>
 
-
-          {
-            loading && <Loader />
-          }
+          {loading && <Loader />}
         </form>
       </Form>
     </OnboardingLayout>

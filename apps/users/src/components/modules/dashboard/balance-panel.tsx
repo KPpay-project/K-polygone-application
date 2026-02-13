@@ -5,7 +5,7 @@ import { Copy, Eye, EyeOff, Plus } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useLocation } from '@tanstack/react-router';
 import { useCurrencyStore } from '@/store/currency-store';
 import { useCurrencies } from '@/hooks/use-currencies';
 import { formatCurrencyAmount } from '@/utils/currency-converter';
@@ -22,6 +22,9 @@ import { cn } from '@/lib/utils';
 export function BalancePanel() {
   const { data: userWalletsData, refetch } = useGetMyWallets();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isDashboard = location.pathname === '/dashboard' || location.pathname === '/';
 
   const handleDepositSuccess = () => {
     refetch();
@@ -135,7 +138,7 @@ export function BalancePanel() {
     }));
   };
 
-  const walletLenght = wallets.length;
+  const walletLenght = wallets?.length;
   return (
     <ModularCard
       title={<h3 className="text-[18px] text-[#444] font-light">{t('balance.totalBalance')}</h3>}
@@ -274,7 +277,7 @@ export function BalancePanel() {
           )}
 
           {wallets?.length > 1 &&
-            wallets.map((wallet, index) => (
+            (isDashboard ? wallets.slice(0, 3) : wallets).map((wallet, index) => (
               <UserWalletCard
                 key={wallet.id}
                 wallet={wallet}
@@ -285,6 +288,16 @@ export function BalancePanel() {
                 t={t}
               />
             ))}
+          {isDashboard && wallets.length > 3 && (
+            <div className="col-span-1 md:col-span-3 flex justify-center mt-4">
+              <button
+                onClick={() => navigate({ to: '/wallet' })}
+                className="text-primary hover:text-primary/80 font-medium text-sm flex items-center gap-1"
+              >
+                See more
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </ModularCard>

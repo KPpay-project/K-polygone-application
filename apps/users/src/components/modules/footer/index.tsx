@@ -13,7 +13,7 @@ export function Footer({ sticky }: { sticky?: boolean }) {
         'py-[18px] pl-[42px] pr-[85px] bg-transparent flex items-center justify-between w-full bsg-whsite h-[56px]'
       )}
     >
-      <Typography variant={'small'} className='text-gray-600 font-normal'>
+      <Typography variant={'small'} className="text-gray-600 font-normal">
         {/* {t('footer.copyright')} */}
       </Typography>
       <div>

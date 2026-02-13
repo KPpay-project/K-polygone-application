@@ -7,8 +7,7 @@ import { CustomFormMessage } from '@/components/common/forms/form-message';
 import OnboardingLayout from '@/components/layouts/onboarding-layout';
 import { resetPasswordSchema } from '@/schema/auth';
 import { useNavigate } from '@tanstack/react-router';
-import { Button, Form, FormControl, 
-  FormField, FormItem, FormLabel, Input } from '@repo/ui';
+import { Button, Form, FormControl, FormField, FormItem, FormLabel, Input } from '@repo/ui';
 import { IconArrowRight } from 'k-polygon-assets/icons';
 import { Eye, EyeOff } from 'lucide-react';
 import z from 'zod';
@@ -127,7 +126,9 @@ function ResetPassword({ token }: ResetPasswordProps) {
             icon={!loading && <IconArrowRight />}
             disabled={loading}
           >
-            {loading ? t('common.processing', { defaultValue: 'Resetting...' }) : t('auth.resetPassword.submit', { defaultValue: 'Reset Password' })}
+            {loading
+              ? t('common.processing', { defaultValue: 'Resetting...' })
+              : t('auth.resetPassword.submit', { defaultValue: 'Reset Password' })}
           </Button>
         </form>
       </Form>

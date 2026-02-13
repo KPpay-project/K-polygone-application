@@ -98,12 +98,12 @@ export const Sidebar: FC<SidebarProps> = ({ isOpen = true, onClose }) => {
   return (
     <>
       <div
-        className={`fixed  inset-y-0 left-0 z-50 w-[240px] transform bg-[#010A23] text-white transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:flex lg:flex-col lg:min-h-screen ${mobileClass}`}
+        className={`fixed  inset-y-0 left-0 z-50 w-[220px] transform bg-[#010A23] text-white transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:flex lg:flex-col lg:min-h-screen ${mobileClass}`}
       >
-        <div className="p-5 pt-[45px] pb-[32px] pl-[24px] font-bold text-sm uppercase tracking-widest">
+        <div className="p-4 pt-[40px] pb-[28px] pl-[20px] font-bold text-sm uppercase tracking-widest">
           <Logo />
         </div>
-        <div className="w-full px-6">
+        <div className="w-full px-5">
           <div className="border-t border-gray-600" />
         </div>
         <nav className="flex-1 overflow-y-auto px-4 py-4">
