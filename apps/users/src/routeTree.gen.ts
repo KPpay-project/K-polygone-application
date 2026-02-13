@@ -37,9 +37,9 @@ import { Route as OnboardingGetStartedRouteImport } from './routes/onboarding/ge
 import { Route as OnboardingForgotPasswordRouteImport } from './routes/onboarding/forgot-password'
 import { Route as OnboardingCreateAccountRouteImport } from './routes/onboarding/create-account'
 import { Route as MerchantCreatePaymentLinkRouteImport } from './routes/merchant/create-payment-link'
+import { Route as DashboardBeneficiariesRouteImport } from './routes/dashboard/beneficiaries'
 import { Route as WithdrawalsMoneyIndexRouteImport } from './routes/withdrawals/money/index'
 import { Route as WithdrawalsListIndexRouteImport } from './routes/withdrawals/list/index'
-import { Route as WithdrawalsBeneficiariesIndexRouteImport } from './routes/withdrawals/beneficiaries/index'
 import { Route as SettingsVerificationsIndexRouteImport } from './routes/settings/verifications/index'
 import { Route as SettingsUpgradeAccountIndexRouteImport } from './routes/settings/upgrade-account/index'
 import { Route as SettingsSecurityIndexRouteImport } from './routes/settings/security/index'
@@ -200,6 +200,11 @@ const MerchantCreatePaymentLinkRoute =
     path: '/merchant/create-payment-link',
     getParentRoute: () => rootRouteImport,
   } as any)
+const DashboardBeneficiariesRoute = DashboardBeneficiariesRouteImport.update({
+  id: '/dashboard/beneficiaries',
+  path: '/dashboard/beneficiaries',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WithdrawalsMoneyIndexRoute = WithdrawalsMoneyIndexRouteImport.update({
   id: '/withdrawals/money/',
   path: '/withdrawals/money/',
@@ -210,12 +215,6 @@ const WithdrawalsListIndexRoute = WithdrawalsListIndexRouteImport.update({
   path: '/withdrawals/list/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WithdrawalsBeneficiariesIndexRoute =
-  WithdrawalsBeneficiariesIndexRouteImport.update({
-    id: '/withdrawals/beneficiaries/',
-    path: '/withdrawals/beneficiaries/',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const SettingsVerificationsIndexRoute =
   SettingsVerificationsIndexRouteImport.update({
     id: '/settings/verifications/',
@@ -305,6 +304,7 @@ const SettingsSecurityAppRoute = SettingsSecurityAppRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard/beneficiaries': typeof DashboardBeneficiariesRoute
   '/merchant/create-payment-link': typeof MerchantCreatePaymentLinkRoute
   '/onboarding/create-account': typeof OnboardingCreateAccountRoute
   '/onboarding/forgot-password': typeof OnboardingForgotPasswordRoute
@@ -347,12 +347,12 @@ export interface FileRoutesByFullPath {
   '/settings/security/': typeof SettingsSecurityIndexRoute
   '/settings/upgrade-account/': typeof SettingsUpgradeAccountIndexRoute
   '/settings/verifications/': typeof SettingsVerificationsIndexRoute
-  '/withdrawals/beneficiaries/': typeof WithdrawalsBeneficiariesIndexRoute
   '/withdrawals/list/': typeof WithdrawalsListIndexRoute
   '/withdrawals/money/': typeof WithdrawalsMoneyIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard/beneficiaries': typeof DashboardBeneficiariesRoute
   '/merchant/create-payment-link': typeof MerchantCreatePaymentLinkRoute
   '/onboarding/create-account': typeof OnboardingCreateAccountRoute
   '/onboarding/forgot-password': typeof OnboardingForgotPasswordRoute
@@ -395,13 +395,13 @@ export interface FileRoutesByTo {
   '/settings/security': typeof SettingsSecurityIndexRoute
   '/settings/upgrade-account': typeof SettingsUpgradeAccountIndexRoute
   '/settings/verifications': typeof SettingsVerificationsIndexRoute
-  '/withdrawals/beneficiaries': typeof WithdrawalsBeneficiariesIndexRoute
   '/withdrawals/list': typeof WithdrawalsListIndexRoute
   '/withdrawals/money': typeof WithdrawalsMoneyIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard/beneficiaries': typeof DashboardBeneficiariesRoute
   '/merchant/create-payment-link': typeof MerchantCreatePaymentLinkRoute
   '/onboarding/create-account': typeof OnboardingCreateAccountRoute
   '/onboarding/forgot-password': typeof OnboardingForgotPasswordRoute
@@ -444,7 +444,6 @@ export interface FileRoutesById {
   '/settings/security/': typeof SettingsSecurityIndexRoute
   '/settings/upgrade-account/': typeof SettingsUpgradeAccountIndexRoute
   '/settings/verifications/': typeof SettingsVerificationsIndexRoute
-  '/withdrawals/beneficiaries/': typeof WithdrawalsBeneficiariesIndexRoute
   '/withdrawals/list/': typeof WithdrawalsListIndexRoute
   '/withdrawals/money/': typeof WithdrawalsMoneyIndexRoute
 }
@@ -452,6 +451,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/dashboard/beneficiaries'
     | '/merchant/create-payment-link'
     | '/onboarding/create-account'
     | '/onboarding/forgot-password'
@@ -494,12 +494,12 @@ export interface FileRouteTypes {
     | '/settings/security/'
     | '/settings/upgrade-account/'
     | '/settings/verifications/'
-    | '/withdrawals/beneficiaries/'
     | '/withdrawals/list/'
     | '/withdrawals/money/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/dashboard/beneficiaries'
     | '/merchant/create-payment-link'
     | '/onboarding/create-account'
     | '/onboarding/forgot-password'
@@ -542,12 +542,12 @@ export interface FileRouteTypes {
     | '/settings/security'
     | '/settings/upgrade-account'
     | '/settings/verifications'
-    | '/withdrawals/beneficiaries'
     | '/withdrawals/list'
     | '/withdrawals/money'
   id:
     | '__root__'
     | '/'
+    | '/dashboard/beneficiaries'
     | '/merchant/create-payment-link'
     | '/onboarding/create-account'
     | '/onboarding/forgot-password'
@@ -590,13 +590,13 @@ export interface FileRouteTypes {
     | '/settings/security/'
     | '/settings/upgrade-account/'
     | '/settings/verifications/'
-    | '/withdrawals/beneficiaries/'
     | '/withdrawals/list/'
     | '/withdrawals/money/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardBeneficiariesRoute: typeof DashboardBeneficiariesRoute
   MerchantCreatePaymentLinkRoute: typeof MerchantCreatePaymentLinkRoute
   OnboardingCreateAccountRoute: typeof OnboardingCreateAccountRoute
   OnboardingForgotPasswordRoute: typeof OnboardingForgotPasswordRoute
@@ -639,7 +639,6 @@ export interface RootRouteChildren {
   SettingsSecurityIndexRoute: typeof SettingsSecurityIndexRoute
   SettingsUpgradeAccountIndexRoute: typeof SettingsUpgradeAccountIndexRoute
   SettingsVerificationsIndexRoute: typeof SettingsVerificationsIndexRoute
-  WithdrawalsBeneficiariesIndexRoute: typeof WithdrawalsBeneficiariesIndexRoute
   WithdrawalsListIndexRoute: typeof WithdrawalsListIndexRoute
   WithdrawalsMoneyIndexRoute: typeof WithdrawalsMoneyIndexRoute
 }
@@ -842,6 +841,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MerchantCreatePaymentLinkRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/beneficiaries': {
+      id: '/dashboard/beneficiaries'
+      path: '/dashboard/beneficiaries'
+      fullPath: '/dashboard/beneficiaries'
+      preLoaderRoute: typeof DashboardBeneficiariesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/withdrawals/money/': {
       id: '/withdrawals/money/'
       path: '/withdrawals/money'
@@ -854,13 +860,6 @@ declare module '@tanstack/react-router' {
       path: '/withdrawals/list'
       fullPath: '/withdrawals/list/'
       preLoaderRoute: typeof WithdrawalsListIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/withdrawals/beneficiaries/': {
-      id: '/withdrawals/beneficiaries/'
-      path: '/withdrawals/beneficiaries'
-      fullPath: '/withdrawals/beneficiaries/'
-      preLoaderRoute: typeof WithdrawalsBeneficiariesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings/verifications/': {
@@ -973,6 +972,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardBeneficiariesRoute: DashboardBeneficiariesRoute,
   MerchantCreatePaymentLinkRoute: MerchantCreatePaymentLinkRoute,
   OnboardingCreateAccountRoute: OnboardingCreateAccountRoute,
   OnboardingForgotPasswordRoute: OnboardingForgotPasswordRoute,
@@ -1022,7 +1022,6 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsSecurityIndexRoute: SettingsSecurityIndexRoute,
   SettingsUpgradeAccountIndexRoute: SettingsUpgradeAccountIndexRoute,
   SettingsVerificationsIndexRoute: SettingsVerificationsIndexRoute,
-  WithdrawalsBeneficiariesIndexRoute: WithdrawalsBeneficiariesIndexRoute,
   WithdrawalsListIndexRoute: WithdrawalsListIndexRoute,
   WithdrawalsMoneyIndexRoute: WithdrawalsMoneyIndexRoute,
 }

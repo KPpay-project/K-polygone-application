@@ -34,7 +34,13 @@ export const useMenuItems = (): SidebarItemProps[] => {
     {
       icon: <Profile2User size={18} variant="Outline" />,
       label: t('sidebar.beneficiaries'),
-      href: '/withdrawals/beneficiaries'
+      href: '/dashboard/beneficiaries',
+      subItems: [
+        { label: 'Bank Transfer', href: '/dashboard/beneficiaries?type=BANK' },
+        { label: 'KPay User', href: '/dashboard/beneficiaries?type=WALLET_CODE' },
+        { label: 'Mobile Money', href: '/dashboard/beneficiaries?type=MOBILE_MONEY' },
+        { label: 'Airtime', href: '/dashboard/beneficiaries?type=AIRTIME' }
+      ]
     },
     {
       icon: <CardReceive size="18" variant="Outline" />,
@@ -42,7 +48,6 @@ export const useMenuItems = (): SidebarItemProps[] => {
       href: '/withdrawals',
       subItems: [
         { label: t('sidebar.withdrawMoney'), href: '/withdrawals/money' }
-        // { label: t('sidebar.withdrawList'), href: '/withdrawals/list' },
       ]
     },
 
@@ -90,13 +95,22 @@ export const menuItems: SidebarItemProps[] = [
   { icon: <Bill size="18" variant="Outline" />, label: 'Bill Payment', href: '/bill-payment' },
   { icon: <Card size="18" variant="Outline" />, label: 'Credit Card', href: '/credit-card' },
   {
+    icon: <Profile2User size={18} variant="Outline" />,
+    label: 'Beneficiaries',
+    href: '/dashboard/beneficiaries',
+    subItems: [
+      { label: 'Bank Transfer', href: '/dashboard/beneficiaries?type=BANK' },
+      { label: 'KPay User', href: '/dashboard/beneficiaries?type=WALLET_CODE' },
+      { label: 'Mobile Money', href: '/dashboard/beneficiaries?type=MOBILE_MONEY' },
+      { label: 'Airtime', href: '/dashboard/beneficiaries?type=AIRTIME' }
+    ]
+  },
+  {
     icon: <CardReceive size="18" variant="Outline" />,
     label: 'Withdrawals',
     href: '/withdrawals',
     subItems: [
-      { label: 'Withdraw Money', href: '/withdrawals/money' },
-      // { label: 'Withdraw List', href: '/withdrawals/list' },
-      { label: 'Beneficiaries', href: '/withdrawals/beneficiaries' }
+      { label: 'Withdraw Money', href: '/withdrawals/money' }
     ]
   },
   {
