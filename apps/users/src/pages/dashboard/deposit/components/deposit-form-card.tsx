@@ -16,7 +16,6 @@ interface DepositFormCardProps {
 }
 
 export const DepositFormCard = ({ selectedMethod }: DepositFormCardProps) => {
-  console.log(selectedMethod);
   return (
     <div className="w-full ">
       <ModularCard className="min-h-96 px-4">

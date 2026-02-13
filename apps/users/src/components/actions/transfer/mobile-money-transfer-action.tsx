@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 import Loading from '@/components/common/loading';
 import { Typography } from '@/components/sub-modules/typography/typography';
 import { SupportedProviders } from '@repo/types';
-import { PrimaryPhoneNumberInput } from '@/components/common/inputs/primary-phone-number-input';
+import { PrimaryPhoneNumberInput } from '@repo/ui';
 import ErrorAndSuccessFallback from '@/components/sub-modules/modal-contents/error-success-fallback';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { VerifyTransactionPin } from '@/components/actions/pin/verify-transaction-pin';

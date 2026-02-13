@@ -5,6 +5,7 @@ import {
   EmptyWalletAdd,
   Home,
   MoneyChange,
+  Profile2User,
   Setting2,
   Tag2,
   Ticket,
@@ -31,13 +32,17 @@ export const useMenuItems = (): SidebarItemProps[] => {
     { icon: <MoneyChange size="18" variant="Outline" />, label: 'Transfer', href: '/transfer/single' },
 
     {
+      icon: < Profile2User size={18} variant="Outline" />,
+      label: t('sidebar.beneficiaries'),
+      href: '/withdrawals/beneficiaries'
+    },
+    {
       icon: <CardReceive size="18" variant="Outline" />,
       label: t('sidebar.withdrawals'),
       href: '/withdrawals',
       subItems: [
-        { label: t('sidebar.withdrawMoney'), href: '/withdrawals/money' },
+        { label: t('sidebar.withdrawMoney'), href: '/withdrawals/money' }
         // { label: t('sidebar.withdrawList'), href: '/withdrawals/list' },
-        { label: t('sidebar.beneficiaries'), href: '/withdrawals/beneficiaries' }
       ]
     },
 

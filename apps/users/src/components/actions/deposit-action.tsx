@@ -13,7 +13,7 @@ import UsersCurrencyDropdown from '@/components/currency-dropdown/users-currency
 import ErrorAndSuccessFallback from '@/components/sub-modules/modal-contents/error-success-fallback.tsx';
 import { extractErrorMessages } from '@/utils';
 import { NumberInput } from '@/components/ui/input';
-import { PrimaryPhoneNumberInput } from '../common/inputs/primary-phone-number-input';
+import { PrimaryPhoneNumberInput } from '@repo/ui';
 import { useGetMyWallets } from '@/hooks/api';
 
 interface DepositActionProps {

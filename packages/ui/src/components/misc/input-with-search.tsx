@@ -23,83 +23,99 @@ export interface InputWithSearchProps {
   value?: string;
   onChange?: (value: string) => void;
   placeholder?: string;
+  searchPlaceholder?: string;
   emptyMessage?: string;
   className?: string;
+  contentClassName?: string;
   disabled?: boolean;
   width?: string;
 }
 
-export function InputWithSearch({
-  options,
-  value,
-  onChange,
-  placeholder = 'Select option...',
-  emptyMessage = 'No option found.',
-  className,
-  disabled,
-  width = 'w-full',
-}: InputWithSearchProps) {
-  const [open, setOpen] = React.useState(false);
-  const [internalValue, setInternalValue] = React.useState(value || '');
+export const InputWithSearch = React.forwardRef<HTMLButtonElement, InputWithSearchProps>(
+  (
+    {
+      options,
+      value,
+      onChange,
+      placeholder = 'Select option...',
+      searchPlaceholder = 'Search...',
+      emptyMessage = 'No option found.',
+      className,
+      contentClassName,
+      disabled,
+      width = 'w-full',
+    },
+    ref,
+  ) => {
+    const [open, setOpen] = React.useState(false);
+    const [internalValue, setInternalValue] = React.useState(value || '');
 
-  React.useEffect(() => {
-    if (value !== undefined) {
-      setInternalValue(value);
-    }
-  }, [value]);
+    React.useEffect(() => {
+      if (value !== undefined) {
+        setInternalValue(value);
+      }
+    }, [value]);
 
-  const selectedValue = value !== undefined ? value : internalValue;
+    const selectedValue = value !== undefined ? value : internalValue;
 
-  const handleSelect = (currentValue: string) => {
-    const newValue = currentValue === selectedValue ? '' : currentValue;
-    if (value === undefined) {
-      setInternalValue(newValue);
-    }
-    onChange?.(newValue);
-    setOpen(false);
-  };
+    const handleSelect = (currentValue: string) => {
+      const newValue = currentValue === selectedValue ? '' : currentValue;
+      if (value === undefined) {
+        setInternalValue(newValue);
+      }
+      onChange?.(newValue);
+      setOpen(false);
+    };
 
-  const selectedLabel = options.find((option) => option.value === selectedValue)?.label;
+    const selectedLabel = options.find((option) => option.value === selectedValue)?.label;
 
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className={cn('justify-between border-black text-black', width, className)}
-          disabled={disabled}
-        >
-          {selectedValue ? selectedLabel : placeholder}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className={cn('p-0', width)}>
-        <Command>
-          <CommandInput placeholder="Search..." />
-          <CommandList>
-            <CommandEmpty>{emptyMessage}</CommandEmpty>
-            <CommandGroup>
-              {options.map((option) => (
-                <CommandItem
-                  key={option.value}
-                  value={option.label}
-                  onSelect={() => handleSelect(option.value)}
-                >
-                  <Check
-                    className={cn(
-                      'mr-2 h-4 w-4',
-                      selectedValue === option.value ? 'opacity-100' : 'opacity-0',
-                    )}
-                  />
-                  {option.label}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
-  );
-}
+    return (
+      <Popover open={open}  onOpenChange={setOpen}>
+        <PopoverTrigger  asChild>
+          <Button
+            ref={ref}
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className={cn('justify-between bg-gray-100 border-black text-black', width, className)}
+            disabled={disabled}
+          >
+            {selectedValue ? selectedLabel : placeholder}
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className={cn('p-0 ', width, contentClassName)}>
+          <Command style={
+            {
+              width: "250px"
+            }
+          } >
+            <CommandInput placeholder={searchPlaceholder} />
+            <CommandList>
+              <CommandEmpty>{emptyMessage}</CommandEmpty>
+              <CommandGroup>
+                {options.map((option) => (
+                  <CommandItem
+                    key={option.value}
+                    value={option.label}
+                    onSelect={() => handleSelect(option.value)}
+                  >
+                    <Check
+                      className={cn(
+                        'mr-2 h-4 w-4',
+                        selectedValue === option.value ? 'opacity-100' : 'opacity-0',
+                      )}
+                    />
+                    {option.label}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+    );
+  },
+);
+
+InputWithSearch.displayName = 'InputWithSearch';

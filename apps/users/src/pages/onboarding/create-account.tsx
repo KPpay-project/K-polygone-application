@@ -6,33 +6,26 @@ import { useTranslation } from 'react-i18next';
 import { REGISTER_USER } from '@repo/api';
 import type { UserInput, RegisterUserResponse } from '@repo/types';
 import { CustomFormMessage } from '@/components/common/forms/form-message';
-import { CountrySelector } from '@/components/common/country-selector';
+import { CountrySelector } from '@repo/ui';
 import OnboardingLayout from '@/components/layouts/onboarding-layout';
 import { createAccountSchema } from '@/schema/auth';
 import { countries, ENV } from '@/utils/constants';
 import { handleGraphQLError } from '@/utils/error-handling';
 import { Link } from '@tanstack/react-router';
-import { Button, Form, FormControl, FormField, FormItem, FormLabel, Input } from 'k-polygon-assets/components';
-import { IconArrowRight } from 'k-polygon-assets/icons';
+import { Button, Form, FormControl, FormField, FormItem, FormLabel, Input } from '@repo/ui';
+import { ArrowLeft as IconArrowRight } from 'lucide-react';
 import { Eye, EyeOff } from 'lucide-react';
 import z from 'zod';
 import { toast } from 'sonner';
 import { useNavigate } from '@tanstack/react-router';
 import { Loading } from '@/components/common';
-import { PrimaryPhoneNumberInput } from '@/components/common/inputs/primary-phone-number-input';
+import { PrimaryPhoneNumberInput } from '@repo/ui';
 import Turnstile from 'react-turnstile';
-import { useUserCountry } from '@/hooks/use-user-country';
-import { useEffect } from 'react';
 
 function CreateAccount() {
   const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const {
-    countryCode: detectedCountryCode,
-    countryName: detectedCountryName,
-    loading: countryLoading
-  } = useUserCountry();
   const [selectedCountryCode, setSelectedCountryCode] = useState(countries[0].code);
   const [captchaToken, setCaptchaToken] = useState<string>('');
   const navigate = useNavigate();
@@ -41,6 +34,7 @@ function CreateAccount() {
   type FormValues = z.infer<typeof formSchema>;
 
   const form = useForm<FormValues>({
+    //@ts-ignore
     resolver: zodResolver(formSchema),
     defaultValues: {
       firstName: '',
@@ -52,13 +46,6 @@ function CreateAccount() {
       confirmPassword: ''
     }
   });
-
-  useEffect(() => {
-    if (!countryLoading && detectedCountryCode) {
-      setSelectedCountryCode(detectedCountryCode);
-      form.setValue('country', detectedCountryName);
-    }
-  }, [detectedCountryCode, detectedCountryName, countryLoading, form]);
 
   const [registerUser, { loading }] = useMutation<{ registerUser: RegisterUserResponse }, { input: UserInput }>(
     REGISTER_USER
@@ -150,7 +137,6 @@ function CreateAccount() {
                 <FormControl>
                   <PrimaryPhoneNumberInput
                     value={field.value}
-                    country={selectedCountryCode.toLowerCase()}
                     onChange={field.onChange}
                     inputProps={{
                       name: field.name,
@@ -171,12 +157,11 @@ function CreateAccount() {
               <FormItem>
                 <FormLabel className="!text-black">{t('auth.createAccount.country')}</FormLabel>
                 <CountrySelector
-                  value={selectedCountryCode}
+                  // value={selectedCountryCode}
                   onValueChange={(value, country) => {
                     setSelectedCountryCode(country.code);
                     field.onChange(value);
                   }}
-                  hasFlag={false}
                   showPrefix={false}
                   placeholder={t('auth.createAccount.selectCountry')}
                 />
