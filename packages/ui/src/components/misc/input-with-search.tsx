@@ -70,8 +70,8 @@ export const InputWithSearch = React.forwardRef<HTMLButtonElement, InputWithSear
     const selectedLabel = options.find((option) => option.value === selectedValue)?.label;
 
     return (
-      <Popover open={open}  onOpenChange={setOpen}>
-        <PopoverTrigger  asChild>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
           <Button
             ref={ref}
             variant="outline"
@@ -85,11 +85,11 @@ export const InputWithSearch = React.forwardRef<HTMLButtonElement, InputWithSear
           </Button>
         </PopoverTrigger>
         <PopoverContent className={cn('p-0 ', width, contentClassName)}>
-          <Command style={
-            {
-              width: "250px"
-            }
-          } >
+          <Command
+            style={{
+              width: '250px',
+            }}
+          >
             <CommandInput placeholder={searchPlaceholder} />
             <CommandList>
               <CommandEmpty>{emptyMessage}</CommandEmpty>

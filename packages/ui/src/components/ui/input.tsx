@@ -3,7 +3,10 @@ import React, { useState, useMemo, useEffect } from 'react';
 
 type Currency = 'USD' | 'NGN' | 'EUR' | 'GBP';
 
-interface NumberInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
+interface NumberInputProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  'onChange' | 'value'
+> {
   value?: number;
   onChange?: (value: number) => void;
   currency?: Currency;
@@ -47,7 +50,7 @@ Input.displayName = 'Input';
 const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
   ({ value, onChange, currency, className, placeholder, ...props }, ref) => {
     const [inputValue, setInputValue] = useState(
-      value !== undefined && value !== null ? value.toLocaleString() : ''
+      value !== undefined && value !== null ? value.toLocaleString() : '',
     );
 
     const symbol = currency ? currencySymbols[currency] : '';
@@ -104,9 +107,7 @@ const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
             value={inputValue}
             onChange={handleChange}
             placeholder={placeholder || '0'}
-            className={cn(
-              symbol && "pl-8"
-            )}
+            className={cn(symbol && 'pl-8')}
             {...props}
           />
         </div>
@@ -118,7 +119,7 @@ const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
         )}
       </div>
     );
-  }
+  },
 );
 NumberInput.displayName = 'NumberInput';
 

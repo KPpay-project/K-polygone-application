@@ -24,23 +24,19 @@ const typographyVariants = cva('text-foreground', {
 });
 
 export interface TypographyProps
-  extends React.HTMLAttributes<HTMLElement>,
-    VariantProps<typeof typographyVariants> {
+  extends React.HTMLAttributes<HTMLElement>, VariantProps<typeof typographyVariants> {
   as?: React.ElementType;
 }
 
 const Typography = React.forwardRef<HTMLElement, TypographyProps>(
   ({ className, variant, as, ...props }, ref) => {
-    const Comp = (as || (variant && ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'].includes(variant || '') ? variant : 'p')) as React.ElementType;
+    const Comp = (as ||
+      (variant && ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'].includes(variant || '')
+        ? variant
+        : 'p')) as React.ElementType;
 
-    return (
-      <Comp
-        className={cn(typographyVariants({ variant, className }))}
-        ref={ref}
-        {...props}
-      />
-    );
-  }
+    return <Comp className={cn(typographyVariants({ variant, className }))} ref={ref} {...props} />;
+  },
 );
 Typography.displayName = 'Typography';
 

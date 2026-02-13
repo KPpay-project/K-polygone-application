@@ -1,4 +1,3 @@
-
 import { cn } from '../../lib/utils';
 import Logo from '../misc/logo';
 
@@ -15,11 +14,9 @@ export function Loader({ className, size = 24, ...props }: LoaderProps) {
         className,
       )}
       {...props}
-      style={
-        {
-          zIndex: 9999
-        }
-      }
+      style={{
+        zIndex: 9999,
+      }}
     >
       <div>
         <Logo />
