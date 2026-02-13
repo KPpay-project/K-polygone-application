@@ -3,8 +3,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import z from 'zod';
 
 const resetPasswordSearchSchema = z.object({
-  email: z.string().catch(''),
-  otpCode: z.string().catch('')
+  token: z.string().catch('')
 });
 
 export const Route = createFileRoute('/onboarding/reset-password')({
@@ -13,6 +12,6 @@ export const Route = createFileRoute('/onboarding/reset-password')({
 });
 
 function RouteComponent() {
-  const { email, otpCode } = Route.useSearch();
-  return <ResetPassword email={email} otpCode={otpCode} />;
+  const { token } = Route.useSearch();
+  return <ResetPassword token={token} />;
 }

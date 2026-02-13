@@ -1,4 +1,3 @@
-import { Loader2 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import Logo from '../misc/logo';
 
@@ -11,10 +10,13 @@ export function Loader({ className, size = 24, ...props }: LoaderProps) {
     <div
       className={cn(
         `flex items-center  flex-col 
-    justify-center bg-white fixed top-0 left-0 w-full h-full z-50`,
+    justify-center bg-white top-0 left-0 w-full h-full  fixed `,
         className,
       )}
       {...props}
+      style={{
+        zIndex: 9999,
+      }}
     >
       <div>
         <Logo />

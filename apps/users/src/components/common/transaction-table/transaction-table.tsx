@@ -8,7 +8,7 @@ import { EmptyTicketState } from '@/components/common/fallbacks';
 import { useQuery } from '@apollo/client';
 import { UserWalletTransaction as WalletTransaction } from '@repo/types';
 import { getStatusColor } from '@/data/transactions';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@repo/ui';
 import ViewTransaction from '@/components/modules/transactions/view-transaction';
 import { formatCurrency, formatCurrencyWithCode } from '@/utils/current';
 import { ServerErrorFallbackScreen } from '@/components/common/fallbacks/server-error-fallback.tsx';

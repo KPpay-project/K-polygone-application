@@ -38,11 +38,11 @@ const DashboardLayout: FC<IDashboardLayout> = ({ children, fullContainer }) => {
         <Sidebar />
       </div>
 
-      {sidebarOpen && (
-        <div className="fixed inset-y-0 left-0 z-50 w-64 transform bg-white shadow-lg transition-transform duration-300 ease-in-out lg:hidden translate-x-0">
-          <Sidebar />
-        </div>
-      )}
+      <div
+        className={`fixed inset-y-0 left-0 z-50 w-[220px] transform bg-white shadow-lg transition-transform duration-300 ease-in-out lg:hidden ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+      >
+        <Sidebar onClose={() => setSidebarOpen(false)} />
+      </div>
 
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 bg-black bg-opacity-30 lg:hidden" onClick={() => setSidebarOpen(false)} />
@@ -50,13 +50,8 @@ const DashboardLayout: FC<IDashboardLayout> = ({ children, fullContainer }) => {
 
       <main className="flex flex-1 flex-row relative">
         <div className="h-full w-full overflow-y-auto">
-          <div className="lg:hidden p-4 flex items-center justify-between">
-            <button onClick={() => setSidebarOpen(true)}>
-              <Menu className="w-6 h-6 text-gray-700" />
-            </button>
-          </div>
-          <DashboardHeader />
-          <div className={cn(fullContainer && 'h-[calc(100%-170px)]', 'px-2 sm:px-6 lg:px-8 my-6')}>{children}</div>
+          <DashboardHeader onMenuClick={() => setSidebarOpen(true)} />
+          <div className={cn(fullContainer && 'h-[calc(100%-150px)]', 'px-3 sm:px-4 lg:px-6 my-4')}>{children}</div>
         </div>
       </main>
       <WalletUpdateListener />

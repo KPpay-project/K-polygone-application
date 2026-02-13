@@ -7,21 +7,19 @@ import { CustomFormMessage } from '@/components/common/forms/form-message';
 import OnboardingLayout from '@/components/layouts/onboarding-layout';
 import { resetPasswordSchema } from '@/schema/auth';
 import { useNavigate } from '@tanstack/react-router';
-import { Button, Form, FormControl, FormField, FormItem, FormLabel, Input } from 'k-polygon-assets/components';
+import { Button, Form, FormControl, FormField, FormItem, FormLabel, Input } from '@repo/ui';
 import { IconArrowRight } from 'k-polygon-assets/icons';
 import { Eye, EyeOff } from 'lucide-react';
 import z from 'zod';
 import { useMutation } from '@apollo/client';
 import { RESET_PASSWORD } from '@repo/api';
 import { toast } from 'sonner';
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 
 interface ResetPasswordProps {
-  email: string;
-  otpCode: string;
+  token: string;
 }
 
-function ResetPassword({ email, otpCode }: ResetPasswordProps) {
+function ResetPassword({ token }: ResetPasswordProps) {
   const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -47,7 +45,6 @@ function ResetPassword({ email, otpCode }: ResetPasswordProps) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      otpCode: otpCode || '',
       password: '',
       confirmPassword: ''
     }
@@ -57,8 +54,7 @@ function ResetPassword({ email, otpCode }: ResetPasswordProps) {
     resetPassword({
       variables: {
         input: {
-          email,
-          otpCode: values.otpCode,
+          token,
           newPassword: values.password,
           newPasswordConfirmation: values.confirmPassword
         }
@@ -70,28 +66,6 @@ function ResetPassword({ email, otpCode }: ResetPasswordProps) {
     <OnboardingLayout title={t('auth.resetPassword.title')} className="!items-start" canGoBack>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="otpCode"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="!text-black">
-                  {t('auth.resetPassword.otpCode', { defaultValue: 'OTP Code' })}
-                </FormLabel>
-                <FormControl>
-                  <InputOTP maxLength={6} value={field.value} onChange={field.onChange}>
-                    <InputOTPGroup className="gap-3">
-                      {Array.from({ length: 6 }).map((_, index) => (
-                        <InputOTPSlot className="border !rounded-lg size-[46px]" key={index} index={index} />
-                      ))}
-                    </InputOTPGroup>
-                  </InputOTP>
-                </FormControl>
-                <CustomFormMessage message={form.formState.errors.otpCode} scope="error" />
-              </FormItem>
-            )}
-          />
-
           <FormField
             control={form.control}
             name="password"
@@ -152,7 +126,9 @@ function ResetPassword({ email, otpCode }: ResetPasswordProps) {
             icon={!loading && <IconArrowRight />}
             disabled={loading}
           >
-            {loading ? t('common.processing', { defaultValue: 'Resetting...' }) : t('auth.resetPassword.resetPassword')}
+            {loading
+              ? t('common.processing', { defaultValue: 'Resetting...' })
+              : t('auth.resetPassword.submit', { defaultValue: 'Reset Password' })}
           </Button>
         </form>
       </Form>

@@ -1,15 +1,16 @@
-import { useState, ReactNode } from 'react';
+import { useState, ReactNode, useMemo } from 'react';
 import { useMutation } from '@apollo/client';
 import { CREATE_WALLET } from '@repo/api';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Button } from 'k-polygon-assets/components';
-import SecondaryCurrencyDropdown from '../common/currency-dropdown/secondary-currency-dropdown';
+import { Button } from '@repo/ui';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { Plus } from 'lucide-react';
 import BaseModal from '@/components/sub-modules/modal-contents/base-modal';
 import { ArrowRight } from 'iconsax-reactjs';
 import { Label } from '@/components/ui/label.tsx';
+import { InputWithSearch } from '@repo/ui';
+import { useFetchAllCurrencies } from '@/hooks/use-currencies';
 
 interface CreateWalletActionProps {
   buttonLabel?: string;
@@ -30,12 +31,33 @@ interface CreateWalletResponse {
   };
 }
 
+const getFlagEmoji = (countryCode: string): string => {
+  if (!countryCode || countryCode.length !== 2) return '🏳️';
+
+  const codePoints = countryCode
+    .toUpperCase()
+    .split('')
+    .map((char) => 127397 + char.charCodeAt(0));
+
+  return String.fromCodePoint(...codePoints);
+};
+
 export function CreateWalletAction({ onSuccess, isDisabled = false }: CreateWalletActionProps) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [currencyCode, setCurrencyCode] = useState('USD');
   const [successCurrencyCode, setSuccessCurrencyCode] = useState<string | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  const { data: currenciesData, loading: currenciesLoading } = useFetchAllCurrencies();
+  const currencies = currenciesData?.currencies || [];
+
+  const currencyOptions = useMemo(() => {
+    return currencies.map((c: any) => ({
+      label: `${c.code} (${c.symbol}) ${getFlagEmoji(c.countryCode)}`,
+      value: c.code
+    }));
+  }, [currencies]);
 
   const [createWallet, { loading }] = useMutation<CreateWalletResponse, { input: CreateWalletInput }>(CREATE_WALLET, {
     onCompleted: () => {
@@ -69,14 +91,10 @@ export function CreateWalletAction({ onSuccess, isDisabled = false }: CreateWall
     <>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <button
-            disabled={isDisabled}
-            className="text-primary bg-primary/10
-           border-[1px] rounded-2xl border-primary py-3 hover:bg-blue-50 px-3 py-1 text-sm font-medium transition-colors flex items-center gap-1"
-          >
+          <Button disabled={isDisabled} variant={'disabled_outline'}>
             <Plus size={14} />
             {t('balance.createWallet')}
-          </button>
+          </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -84,11 +102,19 @@ export function CreateWalletAction({ onSuccess, isDisabled = false }: CreateWall
           </DialogHeader>
           <div className="space-y-4">
             <Label>Select currency</Label>
-            <SecondaryCurrencyDropdown value={currencyCode} onChange={setCurrencyCode} />
+            {currenciesLoading ? (
+              <div className="h-10 w-full animate-pulse rounded-md bg-muted" />
+            ) : (
+              <InputWithSearch
+                options={currencyOptions}
+                value={currencyCode}
+                onChange={setCurrencyCode}
+                placeholder="Select currency"
+                searchPlaceholder="Search currency..."
+                className="mt-[8px]"
+              />
+            )}
             <div className="flex justify-end space-x-2 pt-4">
-              {/*<Button variant="outline" onClick={() => setOpen(false)} disabled={loading}>*/}
-              {/*  Cancel*/}
-              {/*</Button>*/}
               <Button
                 onClick={handleCreate}
                 disabled={loading}

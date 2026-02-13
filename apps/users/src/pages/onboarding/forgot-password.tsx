@@ -2,15 +2,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { FORGOTTEN_PASSWORD } from '@repo/api';
-import { CustomFormMessage } from '@/components/common/forms/form-message';
+import { CustomFormMessage } from '@repo/ui';
 import OnboardingLayout from '@/components/layouts/onboarding-layout';
 import { forgotPasswordSchema } from '@/schema/auth';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { Button, Form, FormControl, FormField, FormItem, FormLabel, Input } from 'k-polygon-assets/components';
+import { Button, Form, FormControl, FormField, FormItem, FormLabel, Input } from '@repo/ui';
 import { IconArrowRight } from 'k-polygon-assets/icons';
 import z from 'zod';
 import { useMutation } from '@apollo/client';
 import { toast } from 'sonner';
+import { Loader } from '@ui/index';
 
 function ForgotPassword() {
   const { t } = useTranslation();
@@ -21,8 +22,8 @@ function ForgotPassword() {
       if (data?.requestPasswordReset?.success) {
         toast.success(data.requestPasswordReset.message);
         navigate({
-          to: '/onboarding/reset-password',
-          search: { email: form.getValues('email'), otpCode: '' }
+          to: '/onboarding/otp',
+          search: { email: form.getValues('email') }
         });
       } else {
         toast.error(data?.requestPasswordReset?.message);
@@ -90,6 +91,8 @@ function ForgotPassword() {
               {t('auth.forgotPassword.backToLogin')}
             </Link>
           </p>
+
+          {loading && <Loader />}
         </form>
       </Form>
     </OnboardingLayout>

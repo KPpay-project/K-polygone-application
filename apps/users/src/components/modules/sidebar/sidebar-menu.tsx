@@ -32,7 +32,7 @@ export const useMenuItems = (): SidebarItemProps[] => {
     { icon: <MoneyChange size="18" variant="Outline" />, label: 'Transfer', href: '/transfer/single' },
 
     {
-      icon: < Profile2User size={18} variant="Outline" />,
+      icon: <Profile2User size={18} variant="Outline" />,
       label: t('sidebar.beneficiaries'),
       href: '/withdrawals/beneficiaries'
     },

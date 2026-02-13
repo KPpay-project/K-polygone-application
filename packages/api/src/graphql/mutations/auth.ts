@@ -64,6 +64,25 @@ export const FORGOTTEN_PASSWORD = gql`
   }
 `;
 
+export const VERIFY_RESET_PASSWORD_TOKEN = gql`
+  mutation VerifyResetPasswordToken($input: VerifyResetPasswordTokenInput!) {
+    verifyResetPasswordToken(input: $input) {
+      message
+      success
+    }
+  }
+`;
+
+export const VERIFY_OTP = gql`
+  mutation VerifyOtp($input: VerifyOtpInput!) {
+    verifyOtp(input: $input) {
+      success
+      message
+      token
+    }
+  }
+`;
+
 export const CHANGE_PASSWORD = gql`
   mutation ChangePassword($input: ChangePasswordInput!) {
     changePassword(input: $input) {
@@ -80,11 +99,12 @@ export const CHANGE_PASSWORD = gql`
 export const RESET_PASSWORD = gql`
   mutation ResetPassword($input: ResetPasswordInput!) {
     resetPassword(input: $input) {
-      message
       success
+      message
       userAccount {
         id
       }
+      errors
     }
   }
 `;
