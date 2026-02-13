@@ -19,8 +19,9 @@ import { FETCH_BENEFICIARIES_QUERY, DELETE_BENEFICIARY_MUTATION } from '@repo/ap
 import { useQuery, useMutation } from '@apollo/client';
 import { BENEFICIARY_TYPE_ENUM } from '@/enums';
 import { toast } from 'sonner';
-import { createFileRoute, useSearch } from '@tanstack/react-router';
+import { createFileRoute, useSearch, useNavigate } from '@tanstack/react-router';
 import DashboardLayout from '@/components/layouts/dashboard-layout';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface Beneficiary {
   id: string;
@@ -88,8 +89,15 @@ const Beneficiaries = () => {
   const [selectedBeneficiary, setSelectedBeneficiary] = useState<Beneficiary | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   
+  const navigate = useNavigate();
   const search = useSearch({ from: '/dashboard/beneficiaries' });
   const typeFilter = search.type;
+
+  const handleTabChange = (value: string) => {
+    navigate({
+      search: ((prev: any) => ({ ...prev, type: value === 'ALL' ? undefined : (value as BENEFICIARY_TYPE_ENUM) })) as any,
+    });
+  };
 
   const { data, loading, error } = useQuery<BeneficiariesQueryData>(FETCH_BENEFICIARIES_QUERY);
 
@@ -155,6 +163,41 @@ const Beneficiaries = () => {
           Add beneficiary
         </Button>
       </div>
+
+      <Tabs value={typeFilter || 'ALL'} onValueChange={handleTabChange} className="w-full mb-6">
+        <TabsList className="w-full justify-start bg-transparent border-b rounded-none h-auto p-0">
+          <TabsTrigger
+            value="ALL"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary px-4 py-2"
+          >
+            All
+          </TabsTrigger>
+          <TabsTrigger
+            value={BENEFICIARY_TYPE_ENUM.BANK}
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary px-4 py-2"
+          >
+            Bank Transfer
+          </TabsTrigger>
+          <TabsTrigger
+            value={BENEFICIARY_TYPE_ENUM.WALLET_CODE}
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary px-4 py-2"
+          >
+            KPay User
+          </TabsTrigger>
+          <TabsTrigger
+            value={BENEFICIARY_TYPE_ENUM.MOBILE_MONEY}
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary px-4 py-2"
+          >
+            Mobile Money
+          </TabsTrigger>
+          <TabsTrigger
+            value={BENEFICIARY_TYPE_ENUM.AIRTIME}
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary px-4 py-2"
+          >
+            Airtime
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
 
       <div className="h-full overflow-y-scroll">
         <div className="flex flex-col mt-[32px]">

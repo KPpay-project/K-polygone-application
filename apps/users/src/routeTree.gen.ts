@@ -22,7 +22,6 @@ import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as CrossPaymentIndexRouteImport } from './routes/cross-payment/index'
 import { Route as CreditCardIndexRouteImport } from './routes/credit-card/index'
 import { Route as BillPaymentIndexRouteImport } from './routes/bill-payment/index'
-import { Route as BeneficiariesIndexRouteImport } from './routes/beneficiaries/index'
 import { Route as ticketIndexRouteImport } from './routes/ ticket/index'
 import { Route as TransferSingleRouteImport } from './routes/transfer/single'
 import { Route as TransferMultipleRouteImport } from './routes/transfer/multiple'
@@ -41,7 +40,6 @@ import { Route as MerchantCreatePaymentLinkRouteImport } from './routes/merchant
 import { Route as DashboardBeneficiariesRouteImport } from './routes/dashboard/beneficiaries'
 import { Route as WithdrawalsMoneyIndexRouteImport } from './routes/withdrawals/money/index'
 import { Route as WithdrawalsListIndexRouteImport } from './routes/withdrawals/list/index'
-import { Route as WithdrawalsBeneficiariesIndexRouteImport } from './routes/withdrawals/beneficiaries/index'
 import { Route as SettingsVerificationsIndexRouteImport } from './routes/settings/verifications/index'
 import { Route as SettingsUpgradeAccountIndexRouteImport } from './routes/settings/upgrade-account/index'
 import { Route as SettingsSecurityIndexRouteImport } from './routes/settings/security/index'
@@ -121,11 +119,6 @@ const CreditCardIndexRoute = CreditCardIndexRouteImport.update({
 const BillPaymentIndexRoute = BillPaymentIndexRouteImport.update({
   id: '/bill-payment/',
   path: '/bill-payment/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BeneficiariesIndexRoute = BeneficiariesIndexRouteImport.update({
-  id: '/beneficiaries/',
-  path: '/beneficiaries/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ticketIndexRoute = ticketIndexRouteImport.update({
@@ -222,12 +215,6 @@ const WithdrawalsListIndexRoute = WithdrawalsListIndexRouteImport.update({
   path: '/withdrawals/list/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WithdrawalsBeneficiariesIndexRoute =
-  WithdrawalsBeneficiariesIndexRouteImport.update({
-    id: '/withdrawals/beneficiaries/',
-    path: '/withdrawals/beneficiaries/',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const SettingsVerificationsIndexRoute =
   SettingsVerificationsIndexRouteImport.update({
     id: '/settings/verifications/',
@@ -333,7 +320,6 @@ export interface FileRoutesByFullPath {
   '/transfer/multiple': typeof TransferMultipleRoute
   '/transfer/single': typeof TransferSingleRoute
   '/ ticket/': typeof ticketIndexRoute
-  '/beneficiaries/': typeof BeneficiariesIndexRoute
   '/bill-payment/': typeof BillPaymentIndexRoute
   '/credit-card/': typeof CreditCardIndexRoute
   '/cross-payment/': typeof CrossPaymentIndexRoute
@@ -361,7 +347,6 @@ export interface FileRoutesByFullPath {
   '/settings/security/': typeof SettingsSecurityIndexRoute
   '/settings/upgrade-account/': typeof SettingsUpgradeAccountIndexRoute
   '/settings/verifications/': typeof SettingsVerificationsIndexRoute
-  '/withdrawals/beneficiaries/': typeof WithdrawalsBeneficiariesIndexRoute
   '/withdrawals/list/': typeof WithdrawalsListIndexRoute
   '/withdrawals/money/': typeof WithdrawalsMoneyIndexRoute
 }
@@ -383,7 +368,6 @@ export interface FileRoutesByTo {
   '/transfer/multiple': typeof TransferMultipleRoute
   '/transfer/single': typeof TransferSingleRoute
   '/ ticket': typeof ticketIndexRoute
-  '/beneficiaries': typeof BeneficiariesIndexRoute
   '/bill-payment': typeof BillPaymentIndexRoute
   '/credit-card': typeof CreditCardIndexRoute
   '/cross-payment': typeof CrossPaymentIndexRoute
@@ -411,7 +395,6 @@ export interface FileRoutesByTo {
   '/settings/security': typeof SettingsSecurityIndexRoute
   '/settings/upgrade-account': typeof SettingsUpgradeAccountIndexRoute
   '/settings/verifications': typeof SettingsVerificationsIndexRoute
-  '/withdrawals/beneficiaries': typeof WithdrawalsBeneficiariesIndexRoute
   '/withdrawals/list': typeof WithdrawalsListIndexRoute
   '/withdrawals/money': typeof WithdrawalsMoneyIndexRoute
 }
@@ -434,7 +417,6 @@ export interface FileRoutesById {
   '/transfer/multiple': typeof TransferMultipleRoute
   '/transfer/single': typeof TransferSingleRoute
   '/ ticket/': typeof ticketIndexRoute
-  '/beneficiaries/': typeof BeneficiariesIndexRoute
   '/bill-payment/': typeof BillPaymentIndexRoute
   '/credit-card/': typeof CreditCardIndexRoute
   '/cross-payment/': typeof CrossPaymentIndexRoute
@@ -462,7 +444,6 @@ export interface FileRoutesById {
   '/settings/security/': typeof SettingsSecurityIndexRoute
   '/settings/upgrade-account/': typeof SettingsUpgradeAccountIndexRoute
   '/settings/verifications/': typeof SettingsVerificationsIndexRoute
-  '/withdrawals/beneficiaries/': typeof WithdrawalsBeneficiariesIndexRoute
   '/withdrawals/list/': typeof WithdrawalsListIndexRoute
   '/withdrawals/money/': typeof WithdrawalsMoneyIndexRoute
 }
@@ -486,7 +467,6 @@ export interface FileRouteTypes {
     | '/transfer/multiple'
     | '/transfer/single'
     | '/ ticket/'
-    | '/beneficiaries/'
     | '/bill-payment/'
     | '/credit-card/'
     | '/cross-payment/'
@@ -514,7 +494,6 @@ export interface FileRouteTypes {
     | '/settings/security/'
     | '/settings/upgrade-account/'
     | '/settings/verifications/'
-    | '/withdrawals/beneficiaries/'
     | '/withdrawals/list/'
     | '/withdrawals/money/'
   fileRoutesByTo: FileRoutesByTo
@@ -536,7 +515,6 @@ export interface FileRouteTypes {
     | '/transfer/multiple'
     | '/transfer/single'
     | '/ ticket'
-    | '/beneficiaries'
     | '/bill-payment'
     | '/credit-card'
     | '/cross-payment'
@@ -564,7 +542,6 @@ export interface FileRouteTypes {
     | '/settings/security'
     | '/settings/upgrade-account'
     | '/settings/verifications'
-    | '/withdrawals/beneficiaries'
     | '/withdrawals/list'
     | '/withdrawals/money'
   id:
@@ -586,7 +563,6 @@ export interface FileRouteTypes {
     | '/transfer/multiple'
     | '/transfer/single'
     | '/ ticket/'
-    | '/beneficiaries/'
     | '/bill-payment/'
     | '/credit-card/'
     | '/cross-payment/'
@@ -614,7 +590,6 @@ export interface FileRouteTypes {
     | '/settings/security/'
     | '/settings/upgrade-account/'
     | '/settings/verifications/'
-    | '/withdrawals/beneficiaries/'
     | '/withdrawals/list/'
     | '/withdrawals/money/'
   fileRoutesById: FileRoutesById
@@ -637,7 +612,6 @@ export interface RootRouteChildren {
   TransferMultipleRoute: typeof TransferMultipleRoute
   TransferSingleRoute: typeof TransferSingleRoute
   ticketIndexRoute: typeof ticketIndexRoute
-  BeneficiariesIndexRoute: typeof BeneficiariesIndexRoute
   BillPaymentIndexRoute: typeof BillPaymentIndexRoute
   CreditCardIndexRoute: typeof CreditCardIndexRoute
   CrossPaymentIndexRoute: typeof CrossPaymentIndexRoute
@@ -665,7 +639,6 @@ export interface RootRouteChildren {
   SettingsSecurityIndexRoute: typeof SettingsSecurityIndexRoute
   SettingsUpgradeAccountIndexRoute: typeof SettingsUpgradeAccountIndexRoute
   SettingsVerificationsIndexRoute: typeof SettingsVerificationsIndexRoute
-  WithdrawalsBeneficiariesIndexRoute: typeof WithdrawalsBeneficiariesIndexRoute
   WithdrawalsListIndexRoute: typeof WithdrawalsListIndexRoute
   WithdrawalsMoneyIndexRoute: typeof WithdrawalsMoneyIndexRoute
 }
@@ -761,13 +734,6 @@ declare module '@tanstack/react-router' {
       path: '/bill-payment'
       fullPath: '/bill-payment/'
       preLoaderRoute: typeof BillPaymentIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/beneficiaries/': {
-      id: '/beneficiaries/'
-      path: '/beneficiaries'
-      fullPath: '/beneficiaries/'
-      preLoaderRoute: typeof BeneficiariesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ ticket/': {
@@ -896,13 +862,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WithdrawalsListIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/withdrawals/beneficiaries/': {
-      id: '/withdrawals/beneficiaries/'
-      path: '/withdrawals/beneficiaries'
-      fullPath: '/withdrawals/beneficiaries/'
-      preLoaderRoute: typeof WithdrawalsBeneficiariesIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/settings/verifications/': {
       id: '/settings/verifications/'
       path: '/settings/verifications'
@@ -1029,7 +988,6 @@ const rootRouteChildren: RootRouteChildren = {
   TransferMultipleRoute: TransferMultipleRoute,
   TransferSingleRoute: TransferSingleRoute,
   ticketIndexRoute: ticketIndexRoute,
-  BeneficiariesIndexRoute: BeneficiariesIndexRoute,
   BillPaymentIndexRoute: BillPaymentIndexRoute,
   CreditCardIndexRoute: CreditCardIndexRoute,
   CrossPaymentIndexRoute: CrossPaymentIndexRoute,
@@ -1064,7 +1022,6 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsSecurityIndexRoute: SettingsSecurityIndexRoute,
   SettingsUpgradeAccountIndexRoute: SettingsUpgradeAccountIndexRoute,
   SettingsVerificationsIndexRoute: SettingsVerificationsIndexRoute,
-  WithdrawalsBeneficiariesIndexRoute: WithdrawalsBeneficiariesIndexRoute,
   WithdrawalsListIndexRoute: WithdrawalsListIndexRoute,
   WithdrawalsMoneyIndexRoute: WithdrawalsMoneyIndexRoute,
 }
