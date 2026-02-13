@@ -22,6 +22,7 @@ import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as CrossPaymentIndexRouteImport } from './routes/cross-payment/index'
 import { Route as CreditCardIndexRouteImport } from './routes/credit-card/index'
 import { Route as BillPaymentIndexRouteImport } from './routes/bill-payment/index'
+import { Route as BeneficiariesIndexRouteImport } from './routes/beneficiaries/index'
 import { Route as ticketIndexRouteImport } from './routes/ ticket/index'
 import { Route as TransferSingleRouteImport } from './routes/transfer/single'
 import { Route as TransferMultipleRouteImport } from './routes/transfer/multiple'
@@ -37,6 +38,7 @@ import { Route as OnboardingGetStartedRouteImport } from './routes/onboarding/ge
 import { Route as OnboardingForgotPasswordRouteImport } from './routes/onboarding/forgot-password'
 import { Route as OnboardingCreateAccountRouteImport } from './routes/onboarding/create-account'
 import { Route as MerchantCreatePaymentLinkRouteImport } from './routes/merchant/create-payment-link'
+import { Route as DashboardBeneficiariesRouteImport } from './routes/dashboard/beneficiaries'
 import { Route as WithdrawalsMoneyIndexRouteImport } from './routes/withdrawals/money/index'
 import { Route as WithdrawalsListIndexRouteImport } from './routes/withdrawals/list/index'
 import { Route as WithdrawalsBeneficiariesIndexRouteImport } from './routes/withdrawals/beneficiaries/index'
@@ -121,6 +123,11 @@ const BillPaymentIndexRoute = BillPaymentIndexRouteImport.update({
   path: '/bill-payment/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BeneficiariesIndexRoute = BeneficiariesIndexRouteImport.update({
+  id: '/beneficiaries/',
+  path: '/beneficiaries/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ticketIndexRoute = ticketIndexRouteImport.update({
   id: '/ ticket/',
   path: '/ ticket/',
@@ -200,6 +207,11 @@ const MerchantCreatePaymentLinkRoute =
     path: '/merchant/create-payment-link',
     getParentRoute: () => rootRouteImport,
   } as any)
+const DashboardBeneficiariesRoute = DashboardBeneficiariesRouteImport.update({
+  id: '/dashboard/beneficiaries',
+  path: '/dashboard/beneficiaries',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WithdrawalsMoneyIndexRoute = WithdrawalsMoneyIndexRouteImport.update({
   id: '/withdrawals/money/',
   path: '/withdrawals/money/',
@@ -305,6 +317,7 @@ const SettingsSecurityAppRoute = SettingsSecurityAppRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard/beneficiaries': typeof DashboardBeneficiariesRoute
   '/merchant/create-payment-link': typeof MerchantCreatePaymentLinkRoute
   '/onboarding/create-account': typeof OnboardingCreateAccountRoute
   '/onboarding/forgot-password': typeof OnboardingForgotPasswordRoute
@@ -320,6 +333,7 @@ export interface FileRoutesByFullPath {
   '/transfer/multiple': typeof TransferMultipleRoute
   '/transfer/single': typeof TransferSingleRoute
   '/ ticket/': typeof ticketIndexRoute
+  '/beneficiaries/': typeof BeneficiariesIndexRoute
   '/bill-payment/': typeof BillPaymentIndexRoute
   '/credit-card/': typeof CreditCardIndexRoute
   '/cross-payment/': typeof CrossPaymentIndexRoute
@@ -353,6 +367,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard/beneficiaries': typeof DashboardBeneficiariesRoute
   '/merchant/create-payment-link': typeof MerchantCreatePaymentLinkRoute
   '/onboarding/create-account': typeof OnboardingCreateAccountRoute
   '/onboarding/forgot-password': typeof OnboardingForgotPasswordRoute
@@ -368,6 +383,7 @@ export interface FileRoutesByTo {
   '/transfer/multiple': typeof TransferMultipleRoute
   '/transfer/single': typeof TransferSingleRoute
   '/ ticket': typeof ticketIndexRoute
+  '/beneficiaries': typeof BeneficiariesIndexRoute
   '/bill-payment': typeof BillPaymentIndexRoute
   '/credit-card': typeof CreditCardIndexRoute
   '/cross-payment': typeof CrossPaymentIndexRoute
@@ -402,6 +418,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard/beneficiaries': typeof DashboardBeneficiariesRoute
   '/merchant/create-payment-link': typeof MerchantCreatePaymentLinkRoute
   '/onboarding/create-account': typeof OnboardingCreateAccountRoute
   '/onboarding/forgot-password': typeof OnboardingForgotPasswordRoute
@@ -417,6 +434,7 @@ export interface FileRoutesById {
   '/transfer/multiple': typeof TransferMultipleRoute
   '/transfer/single': typeof TransferSingleRoute
   '/ ticket/': typeof ticketIndexRoute
+  '/beneficiaries/': typeof BeneficiariesIndexRoute
   '/bill-payment/': typeof BillPaymentIndexRoute
   '/credit-card/': typeof CreditCardIndexRoute
   '/cross-payment/': typeof CrossPaymentIndexRoute
@@ -452,6 +470,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/dashboard/beneficiaries'
     | '/merchant/create-payment-link'
     | '/onboarding/create-account'
     | '/onboarding/forgot-password'
@@ -467,6 +486,7 @@ export interface FileRouteTypes {
     | '/transfer/multiple'
     | '/transfer/single'
     | '/ ticket/'
+    | '/beneficiaries/'
     | '/bill-payment/'
     | '/credit-card/'
     | '/cross-payment/'
@@ -500,6 +520,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/dashboard/beneficiaries'
     | '/merchant/create-payment-link'
     | '/onboarding/create-account'
     | '/onboarding/forgot-password'
@@ -515,6 +536,7 @@ export interface FileRouteTypes {
     | '/transfer/multiple'
     | '/transfer/single'
     | '/ ticket'
+    | '/beneficiaries'
     | '/bill-payment'
     | '/credit-card'
     | '/cross-payment'
@@ -548,6 +570,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/dashboard/beneficiaries'
     | '/merchant/create-payment-link'
     | '/onboarding/create-account'
     | '/onboarding/forgot-password'
@@ -563,6 +586,7 @@ export interface FileRouteTypes {
     | '/transfer/multiple'
     | '/transfer/single'
     | '/ ticket/'
+    | '/beneficiaries/'
     | '/bill-payment/'
     | '/credit-card/'
     | '/cross-payment/'
@@ -597,6 +621,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardBeneficiariesRoute: typeof DashboardBeneficiariesRoute
   MerchantCreatePaymentLinkRoute: typeof MerchantCreatePaymentLinkRoute
   OnboardingCreateAccountRoute: typeof OnboardingCreateAccountRoute
   OnboardingForgotPasswordRoute: typeof OnboardingForgotPasswordRoute
@@ -612,6 +637,7 @@ export interface RootRouteChildren {
   TransferMultipleRoute: typeof TransferMultipleRoute
   TransferSingleRoute: typeof TransferSingleRoute
   ticketIndexRoute: typeof ticketIndexRoute
+  BeneficiariesIndexRoute: typeof BeneficiariesIndexRoute
   BillPaymentIndexRoute: typeof BillPaymentIndexRoute
   CreditCardIndexRoute: typeof CreditCardIndexRoute
   CrossPaymentIndexRoute: typeof CrossPaymentIndexRoute
@@ -737,6 +763,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BillPaymentIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/beneficiaries/': {
+      id: '/beneficiaries/'
+      path: '/beneficiaries'
+      fullPath: '/beneficiaries/'
+      preLoaderRoute: typeof BeneficiariesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ ticket/': {
       id: '/ ticket/'
       path: '/ ticket'
@@ -840,6 +873,13 @@ declare module '@tanstack/react-router' {
       path: '/merchant/create-payment-link'
       fullPath: '/merchant/create-payment-link'
       preLoaderRoute: typeof MerchantCreatePaymentLinkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/beneficiaries': {
+      id: '/dashboard/beneficiaries'
+      path: '/dashboard/beneficiaries'
+      fullPath: '/dashboard/beneficiaries'
+      preLoaderRoute: typeof DashboardBeneficiariesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/withdrawals/money/': {
@@ -973,6 +1013,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardBeneficiariesRoute: DashboardBeneficiariesRoute,
   MerchantCreatePaymentLinkRoute: MerchantCreatePaymentLinkRoute,
   OnboardingCreateAccountRoute: OnboardingCreateAccountRoute,
   OnboardingForgotPasswordRoute: OnboardingForgotPasswordRoute,
@@ -988,6 +1029,7 @@ const rootRouteChildren: RootRouteChildren = {
   TransferMultipleRoute: TransferMultipleRoute,
   TransferSingleRoute: TransferSingleRoute,
   ticketIndexRoute: ticketIndexRoute,
+  BeneficiariesIndexRoute: BeneficiariesIndexRoute,
   BillPaymentIndexRoute: BillPaymentIndexRoute,
   CreditCardIndexRoute: CreditCardIndexRoute,
   CrossPaymentIndexRoute: CrossPaymentIndexRoute,
