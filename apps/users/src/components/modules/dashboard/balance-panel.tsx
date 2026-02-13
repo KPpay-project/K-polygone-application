@@ -135,6 +135,7 @@ export function BalancePanel() {
     }));
   };
 
+  const walletLenght = wallets.length;
   return (
     <ModularCard
       title={<h3 className="text-[18px] text-[#444] font-light">{t('balance.totalBalance')}</h3>}
@@ -201,7 +202,7 @@ export function BalancePanel() {
           </h3>
 
           <div data-tour="create-wallet-btn">
-            <CreateWalletAction onSuccess={handleDepositSuccess} />
+            <CreateWalletAction onSuccess={handleDepositSuccess} isDisabled={walletLenght > 3} />
           </div>
         </div>
 

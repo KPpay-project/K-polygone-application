@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState, useRef } from 'react';
+import { useState,  useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import Turnstile from 'react-turnstile';
@@ -15,10 +15,10 @@ import type { LoginInput, LoginResponse } from '@repo/types';
 import { ENV } from '@/utils/constants';
 import { handleGraphQLError } from '@/utils/error-handling';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { Form, FormControl, FormField, FormItem, FormLabel, Input } from 'k-polygon-assets/components';
-import { IconArrowRight } from 'k-polygon-assets/icons';
+import { Form, FormControl, FormField, FormItem, FormLabel, Input } from '@repo/ui';
+
 import { Eye, EyeOff } from 'lucide-react';
-import { Loading, Head } from '@/components/common';
+import {  Head } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { Loader } from '@repo/ui';
 
@@ -26,7 +26,7 @@ function Login() {
   const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string>('');
-  const turnstileRef = useRef<any>(null);
+  const [turnstileKey, setTurnstileKey] = useState(0);
   const navigate = useNavigate();
   const { setAuthTokens, logUser } = useAuth();
 
@@ -42,6 +42,17 @@ function Login() {
       password: ''
     }
   });
+
+  const emailOrPhone = form.watch('emailOrPhone');
+  const password = form.watch('password');
+
+  useEffect(() => {
+    if (captchaToken) {
+      setTurnstileKey((prev) => prev + 1);
+      setCaptchaToken('');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [emailOrPhone, password]);
 
   async function onSubmit(values: FormValues) {
     try {
@@ -63,12 +74,12 @@ function Login() {
         navigate({ to: '/dashboard' });
       } else if (response.errors) {
         handleGraphQLError(response, 'Login failed');
-        turnstileRef.current?.reset();
+        setTurnstileKey((prev) => prev + 1);
         setCaptchaToken('');
       }
     } catch (error) {
       handleGraphQLError(error, t('common.notifications.loginFailed'));
-      turnstileRef.current?.reset();
+      setTurnstileKey((prev) => prev + 1);
       setCaptchaToken('');
     }
   }
@@ -132,7 +143,7 @@ function Login() {
 
           <div className="w-full flex justify-center py-4 min-h-[70px]">
             <Turnstile
-              ref={turnstileRef}
+              key={turnstileKey}
               sitekey={ENV.CLOUDFLARE_SITE_KEY}
               action="login"
               theme="light"

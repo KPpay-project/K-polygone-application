@@ -5,6 +5,7 @@ import { ApolloProvider } from '@apollo/client';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { HelmetProvider } from 'react-helmet-async';
 import { apolloClient } from './lib/apollo-client';
+import { NetworkStatus } from '@repo/ui';
 
 import { routeTree } from './routeTree.gen';
 
@@ -28,6 +29,7 @@ function App() {
   return (
     <HelmetProvider>
       <ApolloProvider client={apolloClient}>
+        <NetworkStatus />
         <RouterProvider router={router} defaultPendingComponent={GlobalLoader} defaultPendingMinMs={250} />
       </ApolloProvider>
     </HelmetProvider>

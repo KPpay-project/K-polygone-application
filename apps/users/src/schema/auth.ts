@@ -69,10 +69,6 @@ export const verifyResetPassword = () =>
 export const resetPasswordSchema = () =>
   z
     .object({
-      otpCode: z
-        .string()
-        .length(6, { message: getTranslation('validation.otpLength') })
-        .regex(/^\d{6}$/, { message: getTranslation('validation.otpFormat') }),
       password: z
         .string()
         .min(8, {

@@ -2,6 +2,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'k
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import { Globe } from 'lucide-react';
+import { Typography } from '@ui/index';
 
 const languages = [
   { code: 'en', name: 'English', flag: '🇺🇸', nativeName: 'English' },
@@ -46,14 +47,16 @@ export function LanguageSwitcher() {
     <Select value={i18n.language} onValueChange={handleLanguageChange}>
       <SelectTrigger
         className="group relative h-10 min-w-[140px] 
-      rounded-lg border border-gray-200 bg-white px-3 !shadow-none transition-all duration-200 hover:border-gray-300 hover:shadow-md focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-gray-600"
+      rounded-lg border border-gray-200  px-3 !shadow-none transition-all duration-200 hover:border-gray-300 hover:shadow-md focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-gray-600"
       >
         <SelectValue>
           <div className="flex items-center gap-2.5">
             <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-blue-50 to-indigo-50 text-base transition-transform duration-200 group-hover:scale-110 dark:from-blue-900/30 dark:to-indigo-900/30">
               {currentLanguage.flag}
             </div>
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{currentLanguage.nativeName}</span>
+            <Typography variant={'small'}>
+              {currentLanguage.nativeName}
+            </Typography>
             <Globe className="ml-auto h-4 w-4 text-gray-400 transition-colors duration-200 group-hover:text-blue-500" />
           </div>
         </SelectValue>

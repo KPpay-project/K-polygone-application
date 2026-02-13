@@ -31,6 +31,7 @@ import { Route as OnboardingVerifyResetPasswordRouteImport } from './routes/onbo
 import { Route as OnboardingResetPasswordRouteImport } from './routes/onboarding/reset-password'
 import { Route as OnboardingRegisterMerchantRouteImport } from './routes/onboarding/register-merchant'
 import { Route as OnboardingPasswordResetRouteImport } from './routes/onboarding/password-reset'
+import { Route as OnboardingOtpRouteImport } from './routes/onboarding/otp'
 import { Route as OnboardingLoginRouteImport } from './routes/onboarding/login'
 import { Route as OnboardingGetStartedRouteImport } from './routes/onboarding/get-started'
 import { Route as OnboardingForgotPasswordRouteImport } from './routes/onboarding/forgot-password'
@@ -165,6 +166,11 @@ const OnboardingRegisterMerchantRoute =
 const OnboardingPasswordResetRoute = OnboardingPasswordResetRouteImport.update({
   id: '/onboarding/password-reset',
   path: '/onboarding/password-reset',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingOtpRoute = OnboardingOtpRouteImport.update({
+  id: '/onboarding/otp',
+  path: '/onboarding/otp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingLoginRoute = OnboardingLoginRouteImport.update({
@@ -304,6 +310,7 @@ export interface FileRoutesByFullPath {
   '/onboarding/forgot-password': typeof OnboardingForgotPasswordRoute
   '/onboarding/get-started': typeof OnboardingGetStartedRoute
   '/onboarding/login': typeof OnboardingLoginRoute
+  '/onboarding/otp': typeof OnboardingOtpRoute
   '/onboarding/password-reset': typeof OnboardingPasswordResetRoute
   '/onboarding/register-merchant': typeof OnboardingRegisterMerchantRoute
   '/onboarding/reset-password': typeof OnboardingResetPasswordRoute
@@ -351,6 +358,7 @@ export interface FileRoutesByTo {
   '/onboarding/forgot-password': typeof OnboardingForgotPasswordRoute
   '/onboarding/get-started': typeof OnboardingGetStartedRoute
   '/onboarding/login': typeof OnboardingLoginRoute
+  '/onboarding/otp': typeof OnboardingOtpRoute
   '/onboarding/password-reset': typeof OnboardingPasswordResetRoute
   '/onboarding/register-merchant': typeof OnboardingRegisterMerchantRoute
   '/onboarding/reset-password': typeof OnboardingResetPasswordRoute
@@ -399,6 +407,7 @@ export interface FileRoutesById {
   '/onboarding/forgot-password': typeof OnboardingForgotPasswordRoute
   '/onboarding/get-started': typeof OnboardingGetStartedRoute
   '/onboarding/login': typeof OnboardingLoginRoute
+  '/onboarding/otp': typeof OnboardingOtpRoute
   '/onboarding/password-reset': typeof OnboardingPasswordResetRoute
   '/onboarding/register-merchant': typeof OnboardingRegisterMerchantRoute
   '/onboarding/reset-password': typeof OnboardingResetPasswordRoute
@@ -448,6 +457,7 @@ export interface FileRouteTypes {
     | '/onboarding/forgot-password'
     | '/onboarding/get-started'
     | '/onboarding/login'
+    | '/onboarding/otp'
     | '/onboarding/password-reset'
     | '/onboarding/register-merchant'
     | '/onboarding/reset-password'
@@ -495,6 +505,7 @@ export interface FileRouteTypes {
     | '/onboarding/forgot-password'
     | '/onboarding/get-started'
     | '/onboarding/login'
+    | '/onboarding/otp'
     | '/onboarding/password-reset'
     | '/onboarding/register-merchant'
     | '/onboarding/reset-password'
@@ -542,6 +553,7 @@ export interface FileRouteTypes {
     | '/onboarding/forgot-password'
     | '/onboarding/get-started'
     | '/onboarding/login'
+    | '/onboarding/otp'
     | '/onboarding/password-reset'
     | '/onboarding/register-merchant'
     | '/onboarding/reset-password'
@@ -590,6 +602,7 @@ export interface RootRouteChildren {
   OnboardingForgotPasswordRoute: typeof OnboardingForgotPasswordRoute
   OnboardingGetStartedRoute: typeof OnboardingGetStartedRoute
   OnboardingLoginRoute: typeof OnboardingLoginRoute
+  OnboardingOtpRoute: typeof OnboardingOtpRoute
   OnboardingPasswordResetRoute: typeof OnboardingPasswordResetRoute
   OnboardingRegisterMerchantRoute: typeof OnboardingRegisterMerchantRoute
   OnboardingResetPasswordRoute: typeof OnboardingResetPasswordRoute
@@ -787,6 +800,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingPasswordResetRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onboarding/otp': {
+      id: '/onboarding/otp'
+      path: '/onboarding/otp'
+      fullPath: '/onboarding/otp'
+      preLoaderRoute: typeof OnboardingOtpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding/login': {
       id: '/onboarding/login'
       path: '/onboarding/login'
@@ -958,6 +978,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingForgotPasswordRoute: OnboardingForgotPasswordRoute,
   OnboardingGetStartedRoute: OnboardingGetStartedRoute,
   OnboardingLoginRoute: OnboardingLoginRoute,
+  OnboardingOtpRoute: OnboardingOtpRoute,
   OnboardingPasswordResetRoute: OnboardingPasswordResetRoute,
   OnboardingRegisterMerchantRoute: OnboardingRegisterMerchantRoute,
   OnboardingResetPasswordRoute: OnboardingResetPasswordRoute,
