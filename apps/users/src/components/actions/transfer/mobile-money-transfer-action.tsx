@@ -184,7 +184,12 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
       <form onSubmit={handleSubmit(onSubmit)} className="px-4 pb-6 space-y-6">
         <Loading isLoading={loading} text={t('common.processing') || 'Processing...'} />
 
-        {/* Amount */}
+        <ListBeneficiariesPanel
+          selectedBeneficiary={selectedBeneficiary}
+          onSelectBeneficiary={handleSelectBeneficiary}
+          beneficiaryType={BENEFICIARY_TYPE_ENUM.MOBILE_MONEY}
+        />
+
         <div>
           <Typography className="text-sm font-medium text-gray-700 mb-2">{t('transfer.amount') || 'Amount'}</Typography>
           <NumberInput
@@ -219,12 +224,6 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
             <Typography className="text-red-500 text-xs mt-1">{errors.receiverPhone.message}</Typography>
           )}
         </div>
-
-        <ListBeneficiariesPanel
-          selectedBeneficiary={selectedBeneficiary}
-          onSelectBeneficiary={handleSelectBeneficiary}
-          beneficiaryType={BENEFICIARY_TYPE_ENUM.MOBILE_MONEY}
-        />
 
         <Button type="submit" className="w-full" disabled={loading}>
           {t('common.continue') || 'Continue'}
