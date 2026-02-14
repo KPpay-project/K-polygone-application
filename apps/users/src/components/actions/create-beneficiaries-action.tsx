@@ -7,15 +7,14 @@ import z from 'zod';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { IconArrowRight } from 'k-polygon-assets';
 import { FETCH_BENEFICIARIES_QUERY, CREATE_BENEFICIARY_MUTATION } from '@repo/api';
 import ErrorAndSuccessFallback from '../sub-modules/modal-contents/error-success-fallback';
-import { useMutation } from '@apollo/client';
+import { useMutation, useLazyQuery } from '@apollo/client';
 import { BENEFICIARY_TYPE_ENUM } from '@/enums';
 import { PROVIDER_LABELS } from '@/constant';
 import { PrimaryPhoneNumberInput } from '@repo/ui';
 import { InputWithSearch } from '@repo/ui';
-import { CustomModal } from '@repo/ui';
+import { GET_USER_WALLET_CODE } from '@repo/api';
 
 const beneficiaryTypes = ['bank_transfer', 'kpay_user', 'mobile_money', 'airtime'] as const;
 
@@ -28,14 +27,26 @@ const typeToGraphQLEnum: Record<BeneficiaryType, BENEFICIARY_TYPE_ENUM> = {
   airtime: BENEFICIARY_TYPE_ENUM.AIRTIME
 };
 
-const formSchema = z.object({
-  name: z.string().min(1, 'Beneficiary name is required'),
-  type: z.enum(beneficiaryTypes, {
-    message: 'Please select a beneficiary type'
-  }),
-  identifier: z.string().min(1, 'This field is required'),
-  providerName: z.string().optional()
-});
+const formSchema = z
+  .object({
+    name: z.string().min(1, 'Beneficiary name is required'),
+    type: z.enum(beneficiaryTypes, {
+      message: 'Please select a beneficiary type'
+    }),
+    identifier: z.string().min(1, 'This field is required'),
+    providerName: z.string().optional()
+  })
+  .superRefine((val, ctx) => {
+    if (val.type === 'kpay_user') {
+      if (!/^\d{10}$/.test(val.identifier)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'KPay account must be exactly 10 digits',
+          path: ['identifier']
+        });
+      }
+    }
+  });
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -92,6 +103,18 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
   });
 
   const selectedType = form.watch('type');
+  const identifier = form.watch('identifier');
+  const [verifyWalletCode, { data: verifiedUserData, loading: verifyingUser }] = useLazyQuery(GET_USER_WALLET_CODE);
+
+  React.useEffect(() => {
+    const code = identifier?.trim();
+    if (selectedType === 'kpay_user' && /^\d{10}$/.test(code || '')) {
+      const t = setTimeout(() => {
+        verifyWalletCode({ variables: { walletCode: code } });
+      }, 300);
+      return () => clearTimeout(t);
+    }
+  }, [selectedType, identifier, verifyWalletCode]);
 
   React.useEffect(() => {
     if (selectedType === 'kpay_user') {
@@ -102,6 +125,17 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
       form.setValue('providerName', BENEFICIARY_TYPE_ENUM.BANK);
     }
   }, [selectedType, form]);
+
+  React.useEffect(() => {
+    const user = verifiedUserData?.getUserByWalletCode?.user;
+    if (selectedType === 'kpay_user' && user) {
+      const fullName = `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim();
+      const currentName = form.getValues('name');
+      if (!currentName) {
+        form.setValue('name', fullName);
+      }
+    }
+  }, [verifiedUserData, selectedType]);
 
   const handleSubmit = async (values: FormValues) => {
     await createBeneficiary({
@@ -143,7 +177,7 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
       case 'bank_transfer':
         return 'Enter account number';
       case 'kpay_user':
-        return 'Enter KPay account/username';
+        return 'Enter 10-digit KPay account';
       case 'mobile_money':
       case 'airtime':
         return 'Enter phone number';
@@ -157,7 +191,11 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
       case 'bank_transfer':
         return "Enter the recipient's bank account number.";
       case 'kpay_user':
-        return "Enter the recipient's KPay username or account.";
+        return verifyingUser
+          ? 'Verifying KPay user...'
+          : verifiedUserData?.getUserByWalletCode?.user
+          ? `${verifiedUserData.getUserByWalletCode.user.firstName} ${verifiedUserData.getUserByWalletCode.user.lastName}`
+          : 'Enter the recipient’s 10-digit KPay account.';
       case 'mobile_money':
       case 'airtime':
         return "Enter the recipient's mobile phone number.";
@@ -238,7 +276,18 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
                         showValidation={false}
                       />
                     ) : (
-                      <Input placeholder={getIdentifierPlaceholder()} {...field} />
+                      <Input
+                        type={selectedType === 'kpay_user' ? 'tel' : 'text'}
+                        placeholder={getIdentifierPlaceholder()}
+                        value={field.value}
+                        onChange={(e) =>
+                          field.onChange(
+                            selectedType === 'kpay_user'
+                              ? e.target.value.replace(/\D/g, '').slice(0, 10)
+                              : e.target.value
+                          )
+                        }
+                      />
                     )}
                   </FormControl>
                   <FormDescription>{getIdentifierDescription()}</FormDescription>
@@ -290,13 +339,13 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
             />
           )}
 
-          {/* Submit Button */}
+      
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? (
               'Adding Beneficiary...'
             ) : (
               <>
-                <IconArrowRight className="mr-2 h-4 w-4" />
+               
                 Add Beneficiary
               </>
             )}
