@@ -88,14 +88,17 @@ const Beneficiaries = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedBeneficiary, setSelectedBeneficiary] = useState<Beneficiary | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  
+
   const navigate = useNavigate();
   const search = useSearch({ from: '/dashboard/beneficiaries' });
   const typeFilter = search.type;
 
   const handleTabChange = (value: string) => {
     navigate({
-      search: ((prev: any) => ({ ...prev, type: value === 'ALL' ? undefined : (value as BENEFICIARY_TYPE_ENUM) })) as any,
+      search: ((prev: any) => ({
+        ...prev,
+        type: value === 'ALL' ? undefined : (value as BENEFICIARY_TYPE_ENUM)
+      })) as any
     });
   };
 
@@ -150,7 +153,7 @@ const Beneficiaries = () => {
   let beneficiaries = (data?.myBeneficiaries?.entries || []).filter((b) => b !== null && b !== undefined);
 
   if (typeFilter) {
-    beneficiaries = beneficiaries.filter(b => b.type === typeFilter);
+    beneficiaries = beneficiaries.filter((b) => b.type === typeFilter);
   }
 
   return (
@@ -225,7 +228,11 @@ const Beneficiaries = () => {
             <EmptyState
               icon={<Profile2User size={60} variant="Bulk" />}
               title="No Beneficiaries Found"
-              description={typeFilter ? `You have not added any ${getTypeLabel(typeFilter)} beneficiaries yet.` : "You have not added any beneficiaries yet."}
+              description={
+                typeFilter
+                  ? `You have not added any ${getTypeLabel(typeFilter)} beneficiaries yet.`
+                  : 'You have not added any beneficiaries yet.'
+              }
             />
           )}
         </div>
@@ -403,12 +410,12 @@ const WithdrawalsBeneficiaries = () => {
 
 // Route Definition
 const searchSchema = z.object({
-  type: z.nativeEnum(BENEFICIARY_TYPE_ENUM).optional(),
+  type: z.nativeEnum(BENEFICIARY_TYPE_ENUM).optional()
 });
 
 export const Route = createFileRoute('/dashboard/beneficiaries')({
   component: RouteComponent,
-  validateSearch: (search) => searchSchema.parse(search),
+  validateSearch: (search) => searchSchema.parse(search)
 });
 
 function RouteComponent() {

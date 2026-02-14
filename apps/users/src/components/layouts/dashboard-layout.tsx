@@ -2,7 +2,6 @@ import DashboardHeader from '@/components/modules/header/dashboard-header.tsx';
 import { Sidebar } from '@/components/modules/sidebar';
 import { useNavigate } from '@tanstack/react-router';
 import { cn } from 'k-polygon-assets';
-import { Menu } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 import WalletUpdateListener from '@/components/listeners/wallet-update-listener';
 import { useAuth } from '@/hooks/use-auth';

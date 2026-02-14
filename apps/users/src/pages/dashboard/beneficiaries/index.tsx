@@ -86,7 +86,7 @@ const Beneficiaries = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedBeneficiary, setSelectedBeneficiary] = useState<Beneficiary | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  
+
   const location = useLocation();
   // Parse query params manually or use useSearch if properly configured
   // Assuming location.search is the query string or object
@@ -144,7 +144,7 @@ const Beneficiaries = () => {
   let beneficiaries = (data?.myBeneficiaries?.entries || []).filter((b) => b !== null && b !== undefined);
 
   if (typeFilter) {
-    beneficiaries = beneficiaries.filter(b => b.type === typeFilter);
+    beneficiaries = beneficiaries.filter((b) => b.type === typeFilter);
   }
 
   return (
@@ -184,7 +184,11 @@ const Beneficiaries = () => {
             <EmptyState
               icon={<Profile2User size={60} variant="Bulk" />}
               title="No Beneficiaries Found"
-              description={typeFilter ? `You have not added any ${getTypeLabel(typeFilter)} beneficiaries yet.` : "You have not added any beneficiaries yet."}
+              description={
+                typeFilter
+                  ? `You have not added any ${getTypeLabel(typeFilter)} beneficiaries yet.`
+                  : 'You have not added any beneficiaries yet.'
+              }
             />
           )}
         </div>
@@ -195,7 +199,7 @@ const Beneficiaries = () => {
           onSuccess={() => setIsAddModalOpen(false)}
           onClose={() => setIsAddModalOpen(false)}
           // Pass default type if we want to pre-select it in the form
-          // defaultType={typeFilter} 
+          // defaultType={typeFilter}
         />
       </DefaultModal>
 

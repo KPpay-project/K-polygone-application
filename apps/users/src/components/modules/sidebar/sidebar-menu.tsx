@@ -28,10 +28,7 @@ export const useMenuItems = (): SidebarItemProps[] => {
     { icon: <Home size="18" variant="Outline" />, label: t('sidebar.dashboard'), href: '/dashboard' },
     { icon: <Wallet size="18" variant="Outline" />, label: t('sidebar.wallet'), href: '/wallet' },
 
-    { icon: <EmptyWalletAdd size="18" variant="Outline" />, label: t('sidebar.deposit'), href: '/deposit' },
-    { icon: <MoneyChange size="18" variant="Outline" />, label: 'Transfer', href: '/transfer/single' },
-
-    {
+      {
       icon: <Profile2User size={18} variant="Outline" />,
       label: t('sidebar.beneficiaries'),
       href: '/dashboard/beneficiaries',
@@ -42,13 +39,16 @@ export const useMenuItems = (): SidebarItemProps[] => {
         { label: 'Airtime', href: '/dashboard/beneficiaries?type=AIRTIME' }
       ]
     },
+
+    { icon: <EmptyWalletAdd size="18" variant="Outline" />, label: t('sidebar.deposit'), href: '/deposit' },
+    { icon: <MoneyChange size="18" variant="Outline" />, label: 'Transfer', href: '/transfer/single' },
+
+  
     {
       icon: <CardReceive size="18" variant="Outline" />,
       label: t('sidebar.withdrawals'),
       href: '/withdrawals',
-      subItems: [
-        { label: t('sidebar.withdrawMoney'), href: '/withdrawals/money' }
-      ]
+      subItems: [{ label: t('sidebar.withdrawMoney'), href: '/withdrawals/money' }]
     },
 
     { icon: <Bill size="18" variant="Outline" />, label: t('sidebar.billPayment'), href: '/bill-payment' },
@@ -109,9 +109,7 @@ export const menuItems: SidebarItemProps[] = [
     icon: <CardReceive size="18" variant="Outline" />,
     label: 'Withdrawals',
     href: '/withdrawals',
-    subItems: [
-      { label: 'Withdraw Money', href: '/withdrawals/money' }
-    ]
+    subItems: [{ label: 'Withdraw Money', href: '/withdrawals/money' }]
   },
   {
     icon: <Tag2 size="18" variant="Outline" />,
