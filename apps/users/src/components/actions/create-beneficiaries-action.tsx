@@ -194,8 +194,8 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
         return verifyingUser
           ? 'Verifying KPay user...'
           : verifiedUserData?.getUserByWalletCode?.user
-          ? `${verifiedUserData.getUserByWalletCode.user.firstName} ${verifiedUserData.getUserByWalletCode.user.lastName}`
-          : 'Enter the recipient’s 10-digit KPay account.';
+            ? `${verifiedUserData.getUserByWalletCode.user.firstName} ${verifiedUserData.getUserByWalletCode.user.lastName}`
+            : 'Enter the recipient’s 10-digit KPay account.';
       case 'mobile_money':
       case 'airtime':
         return "Enter the recipient's mobile phone number.";
@@ -339,16 +339,8 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
             />
           )}
 
-      
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? (
-              'Adding Beneficiary...'
-            ) : (
-              <>
-               
-                Add Beneficiary
-              </>
-            )}
+            {loading ? 'Adding Beneficiary...' : <>Add Beneficiary</>}
           </Button>
         </form>
       </Form>
