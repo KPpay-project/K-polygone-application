@@ -20,6 +20,7 @@ import { useQuery, useMutation } from '@apollo/client';
 import { BENEFICIARY_TYPE_ENUM } from '@/enums';
 import { toast } from 'sonner';
 import { useLocation } from '@tanstack/react-router';
+import { CustomModal } from '@repo/ui';
 
 interface Beneficiary {
   id: string;
@@ -194,23 +195,27 @@ const Beneficiaries = () => {
         </div>
       </div>
 
-      <DefaultModal open={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} trigger={<></>} title=" ">
+      <CustomModal open={isAddModalOpen} onOpenChange={setIsAddModalOpen} title="Add Beneficiary">
         <CreateBeneficiariesActions
           onSuccess={() => setIsAddModalOpen(false)}
           onClose={() => setIsAddModalOpen(false)}
-          // Pass default type if we want to pre-select it in the form
-          // defaultType={typeFilter}
         />
-      </DefaultModal>
+      </CustomModal>
 
-      <DefaultModal
+      <CustomModal
         open={isDetailModalOpen}
-        onClose={() => {
-          setIsDetailModalOpen(false);
-          setSelectedBeneficiary(null);
+        onOpenChange={(o) => {
+          if (!o) {
+            setIsDetailModalOpen(false);
+            setSelectedBeneficiary(null);
+          }
         }}
-        trigger={<></>}
         title="Beneficiary Details"
+        footer={
+          <Button variant="destructive" className="w-full" onClick={handleDelete} disabled={deleteLoading}>
+            {deleteLoading ? 'Deleting...' : 'Delete Beneficiary'}
+          </Button>
+        }
       >
         {selectedBeneficiary && (
           <div className="p-6 space-y-6">
@@ -223,7 +228,6 @@ const Beneficiaries = () => {
                 <p className="text-sm text-gray-500">{getTypeLabel(selectedBeneficiary.type)}</p>
               </div>
             </div>
-
             <div className="space-y-4">
               <div className="flex justify-between py-3 border-b border-gray-100">
                 <span className="text-gray-500 text-sm">Name</span>
@@ -238,13 +242,9 @@ const Beneficiaries = () => {
                 <span className="font-medium text-sm">{getTypeLabel(selectedBeneficiary.type)}</span>
               </div>
             </div>
-
-            <Button variant="destructive" className="w-full" onClick={handleDelete} disabled={deleteLoading}>
-              {deleteLoading ? 'Deleting...' : 'Delete Beneficiary'}
-            </Button>
           </div>
         )}
-      </DefaultModal>
+      </CustomModal>
     </ModularCard>
   );
 };

@@ -28,7 +28,7 @@ export const useMenuItems = (): SidebarItemProps[] => {
     { icon: <Home size="18" variant="Outline" />, label: t('sidebar.dashboard'), href: '/dashboard' },
     { icon: <Wallet size="18" variant="Outline" />, label: t('sidebar.wallet'), href: '/wallet' },
 
-      {
+    {
       icon: <Profile2User size={18} variant="Outline" />,
       label: t('sidebar.beneficiaries'),
       href: '/dashboard/beneficiaries',
@@ -43,7 +43,6 @@ export const useMenuItems = (): SidebarItemProps[] => {
     { icon: <EmptyWalletAdd size="18" variant="Outline" />, label: t('sidebar.deposit'), href: '/deposit' },
     { icon: <MoneyChange size="18" variant="Outline" />, label: 'Transfer', href: '/transfer/single' },
 
-  
     {
       icon: <CardReceive size="18" variant="Outline" />,
       label: t('sidebar.withdrawals'),

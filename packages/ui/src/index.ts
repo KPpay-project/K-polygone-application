@@ -36,3 +36,4 @@ export * from './components/misc/users-currency-dropdown';
 export * from './components/misc/network-status';
 export * from './components/misc/form-message';
 export * from './components/misc/typography';
+export * from './components/misc/custom-modal';
