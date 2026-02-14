@@ -22,6 +22,7 @@ import { toast } from 'sonner';
 import { createFileRoute, useSearch, useNavigate } from '@tanstack/react-router';
 import DashboardLayout from '@/components/layouts/dashboard-layout';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { CustomModal } from '@repo/ui';
 
 interface Beneficiary {
   id: string;
@@ -238,21 +239,27 @@ const Beneficiaries = () => {
         </div>
       </div>
 
-      <DefaultModal open={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} trigger={<></>} title=" ">
+      <CustomModal open={isAddModalOpen} onOpenChange={setIsAddModalOpen} title="Add Beneficiary">
         <CreateBeneficiariesActions
           onSuccess={() => setIsAddModalOpen(false)}
           onClose={() => setIsAddModalOpen(false)}
         />
-      </DefaultModal>
+      </CustomModal>
 
-      <DefaultModal
+      <CustomModal
         open={isDetailModalOpen}
-        onClose={() => {
-          setIsDetailModalOpen(false);
-          setSelectedBeneficiary(null);
+        onOpenChange={(o) => {
+          if (!o) {
+            setIsDetailModalOpen(false);
+            setSelectedBeneficiary(null);
+          }
         }}
-        trigger={<></>}
         title="Beneficiary Details"
+        footer={
+          <Button variant="destructive" className="w-full" onClick={handleDelete} disabled={deleteLoading}>
+            {deleteLoading ? 'Deleting...' : 'Delete Beneficiary'}
+          </Button>
+        }
       >
         {selectedBeneficiary && (
           <div className="p-6 space-y-6">
@@ -276,17 +283,13 @@ const Beneficiaries = () => {
                 <span className="font-medium text-sm">{selectedBeneficiary.number}</span>
               </div>
               <div className="flex justify-between py-3 border-b border-gray-100">
-                <span className="text-gray-500 text-sm">Type</span>
+                <span className="text-gray-500 text sm">Type</span>
                 <span className="font-medium text-sm">{getTypeLabel(selectedBeneficiary.type)}</span>
               </div>
             </div>
-
-            <Button variant="destructive" className="w-full" onClick={handleDelete} disabled={deleteLoading}>
-              {deleteLoading ? 'Deleting...' : 'Delete Beneficiary'}
-            </Button>
           </div>
         )}
-      </DefaultModal>
+      </CustomModal>
     </ModularCard>
   );
 };

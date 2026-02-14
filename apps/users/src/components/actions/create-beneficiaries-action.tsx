@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import z from 'zod';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -14,6 +14,8 @@ import { useMutation } from '@apollo/client';
 import { BENEFICIARY_TYPE_ENUM } from '@/enums';
 import { PROVIDER_LABELS } from '@/constant';
 import { PrimaryPhoneNumberInput } from '@repo/ui';
+import { InputWithSearch } from '@repo/ui';
+import { CustomModal } from '@repo/ui';
 
 const beneficiaryTypes = ['bank_transfer', 'kpay_user', 'mobile_money', 'airtime'] as const;
 
@@ -80,7 +82,7 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
   });
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(formSchema as any),
     defaultValues: {
       name: '',
       type: undefined as BeneficiaryType | undefined,
@@ -179,12 +181,34 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
   }
 
   return (
-    <div className="p-6 max-w-md mx-auto bg-background rounded-lg shadow-sm">
-      <h2 className="text-2xl font-bold mb-6">Add New Beneficiary</h2>
-
+    <div className="">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          {/* Beneficiary Name */}
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Beneficiary Type</FormLabel>
+                <FormControl>
+                  <InputWithSearch
+                    options={[
+                      { label: 'Bank Transfer', value: 'bank_transfer' },
+                      { label: 'KPay User', value: 'kpay_user' },
+                      { label: 'Mobile Money', value: 'mobile_money' },
+                      { label: 'Airtime', value: 'airtime' }
+                    ]}
+                    value={field.value || ''}
+                    onChange={(v) => field.onChange(v ? (v as BeneficiaryType) : undefined)}
+                    placeholder="Select a type"
+                    searchPlaceholder="Search types..."
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="name"
@@ -199,30 +223,6 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
             )}
           />
 
-          {/* Beneficiary Type - Native Dropdown */}
-          <FormField
-            control={form.control}
-            name="type"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Beneficiary Type</FormLabel>
-                <FormControl>
-                  <select
-                    {...field}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    <option value="">Select a type</option>
-                    <option value="bank_transfer">Bank Transfer</option>
-                    <option value="kpay_user">KPay User</option>
-                    <option value="mobile_money">Mobile Money</option>
-                    <option value="airtime">Airtime</option>
-                  </select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
           {/* Conditional Identifier Field */}
           {selectedType && (
             <FormField
@@ -230,7 +230,6 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
               name="identifier"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{getIdentifierLabel()}</FormLabel>
                   <FormControl>
                     {selectedType === 'mobile_money' || selectedType === 'airtime' ? (
                       <PrimaryPhoneNumberInput
@@ -257,17 +256,16 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
                 <FormItem>
                   <FormLabel>Mobile Money Provider</FormLabel>
                   <FormControl>
-                    <select
-                      {...field}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      <option value="">Select a provider</option>
-                      {Object.entries(PROVIDER_LABELS).map(([key, label]) => (
-                        <option key={key} value={key}>
-                          {label}
-                        </option>
-                      ))}
-                    </select>
+                    <InputWithSearch
+                      options={Object.entries(PROVIDER_LABELS).map(([key, label]) => ({
+                        label,
+                        value: key
+                      }))}
+                      value={field.value || ''}
+                      onChange={(v) => field.onChange(v || '')}
+                      placeholder="Select a provider"
+                      searchPlaceholder="Search providers..."
+                    />
                   </FormControl>
                   <FormDescription>Select the mobile money provider for this beneficiary.</FormDescription>
                   <FormMessage />
