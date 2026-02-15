@@ -21,6 +21,7 @@ import ErrorAndSuccessFallback from '@/components/sub-modules/modal-contents/err
 import ListBeneficiariesPanel, { Beneficiary } from '@/components/modules/beneficiaries/list-beneficiaries-panel';
 import { EmptyState } from '@/components/common/fallbacks';
 import { CREATE_BENEFICIARY_MUTATION } from '@repo/api';
+import { Typography, type CurrencyOption } from '@repo/ui';
 
 interface WalletToWalletTransferResponse {
   fromBalance: { availableBalance: number };
@@ -58,6 +59,7 @@ export function WalletToWalletTransferAction({ onSuccess }: WalletToWalletTransf
   const [resultStatus, setResultStatus] = useState<'success' | 'error'>('success');
   const [resultMessage, setResultMessage] = useState('');
   const [selectedBeneficiary, setSelectedBeneficiary] = useState<Beneficiary | null>(null);
+  const [selectedCurrencyOption, setSelectedCurrencyOption] = useState<CurrencyOption | null>(null);
 
   const {
     register,
@@ -158,6 +160,9 @@ export function WalletToWalletTransferAction({ onSuccess }: WalletToWalletTransf
   const senderWalletId = senderWallet?.id;
   const senderCurrencyCode = senderWallet?.balances?.[0]?.currency?.code || 'USD';
 
+  const effectiveCurrencyCode = selectedCurrencyOption?.currencyCode || senderCurrencyCode;
+  const effectiveSenderWalletId = selectedCurrencyOption?.walletId || senderWalletId;
+
   const normalizedQuote = useMemo(() => {
     const fq = quoteData?.transferQuote;
     if (!fq) return null;
@@ -167,16 +172,16 @@ export function WalletToWalletTransferAction({ onSuccess }: WalletToWalletTransf
     return {
       amount: formatNumberFixed(amountNum, 2),
       applies: Boolean(fq.applies),
-      currencyCode: fq.currencyCode || senderCurrencyCode,
+      currencyCode: fq.currencyCode || effectiveCurrencyCode,
       expiresAt: fq.expiresAt || '',
       feeAmount: formatNumberFixed(feeNum, 2),
-      feeCurrencyCode: fq.feeCurrencyCode || fq.currencyCode || senderCurrencyCode,
+      feeCurrencyCode: fq.feeCurrencyCode || fq.currencyCode || effectiveCurrencyCode,
       paymentType: fq.paymentType || 'WALLET_TO_WALLET',
       quoteId: fq.quoteId || '',
       tier: fq.tier ?? null,
       totalDebit: formatNumberFixed(totalDebitNum, 2)
     };
-  }, [quoteData, senderCurrencyCode]);
+  }, [quoteData, effectiveCurrencyCode]);
 
   const isReceiverValid = useMemo(() => !!receiverData?.getUserByWalletCode?.user, [receiverData]);
 
@@ -207,7 +212,7 @@ export function WalletToWalletTransferAction({ onSuccess }: WalletToWalletTransf
       description: form.description || null,
       quoteId: normalizedQuote?.quoteId ?? null,
       receiversWalletCode: form.receivers_wallet_code.trim(),
-      sendersWalletId: senderWalletId!,
+      sendersWalletId: effectiveSenderWalletId!,
       paymentPin: paymentPin || ''
     };
     await walletToWalletTransfer({
@@ -252,13 +257,17 @@ export function WalletToWalletTransferAction({ onSuccess }: WalletToWalletTransf
             beneficiaryType={BENEFICIARY_TYPE_ENUM.WALLET_CODE}
           />
 
-          <UsersCurrencyDropdown />
+          <UsersCurrencyDropdown
+            value={selectedCurrencyOption}
+            onChange={setSelectedCurrencyOption}
+            dedupeByCurrency
+          />
           <Label>{t('transfer.amount')}</Label>
           <NumberInput
             placeholder={t('transfer.enterAmount')}
             value={watchedAmountNum}
             onChange={handleAmountChange}
-            currency={(senderCurrencyCode as Currency) || 'USD'}
+            currency={(effectiveCurrencyCode as Currency) || 'USD'}
             className="w-full"
           />
           {errors.amount && <span className="text-red-500 text-sm">{errors.amount.message}</span>}
@@ -275,12 +284,14 @@ export function WalletToWalletTransferAction({ onSuccess }: WalletToWalletTransf
           {errors.receivers_wallet_code && (
             <span className="text-red-500 text-sm">{errors.receivers_wallet_code.message}</span>
           )}
-          <div className="mt-2 min-h-[24px]">
+          
+          <div className="">
             {receiverLoading && <span className="text-xs text-muted-foreground">{t('common.processing')}</span>}
             {!receiverLoading && receiverData?.getUserByWalletCode?.user && (
-              <span className="text-sm text-green-700 font-semibold">
-                {receiverData.getUserByWalletCode.user.firstName} {receiverData.getUserByWalletCode.user.lastName}
-              </span>
+              
+              <Typography className='text-green-600 mt-2'>
+                 {receiverData.getUserByWalletCode.user.firstName} {receiverData.getUserByWalletCode.user.lastName}
+              </Typography>
             )}
             {!receiverLoading && watchedReceiverCode && !receiverData?.getUserByWalletCode && (
               <span className="text-xs text-muted-foreground text-red-500 font-semibold">
@@ -288,6 +299,7 @@ export function WalletToWalletTransferAction({ onSuccess }: WalletToWalletTransf
               </span>
             )}
           </div>
+
         </div>
 
         <div>
@@ -308,8 +320,8 @@ export function WalletToWalletTransferAction({ onSuccess }: WalletToWalletTransf
                 variables: {
                   input: {
                     amount: amountStr,
-                    currencyCode: senderCurrencyCode,
-                    fromWalletId: senderWalletId,
+                    currencyCode: effectiveCurrencyCode,
+                    fromWalletId: effectiveSenderWalletId,
                     paymentType: 'WALLET_TO_WALLET',
                     toWalletCode: toCode
                   }
@@ -354,7 +366,7 @@ export function WalletToWalletTransferAction({ onSuccess }: WalletToWalletTransf
               destination={watchedReceiverCode || ''}
               recipientEmail={''}
               description={watchedDescription}
-              currency={senderCurrencyCode || 'USD'}
+              currency={effectiveCurrencyCode || 'USD'}
               transferMethod={TRANSFER_METHOD_ENUM.WALLET}
               onFormSubmit={onFormSubmit}
               onFormSubmitWithPin={onFormSubmitWithPin}
