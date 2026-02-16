@@ -257,11 +257,7 @@ export function WalletToWalletTransferAction({ onSuccess }: WalletToWalletTransf
             beneficiaryType={BENEFICIARY_TYPE_ENUM.WALLET_CODE}
           />
 
-          <UsersCurrencyDropdown
-            value={selectedCurrencyOption}
-            onChange={setSelectedCurrencyOption}
-            dedupeByCurrency
-          />
+          <UsersCurrencyDropdown value={selectedCurrencyOption} onChange={setSelectedCurrencyOption} dedupeByCurrency />
           <Label>{t('transfer.amount')}</Label>
           <NumberInput
             placeholder={t('transfer.enterAmount')}
@@ -284,13 +280,12 @@ export function WalletToWalletTransferAction({ onSuccess }: WalletToWalletTransf
           {errors.receivers_wallet_code && (
             <span className="text-red-500 text-sm">{errors.receivers_wallet_code.message}</span>
           )}
-          
+
           <div className="">
             {receiverLoading && <span className="text-xs text-muted-foreground">{t('common.processing')}</span>}
             {!receiverLoading && receiverData?.getUserByWalletCode?.user && (
-              
-              <Typography className='text-green-600 mt-2'>
-                 {receiverData.getUserByWalletCode.user.firstName} {receiverData.getUserByWalletCode.user.lastName}
+              <Typography className="text-green-600 mt-2">
+                {receiverData.getUserByWalletCode.user.firstName} {receiverData.getUserByWalletCode.user.lastName}
               </Typography>
             )}
             {!receiverLoading && watchedReceiverCode && !receiverData?.getUserByWalletCode && (
@@ -299,7 +294,6 @@ export function WalletToWalletTransferAction({ onSuccess }: WalletToWalletTransf
               </span>
             )}
           </div>
-
         </div>
 
         <div>

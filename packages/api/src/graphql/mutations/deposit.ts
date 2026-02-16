@@ -5,14 +5,17 @@ const DEPOSIT = gql`
     deposit(input: $input) {
       success
       message
-      balance {
-        pendingBalance
-        reservedBalance
-        availableBalance
-      }
+      # balance {
+      #   pendingBalance
+      #   reservedBalance
+      #   availableBalance
+      # }
       transaction {
         status
         reference
+        providerStatus
+        providerMessage
+        feeAmount
       }
     }
   }

@@ -92,8 +92,8 @@ export const USER_WALLETS_TRANSACTION_HISTORY = gql`
     $perPage: Int!
     $search: String
     $type: String
-    $fromDate: Date
-    $toDate: Date
+    $fromDate: String
+    $toDate: String
     $sortBy: String
     $sortDirection: String
   ) {

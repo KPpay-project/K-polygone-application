@@ -1,5 +1,5 @@
 import { Socket, Channel } from 'phoenix';
-import Cookies from 'js-cookie';
+import { getAccessToken } from '@/utils/token-storage';
 
 const WS_URL = 'wss://move-bars-wispy-fog-4442.fly.dev/socket';
 
@@ -14,8 +14,7 @@ class PhoenixSocketClient {
   }
 
   private getAuthToken(): string | null {
-    const token = Cookies.get('token') || localStorage.getItem('token');
-    return token;
+    return getAccessToken();
   }
 
   private initializeSocket() {
