@@ -2,17 +2,17 @@ import { ApolloClient, InMemoryCache, ApolloLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import { createLink } from 'apollo-absinthe-upload-link';
-import Cookies from 'js-cookie';
 import { fromPromise } from '@apollo/client';
 import { jwtDecode } from 'jwt-decode';
-import { JWT_TOKEN_NAME, JWT_REFRESH_TOKEN_NAME, BASE_ENDPOINT_URL } from '@/constant';
+import { BASE_ENDPOINT_URL } from '@/constant';
 import { REFRESH_TOKEN } from '@repo/api';
+import { getAccessToken, getRefreshToken, setAccessToken, setRefreshToken } from '@/utils/token-storage';
 
 const GRAPHQL_ENDPOINT = BASE_ENDPOINT_URL;
 const uploadLink = createLink({ uri: GRAPHQL_ENDPOINT });
 
 const authLink = setContext((_, { headers }) => {
-  const token = Cookies.get(JWT_TOKEN_NAME);
+  const token = getAccessToken();
   return {
     headers: {
       ...headers,
@@ -27,7 +27,7 @@ const refreshClient = new ApolloClient({
 });
 
 export const refreshAccessToken = async () => {
-  const refreshToken = Cookies.get(JWT_REFRESH_TOKEN_NAME);
+  const refreshToken = getRefreshToken();
   if (!refreshToken) return null;
 
   try {
@@ -37,8 +37,8 @@ export const refreshAccessToken = async () => {
     });
 
     if (data?.refreshToken?.accessToken) {
-      Cookies.set(JWT_TOKEN_NAME, data.refreshToken.accessToken);
-      Cookies.set(JWT_REFRESH_TOKEN_NAME, data.refreshToken.refreshToken);
+      setAccessToken(data.refreshToken.accessToken);
+      setRefreshToken(data.refreshToken.refreshToken);
       return data.refreshToken.accessToken;
     }
 
@@ -50,7 +50,7 @@ export const refreshAccessToken = async () => {
 };
 
 export const scheduleTokenRefresh = () => {
-  const token = Cookies.get(JWT_TOKEN_NAME);
+  const token = getAccessToken();
   if (!token) return;
 
   try {

@@ -2,8 +2,9 @@
 import { useNavigate } from '@tanstack/react-router';
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
-import { JWT_REFRESH_TOKEN_NAME, JWT_TOKEN_NAME, USER_ROLE } from '@/constant';
+import { USER_ROLE } from '@/constant';
 import { scheduleTokenRefresh } from '@/lib/apollo-client';
+import { clearAuthTokens, getAccessToken, setAccessToken, setRefreshToken } from '@/utils/token-storage';
 import { useUserStore, type UserAccount } from '@/store/user-store';
 
 const ACCESS_TOKEN_EXP_MINUTES = 15;
@@ -14,19 +15,8 @@ export function useAuth() {
   const { setUserAccount, clearUserAccount } = useUserStore();
 
   const setAuthTokens = (accessToken: string, refreshToken: string) => {
-    Cookies.set(JWT_TOKEN_NAME, accessToken, {
-      secure: true,
-      sameSite: 'strict',
-      expires: ACCESS_TOKEN_EXP_MINUTES / (60 * 24),
-      path: '/'
-    });
-
-    Cookies.set(JWT_REFRESH_TOKEN_NAME, refreshToken, {
-      secure: true,
-      sameSite: 'strict',
-      expires: REFRESH_TOKEN_EXP_DAYS,
-      path: '/'
-    });
+    setAccessToken(accessToken);
+    setRefreshToken(refreshToken);
   };
 
   const logUser = (userAccount: UserAccount) => {
@@ -50,6 +40,8 @@ export function useAuth() {
   };
 
   const invalidate = () => {
+    clearAuthTokens();
+
     Object.keys(Cookies.get()).forEach((cookieName) => {
       Cookies.remove(cookieName, { path: '/' });
       Cookies.remove(cookieName);
@@ -60,7 +52,7 @@ export function useAuth() {
   };
 
   const checkSession = () => {
-    const token = Cookies.get(JWT_TOKEN_NAME);
+    const token = getAccessToken();
 
     if (!token) {
       return false;

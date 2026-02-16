@@ -5,8 +5,7 @@ import { useWalletStore } from '@/store/wallet-store';
 import { useProfileStore } from '@/store/profile-store';
 import { ME } from '@repo/api';
 import { handleGraphQLError } from '@/utils/error-handling';
-import Cookies from 'js-cookie';
-import { JWT_TOKEN_NAME } from '@/constant';
+import { clearAuthTokens, getAccessToken } from '@/utils/token-storage';
 
 export const useInitializeUser = () => {
   const { setUserAccount, clearUserAccount, userAccount } = useUserStore();
@@ -15,7 +14,7 @@ export const useInitializeUser = () => {
   const [getMe, { loading, error }] = useLazyQuery(ME);
 
   const initializeUser = async () => {
-    const token = Cookies.get(JWT_TOKEN_NAME);
+    const token = getAccessToken();
 
     if (!token) {
       clearUserAccount();
@@ -43,14 +42,14 @@ export const useInitializeUser = () => {
         clearUserAccount();
         clearWallet();
         clearProfile();
-        Cookies.remove(JWT_TOKEN_NAME);
+        clearAuthTokens();
         handleGraphQLError(response, 'Failed to authenticate user');
       }
     } catch (err) {
       clearUserAccount();
       clearWallet();
       clearProfile();
-      Cookies.remove(JWT_TOKEN_NAME);
+      clearAuthTokens();
       console.error('Failed to initialize user:', err);
     }
   };

@@ -1,10 +1,10 @@
 import DashboardHeader from '@/components/modules/header/dashboard-header.tsx';
 import { Sidebar } from '@/components/modules/sidebar';
-import { JWT_TOKEN_NAME } from '@/constant';
 import { useNavigate } from '@tanstack/react-router';
 import { cn } from 'k-polygon-assets';
 import { Menu } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
+import { getAccessToken } from '@/utils/token-storage';
 
 interface IDashboardLayout {
   children: React.ReactNode;
@@ -16,15 +16,8 @@ const MerchantDashboardLayout: FC<IDashboardLayout> = ({ children, fullContainer
   const [isChecking, setIsChecking] = useState(true);
   const navigate = useNavigate();
 
-  const getCookie = (name: string): string | null => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
-    return null;
-  };
-
   useEffect(() => {
-    const token = getCookie(JWT_TOKEN_NAME);
+    const token = getAccessToken();
 
     if (!token) {
       navigate({ to: '/onboarding/login' });

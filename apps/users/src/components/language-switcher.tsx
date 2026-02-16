@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import { Globe } from 'lucide-react';
 import { Typography } from '@ui/index';
+import { useUserCountry } from '@repo/common';
 
 const languages = [
   { code: 'en', name: 'English', flag: '🇺🇸', nativeName: 'English' },
@@ -15,26 +16,44 @@ const languages = [
 export function LanguageSwitcher() {
   const { i18n } = useTranslation();
   const [isInitialized, setIsInitialized] = useState(false);
+  const { countryCode, loading: countryLoading } = useUserCountry();
 
   useEffect(() => {
-    if (!isInitialized) {
-      const storedLanguage = localStorage.getItem('preferred-language');
-
-      if (storedLanguage && languages.some((lang) => lang.code === storedLanguage)) {
-        i18n.changeLanguage(storedLanguage);
-      } else {
-        const browserLang = navigator.language.split('-')[0];
-        const supportedLang = languages.find((lang) => lang.code === browserLang);
-
-        if (supportedLang) {
-          i18n.changeLanguage(supportedLang.code);
-          localStorage.setItem('preferred-language', supportedLang.code);
-        }
-      }
-
+    if (isInitialized) return;
+    const storedLanguage = typeof window !== 'undefined' ? localStorage.getItem('preferred-language') : null;
+    if (storedLanguage && languages.some((lang) => lang.code === storedLanguage)) {
+      i18n.changeLanguage(storedLanguage);
       setIsInitialized(true);
+      return;
     }
-  }, [i18n, isInitialized]);
+    if (countryLoading) return;
+    if (countryCode) {
+      const countryToLanguage: Record<string, string> = {
+        NG: 'en',
+        US: 'en',
+        GB: 'en',
+        FR: 'fr',
+        ES: 'es',
+        DE: 'de',
+        SA: 'ar',
+        AE: 'ar'
+      };
+      const mapped = countryToLanguage[countryCode.toUpperCase()];
+      if (mapped && languages.some((lang) => lang.code === mapped)) {
+        i18n.changeLanguage(mapped);
+        localStorage.setItem('preferred-language', mapped);
+        setIsInitialized(true);
+        return;
+      }
+    }
+    const browserLang = typeof navigator !== 'undefined' ? navigator.language.split('-')[0] : 'en';
+    const supportedLang = languages.find((lang) => lang.code === browserLang);
+    if (supportedLang) {
+      i18n.changeLanguage(supportedLang.code);
+      localStorage.setItem('preferred-language', supportedLang.code);
+    }
+    setIsInitialized(true);
+  }, [i18n, isInitialized, countryCode, countryLoading]);
 
   const handleLanguageChange = (languageCode: string) => {
     i18n.changeLanguage(languageCode);
