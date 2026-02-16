@@ -5,11 +5,6 @@ const DEPOSIT = gql`
     deposit(input: $input) {
       success
       message
-      # balance {
-      #   pendingBalance
-      #   reservedBalance
-      #   availableBalance
-      # }
       transaction {
         status
         reference
@@ -99,4 +94,27 @@ const VALIDATE_CARD_PAYMENT = gql`
   }
 `;
 
-export { DEPOSIT, MOMO_DEPOSIT, DEPOSIT_VIA_CARD, DEPOSIT_VIA_BANK, VALIDATE_CARD_PAYMENT };
+const GET_MTN_MOMO_BASIC_USER_INFO = gql`
+query GetMtnMomoBasicUserInfo($phoneNumber: String!, $service: MtnMomoService) {
+  mtnMomoBasicUserInfo(phoneNumber: $phoneNumber, service: $service) {
+    msisdn
+    service
+    found
+    targetEnvironment
+    basicUserInfo {
+      name
+      givenName
+      familyName
+    }
+  }
+}
+`
+
+export {
+  DEPOSIT,
+  MOMO_DEPOSIT,
+  DEPOSIT_VIA_CARD,
+  DEPOSIT_VIA_BANK,
+  VALIDATE_CARD_PAYMENT,
+  GET_MTN_MOMO_BASIC_USER_INFO
+};

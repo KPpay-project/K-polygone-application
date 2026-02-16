@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { useMutation } from '@apollo/client';
-import { DEPOSIT } from '@repo/api';
+import { useEffect, useState } from 'react';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import { DEPOSIT, GET_MTN_MOMO_BASIC_USER_INFO } from '@repo/api';
 import { Button } from 'k-polygon-assets/components';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -68,7 +68,6 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
   const { selectedCurrency } = useCurrencyStore();
   const { apiCurrencies } = useCurrencies();
 
-  // Store amount as number for NumberInput
   const [amount, setAmount] = useState<number>(0);
 
   const [phone, setPhone] = useState(customerPhone || '');
@@ -91,18 +90,81 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
 
   const [selectedProvider, setSelectedProvider] = useState<SupportedProviders>(SupportedProviders.MTN_MOMO);
   const [selectedWalletId, setSelectedWalletId] = useState<string>(resolvedWalletId || '');
+  const [momoUserInfo, setMomoUserInfo] = useState<{
+    givenName: string | null;
+    familyName: string | null;
+    name: string | null;
+  } | null>(null);
   const [resultOpen, setResultOpen] = useState(false);
   const [resultStatus, setResultStatus] = useState<'success' | 'error'>('success');
   const [resultMessage, setResultMessage] = useState('');
+  const [momoLookupError, setMomoLookupError] = useState('');
 
   const [deposit, { loading }] = useMutation<DepositResponse, { input: DepositInput }>(DEPOSIT, {
     errorPolicy: 'all'
   });
+  const [getMtnMomoBasicUserInfo, { loading: verifyingMomo }] = useLazyQuery<{
+    mtnMomoBasicUserInfo: {
+      found: boolean;
+      basicUserInfo: {
+        givenName: string | null;
+        familyName: string | null;
+        name: string | null;
+      } | null;
+    };
+  }>(GET_MTN_MOMO_BASIC_USER_INFO, {
+    fetchPolicy: 'no-cache'
+  });
 
-  // Map selectedCurrencyCode to NumberInput's Currency union if available
   const currencyForNumberInput: Currency | undefined = ['USD', 'NGN', 'EUR', 'GBP'].includes(selectedCurrencyCode)
     ? (selectedCurrencyCode as Currency)
     : undefined;
+
+  useEffect(() => {
+    if (selectedProvider !== SupportedProviders.MTN_MOMO) {
+      setMomoUserInfo(null);
+      setMomoLookupError('');
+      return;
+    }
+
+    const normalizedPhone = phone.replace(/\s+/g, '');
+    if (!normalizedPhone || normalizedPhone.length < 8) {
+      setMomoUserInfo(null);
+      setMomoLookupError('');
+      return;
+    }
+
+    const timeout = setTimeout(async () => {
+      const verification = await getMtnMomoBasicUserInfo({
+        variables: {
+          phoneNumber: normalizedPhone,
+          service: 'COLLECTION'
+        }
+      });
+
+      if (verification.errors && verification.errors.length) {
+        setMomoUserInfo(null);
+        setMomoLookupError('Unable to verify MTN MoMo user');
+        return;
+      }
+
+      const verifiedUser = verification.data?.mtnMomoBasicUserInfo;
+      if (!verifiedUser?.found) {
+        setMomoUserInfo(null);
+        setMomoLookupError('MTN MoMo user not found for this phone number');
+        return;
+      }
+
+      setMomoLookupError('');
+      setMomoUserInfo({
+        givenName: verifiedUser.basicUserInfo?.givenName ?? null,
+        familyName: verifiedUser.basicUserInfo?.familyName ?? null,
+        name: verifiedUser.basicUserInfo?.name ?? null
+      });
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [phone, selectedProvider, getMtnMomoBasicUserInfo]);
 
   const handleDeposit = async () => {
     const finalWalletId = selectedWalletId || resolvedWalletId;
@@ -118,6 +180,15 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
     }
 
     try {
+      if (selectedProvider === SupportedProviders.MTN_MOMO) {
+        if (!momoUserInfo) {
+          setResultStatus('error');
+          setResultMessage(momoLookupError || 'Please enter a valid MTN MoMo number');
+          setResultOpen(true);
+          return;
+        }
+      }
+
       const res = await deposit({
         variables: {
           input: {
@@ -142,6 +213,9 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
         refetchWallets();
         setAmount(0);
         await fetchProfile();
+        if (selectedProvider !== SupportedProviders.MTN_MOMO) {
+          setMomoUserInfo(null);
+        }
         setResultStatus('success');
         setResultMessage(message);
         setResultOpen(true);
@@ -204,14 +278,23 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
               className="w-full"
             />
           </div>
-
+            
           <div className="space-y-2">
             <PrimaryPhoneNumberInput value={phone} onChange={(e) => setPhone(e)} />
           </div>
 
+          {selectedProvider === SupportedProviders.MTN_MOMO && momoUserInfo ? (
+            <div className="rounded-md border p-3 text-sm">
+              {momoUserInfo?.name || `${momoUserInfo?.givenName || ''} ${momoUserInfo?.familyName || ''}`.trim() || 'N/A'}
+            </div>
+          ) : null}
+          {selectedProvider === SupportedProviders.MTN_MOMO && !momoUserInfo && momoLookupError ? (
+            <div className="rounded-md border border-red-300 bg-red-50 p-3 text-sm text-red-700">{momoLookupError}</div>
+          ) : null}
+
           <div className="flex justify-end space-x-2 pt-4">
-            <Button onClick={handleDeposit} disabled={loading} className="bg-primary hover:bg-primary/90 w-full">
-              {loading ? 'Processing...' : 'Deposit'}
+            <Button onClick={handleDeposit} disabled={loading || verifyingMomo} className="bg-primary hover:bg-primary/90 w-full">
+              {loading || verifyingMomo ? 'Processing...' : 'Deposit'}
             </Button>
           </div>
         </>
