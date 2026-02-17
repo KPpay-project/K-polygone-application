@@ -102,7 +102,6 @@ query GetMtnMomoBasicUserInfo($phoneNumber: String!, $service: MtnMomoService) {
     found
     targetEnvironment
     basicUserInfo {
-      name
       givenName
       familyName
     }
