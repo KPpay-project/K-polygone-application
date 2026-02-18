@@ -19,7 +19,6 @@ import { useGetMyWallets } from '@/hooks/api';
 import { useUnifiedBanks } from '@repo/common';
 import { Skeleton } from '@/components/ui/skeleton';
 
-
 const beneficiaryTypes = ['bank_transfer', 'kpay_user', 'mobile_money', 'airtime'] as const;
 
 type BeneficiaryType = (typeof beneficiaryTypes)[number];
@@ -258,7 +257,6 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
     }
   };
 
-  
   const getIdentifierLabel = () => {
     switch (selectedType) {
       case 'bank_transfer':
@@ -398,7 +396,9 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
               onChange={setSelectedCurrencyOption}
               dedupeByCurrency
             />
-            {!selectedCurrencyId ? <p className="text-[0.8rem] font-medium text-destructive">Please select a currency</p> : null}
+            {!selectedCurrencyId ? (
+              <p className="text-[0.8rem] font-medium text-destructive">Please select a currency</p>
+            ) : null}
           </div>
 
           {/* Conditional Identifier Field */}

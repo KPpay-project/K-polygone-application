@@ -13,7 +13,9 @@ import {
   Input,
   Button,
   InputWithSearch,
-  Skeleton
+  Skeleton,
+  TransactionSuccessDialog,
+  TransactionErrorDialog
 } from '@repo/ui';
 import UsersCurrencyDropdown from '@/components/currency-dropdown/users-currency-dropdown';
 import { useProfileStore } from '@/store/profile-store';
@@ -23,7 +25,6 @@ import { FLW_BANK_WITHDRAWAL_QUOTE, WITHDRAW_TO_BANK } from '@repo/api';
 import { TransferConfirmation } from '@/components/modules/transfer/transfer-confirmation.tsx';
 import { TRANSFER_METHOD_ENUM } from '@/enums';
 import { PAYSTACK_TEST_KEY } from '@/constant';
-import ErrorAndSuccessFallback from '@/components/sub-modules/modal-contents/error-success-fallback.tsx';
 import { useUnifiedBanks } from '@repo/common';
 
 type CurrencyOption = {
@@ -230,6 +231,16 @@ const BankTransferAction = ({ onSuccess }: Props) => {
   };
 
   const actionIsLoading = quoting || withdrawing;
+  const selectedBankLabel = useMemo(() => {
+    if (!pendingValues?.bankCode) return '';
+    return bankOptions.find((bank) => bank.value === pendingValues.bankCode)?.label || pendingValues.bankCode;
+  }, [pendingValues?.bankCode, bankOptions]);
+
+  const closeResultDialog = () => {
+    setIsConfirmOpen(false);
+    setResultStatus(null);
+  };
+
   return (
     <>
       <form onSubmit={handleSubmit(openConfirm)} className="px-4 pb-6 space-y-6" autoComplete="on">
@@ -313,27 +324,63 @@ const BankTransferAction = ({ onSuccess }: Props) => {
         </Button>
       </form>
 
-      <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+      <Dialog
+        open={isConfirmOpen && resultStatus === null}
+        onOpenChange={(open) => {
+          setIsConfirmOpen(open);
+          if (!open) setResultStatus(null);
+        }}
+      >
         <DialogContent className="max-w-md">
-          {resultStatus ? (
-            <ErrorAndSuccessFallback status={resultStatus} body={resultMessage} />
-          ) : (
-            pendingValues && (
-              <TransferConfirmation
-                amount={pendingValues.amount}
-                destination={pendingValues.accountNumber}
-                beneficiaryName={accountName}
-                currency={pendingValues.currency}
-                transferMethod={TRANSFER_METHOD_ENUM.BANK}
-                quote={currentQuote}
-                quoteLoading={quoting}
-                onFormSubmitWithPin={confirmTransfer}
-                loading={withdrawing}
-              />
-            )
+          {pendingValues && (
+            <TransferConfirmation
+              amount={pendingValues.amount}
+              destination={pendingValues.accountNumber}
+              beneficiaryName={accountName}
+              currency={pendingValues.currency}
+              transferMethod={TRANSFER_METHOD_ENUM.BANK}
+              quote={currentQuote}
+              quoteLoading={quoting}
+              onFormSubmitWithPin={confirmTransfer}
+              loading={withdrawing}
+            />
           )}
         </DialogContent>
       </Dialog>
+
+      <TransactionSuccessDialog
+        open={isConfirmOpen && resultStatus === 'success'}
+        onOpenChange={(open) => {
+          if (!open) closeResultDialog();
+        }}
+        title="Successful!"
+        amount={`${pendingValues?.currency || ''} ${pendingValues?.amount || ''}`.trim()}
+        subtitle={resultMessage}
+        details={[
+          { label: 'Recipient', value: accountName || '-' },
+          { label: 'Account', value: pendingValues?.accountNumber || '-' },
+          { label: 'Bank', value: selectedBankLabel || '-' },
+          { label: 'Date', value: new Date().toLocaleString() }
+        ]}
+        reference={currentQuote?.quoteId || ''}
+        onCopyReference={() => {
+          if (currentQuote?.quoteId) navigator.clipboard.writeText(currentQuote.quoteId);
+        }}
+        onPrimaryAction={closeResultDialog}
+        onShareReceipt={closeResultDialog}
+        primaryLabel="Done"
+      />
+
+      <TransactionErrorDialog
+        open={isConfirmOpen && resultStatus === 'error'}
+        onOpenChange={(open) => {
+          if (!open) closeResultDialog();
+        }}
+        title={t('transfer.failed') || 'Transfer failed'}
+        description={resultMessage}
+        onRetry={() => setResultStatus(null)}
+        onCancel={closeResultDialog}
+      />
     </>
   );
 };

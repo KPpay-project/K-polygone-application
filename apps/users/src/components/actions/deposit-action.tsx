@@ -284,7 +284,11 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
       ) : null}
 
       <div className="flex justify-end space-x-2 pt-4">
-        <Button onClick={handleDeposit} disabled={loading || verifyingMomo} className="bg-primary hover:bg-primary/90 w-full">
+        <Button
+          onClick={handleDeposit}
+          disabled={loading || verifyingMomo}
+          className="bg-primary hover:bg-primary/90 w-full"
+        >
           {loading || verifyingMomo ? 'Processing...' : 'Deposit'}
         </Button>
       </div>

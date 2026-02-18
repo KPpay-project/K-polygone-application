@@ -13,12 +13,13 @@
     "lint": "eslint \"**/*.{ts,tsx}\""
   },
   "dependencies": {
-    "@repo/common": "workspace:*",
     "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-slot": "^1.0.2",
+    "@repo/common": "workspace:*",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "cmdk": "^1.1.1",
+    "iconsax-reactjs": "^0.0.8",
     "lucide-react": "^0.344.0",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7"

@@ -8,8 +8,13 @@ const CREATE_BENEFICIARY_MUTATION = gql`
     $providerName: String
     $currencyId: ID
   ) {
-    createBeneficiary(name: $name, number: $number, type: $type,
-     providerName: $providerName, currencyId: $currencyId) {
+    createBeneficiary(
+      name: $name
+      number: $number
+      type: $type
+      providerName: $providerName
+      currencyId: $currencyId
+    ) {
       beneficiary {
         id
         insertedAt
