@@ -3,7 +3,6 @@ import { Sidebar } from '@/components/modules/sidebar';
 import { useNavigate } from '@tanstack/react-router';
 import { cn } from 'k-polygon-assets';
 import { FC, useEffect, useState } from 'react';
-import WalletUpdateListener from '@/components/listeners/wallet-update-listener';
 import { useAuth } from '@/hooks/use-auth';
 import { usePhoenixSocket } from '@/hooks/use-phoenix-socket';
 import DefaultGlobalLoader from '../loaders/default-page-loader';
@@ -53,20 +52,8 @@ const DashboardLayout: FC<IDashboardLayout> = ({ children, fullContainer }) => {
           <div className={cn(fullContainer && 'h-[calc(100%-150px)]', 'px-3 sm:px-4 lg:px-6 my-4')}>{children}</div>
         </div>
       </main>
-      <WalletUpdateListener />
-      <PhoenixConnectionManager />
     </div>
   );
-};
-
-const PhoenixConnectionManager = () => {
-  const { isConnected } = usePhoenixSocket();
-
-  useEffect(() => {
-    console.log('Phoenix Socket Connection Status:', isConnected ? 'Connected' : 'Disconnected');
-  }, [isConnected]);
-
-  return null;
 };
 
 export default DashboardLayout;

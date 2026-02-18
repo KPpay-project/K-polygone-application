@@ -9,6 +9,10 @@ dist-ssr
 .cache
 server/dist
 public/dist
+.next
+*/dist
+*dev-dist
+*/dev-dist
 
 # Test Coverage & Reports
 coverage/

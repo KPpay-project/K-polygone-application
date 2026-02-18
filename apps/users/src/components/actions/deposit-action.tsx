@@ -10,11 +10,11 @@ import { toast } from 'sonner';
 import { useProfileStore } from '@/store/profile-store';
 import { SupportedProviders } from '@repo/types';
 import UsersCurrencyDropdown from '@/components/currency-dropdown/users-currency-dropdown.tsx';
-import ErrorAndSuccessFallback from '@/components/sub-modules/modal-contents/error-success-fallback.tsx';
 import { extractErrorMessages } from '@/utils';
 import { NumberInput } from '@/components/ui/input';
 import { PrimaryPhoneNumberInput } from '@repo/ui';
 import { useGetMyWallets } from '@/hooks/api';
+import { SuccessModal } from '@/components/ui/success-modal';
 
 interface DepositActionProps {
   walletId?: string;
@@ -235,70 +235,68 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
 
   return (
     <div className="space-y-4">
-      {resultOpen ? (
-        <ErrorAndSuccessFallback
-          status={resultStatus}
-          title={'Deposit Request'}
-          body={resultMessage}
-          onAction={() => setResultOpen(false)}
+      <UsersCurrencyDropdown
+        label="Select currency"
+        selectedCurrency={selectedCurrencyCode}
+        onChange={(opt) => {
+          setSelectedWalletId(opt?.walletId ?? '');
+          setSelectedCurrencyCode(opt?.currencyCode ?? '');
+        }}
+      />
+
+      <div className="space-y-2">
+        <Label htmlFor="provider">Provider</Label>
+        <Select value={selectedProvider} onValueChange={(v) => setSelectedProvider(v as SupportedProviders)}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select provider" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={SupportedProviders.MTN_MOMO}>MTN Mobile Money</SelectItem>
+            <SelectItem value={SupportedProviders.M_PESA}>M-Pesa</SelectItem>
+            <SelectItem value={SupportedProviders.AIRTEL}>Airtel Money</SelectItem>
+            <SelectItem value={SupportedProviders.ORANGE}>Orange Money</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="amount">Amount</Label>
+        <NumberInput
+          value={amount}
+          onChange={(val: number) => setAmount(val)}
+          currency={currencyForNumberInput}
+          placeholder="Enter amount"
+          className="w-full"
         />
-      ) : (
-        <>
-          <UsersCurrencyDropdown
-            label="Select currency"
-            selectedCurrency={selectedCurrencyCode}
-            onChange={(opt) => {
-              setSelectedWalletId(opt?.walletId ?? '');
-              setSelectedCurrencyCode(opt?.currencyCode ?? '');
-            }}
-          />
+      </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="provider">Provider</Label>
-            <Select value={selectedProvider} onValueChange={(v) => setSelectedProvider(v as SupportedProviders)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select provider" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={SupportedProviders.MTN_MOMO}>MTN Mobile Money</SelectItem>
-                <SelectItem value={SupportedProviders.M_PESA}>M-Pesa</SelectItem>
-                <SelectItem value={SupportedProviders.AIRTEL}>Airtel Money</SelectItem>
-                <SelectItem value={SupportedProviders.ORANGE}>Orange Money</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+      <div className="space-y-2">
+        <PrimaryPhoneNumberInput value={phone} onChange={(e) => setPhone(e)} />
+      </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="amount">Amount</Label>
-            <NumberInput
-              value={amount}
-              onChange={(val: number) => setAmount(val)}
-              currency={currencyForNumberInput}
-              placeholder="Enter amount"
-              className="w-full"
-            />
-          </div>
-            
-          <div className="space-y-2">
-            <PrimaryPhoneNumberInput value={phone} onChange={(e) => setPhone(e)} />
-          </div>
+      {selectedProvider === SupportedProviders.MTN_MOMO && momoUserInfo ? (
+        <div className="rounded-md border p-3 text-sm">
+          {momoUserInfo?.name || `${momoUserInfo?.givenName || ''} ${momoUserInfo?.familyName || ''}`.trim() || 'N/A'}
+        </div>
+      ) : null}
+      {selectedProvider === SupportedProviders.MTN_MOMO && !momoUserInfo && momoLookupError ? (
+        <div className="rounded-md border border-red-300 bg-red-50 p-3 text-sm text-red-700">{momoLookupError}</div>
+      ) : null}
 
-          {selectedProvider === SupportedProviders.MTN_MOMO && momoUserInfo ? (
-            <div className="rounded-md border p-3 text-sm">
-              {momoUserInfo?.name || `${momoUserInfo?.givenName || ''} ${momoUserInfo?.familyName || ''}`.trim() || 'N/A'}
-            </div>
-          ) : null}
-          {selectedProvider === SupportedProviders.MTN_MOMO && !momoUserInfo && momoLookupError ? (
-            <div className="rounded-md border border-red-300 bg-red-50 p-3 text-sm text-red-700">{momoLookupError}</div>
-          ) : null}
+      <div className="flex justify-end space-x-2 pt-4">
+        <Button onClick={handleDeposit} disabled={loading || verifyingMomo} className="bg-primary hover:bg-primary/90 w-full">
+          {loading || verifyingMomo ? 'Processing...' : 'Deposit'}
+        </Button>
+      </div>
 
-          <div className="flex justify-end space-x-2 pt-4">
-            <Button onClick={handleDeposit} disabled={loading || verifyingMomo} className="bg-primary hover:bg-primary/90 w-full">
-              {loading || verifyingMomo ? 'Processing...' : 'Deposit'}
-            </Button>
-          </div>
-        </>
-      )}
+      <SuccessModal
+        open={resultOpen}
+        onOpenChange={setResultOpen}
+        status={resultStatus}
+        title={resultStatus === 'success' ? 'Deposit Successful' : 'Deposit Failed'}
+        description={resultMessage}
+        actionLabel={resultStatus === 'success' ? 'Done' : 'Try Again'}
+      />
     </div>
   );
 }

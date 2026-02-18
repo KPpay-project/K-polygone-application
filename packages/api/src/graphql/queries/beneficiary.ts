@@ -9,6 +9,7 @@ export const FETCH_BENEFICIARIES_QUERY = gql`
         number
         type
         providerName
+        currencyId
         insertedAt
         updatedAt
       }
