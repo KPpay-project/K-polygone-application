@@ -24,7 +24,7 @@ export const DepositMethods = ({ selectedMethod = 'card', onMethodSelect }: Depo
     {
       key: DEPOSITE_METHOD_ENUM.BANK,
       icon: <Money size={20} />,
-      title: 'Add via Bank transfer',
+      title: 'Bank Deposit',
       description: 'Fund your account by sending money to your unique bank account',
       isAvailable: true
     },
@@ -38,7 +38,7 @@ export const DepositMethods = ({ selectedMethod = 'card', onMethodSelect }: Depo
     {
       key: DEPOSITE_METHOD_ENUM.PROVIDERS,
       icon: <WalletMoney size={20} />,
-      title: 'Add via Mobile Money',
+      title: 'Mobile Money Deposit',
       description: 'Deposit to our partner merchant',
       isAvailable: true
     },

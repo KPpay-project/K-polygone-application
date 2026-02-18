@@ -17,6 +17,7 @@ import { GET_USER_WALLET_CODE } from '@repo/api';
 import UsersCurrencyDropdown from '@/components/currency-dropdown/users-currency-dropdown';
 import { useGetMyWallets } from '@/hooks/api';
 
+
 const beneficiaryTypes = ['bank_transfer', 'kpay_user', 'mobile_money', 'airtime'] as const;
 
 type BeneficiaryType = (typeof beneficiaryTypes)[number];
