@@ -14,7 +14,6 @@ import { extractErrorMessages } from '@/utils';
 import { NumberInput } from '@/components/ui/input';
 import { PrimaryPhoneNumberInput } from '@repo/ui';
 import { useGetMyWallets } from '@/hooks/api';
-import { SuccessModal } from '@/components/ui/success-modal';
 import { TransactionSuccessDialog, TransactionErrorDialog } from '@repo/ui';
 
 interface DepositActionProps {
@@ -99,6 +98,8 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
   const [resultOpen, setResultOpen] = useState(false);
   const [resultStatus, setResultStatus] = useState<'success' | 'error'>('success');
   const [resultMessage, setResultMessage] = useState('');
+  const [resultReference, setResultReference] = useState('');
+  const [resultAmount, setResultAmount] = useState('');
   const [momoLookupError, setMomoLookupError] = useState('');
 
   const [deposit, { loading }] = useMutation<DepositResponse, { input: DepositInput }>(DEPOSIT, {
@@ -185,6 +186,8 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
         if (!momoUserInfo) {
           setResultStatus('error');
           setResultMessage(momoLookupError || 'Please enter a valid MTN MoMo number');
+          setResultReference('');
+          setResultAmount('');
           setResultOpen(true);
           return;
         }
@@ -205,11 +208,21 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
         const msgs = extractErrorMessages(res);
         setResultStatus('error');
         setResultMessage(msgs.join('\n') || 'Deposit failed');
+        setResultReference('');
+        setResultAmount('');
         setResultOpen(true);
         return;
       }
       const success = res.data?.deposit?.success;
       const message = res.data?.deposit?.message || (success ? 'Deposit successful' : 'Deposit failed');
+      const tx = res.data?.deposit?.transaction;
+      const displayAmount =
+        tx?.amount && tx?.currency
+          ? `${tx.currency} ${Number(tx.amount).toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            })}`
+          : '';
       if (success) {
         refetchWallets();
         setAmount(0);
@@ -219,17 +232,23 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
         }
         setResultStatus('success');
         setResultMessage(message);
+        setResultReference(tx?.reference || '');
+        setResultAmount(displayAmount);
         setResultOpen(true);
         onSuccess?.();
       } else {
         setResultStatus('error');
         setResultMessage(message);
+        setResultReference('');
+        setResultAmount('');
         setResultOpen(true);
       }
     } catch (e: any) {
       const msgs = extractErrorMessages(e);
       setResultStatus('error');
       setResultMessage(msgs.join('\n') || (typeof e?.message === 'string' ? e.message : 'Deposit failed'));
+      setResultReference('');
+      setResultAmount('');
       setResultOpen(true);
     }
   };
@@ -294,13 +313,38 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
         </Button>
       </div>
 
-      <SuccessModal
-        open={resultOpen}
-        onOpenChange={setResultOpen}
-        status={resultStatus}
-        title={resultStatus === 'success' ? 'Deposit Successful' : 'Deposit Failed'}
+      <TransactionSuccessDialog
+        open={resultOpen && resultStatus === 'success'}
+        onOpenChange={(open) => {
+          if (!open) setResultOpen(false);
+        }}
+        title="Deposit Successful"
+        amount={resultAmount}
+        subtitle={resultMessage}
+        details={[
+          { label: 'Wallet', value: selectedWalletId || resolvedWalletId || '-' },
+          { label: 'Phone', value: phone || '-' },
+          { label: 'Provider', value: selectedProvider },
+          { label: 'Date', value: new Date().toLocaleString() }
+        ]}
+        reference={resultReference}
+        onCopyReference={() => {
+          if (resultReference) navigator.clipboard.writeText(resultReference);
+        }}
+        onPrimaryAction={() => setResultOpen(false)}
+      />
+
+      <TransactionErrorDialog
+        open={resultOpen && resultStatus === 'error'}
+        onOpenChange={(open) => {
+          if (!open) setResultOpen(false);
+        }}
+        title="Deposit Failed"
         description={resultMessage}
-        actionLabel={resultStatus === 'success' ? 'Done' : 'Try Again'}
+        onRetry={() => {
+          setResultOpen(false);
+        }}
+        onCancel={() => setResultOpen(false)}
       />
     </div>
   );

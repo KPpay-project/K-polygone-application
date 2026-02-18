@@ -104,7 +104,7 @@ const VerifyTransactionPin = ({
     <>
       {/* Header */}
       <div className="flex flex-col items-center justify-center mb-6">
-         <Keyboard size="50" color="red" variant="Bulk"  />
+        <Keyboard size="50" color="red" variant="Bulk" />
         <h4 className="text-xl font-bold text-center text-gray-900">{title}</h4>
         <p className="text-sm text-gray-500 text-center mt-2 max-w-[80%] mx-auto">{description}</p>
       </div>
@@ -164,12 +164,7 @@ const VerifyTransactionPin = ({
 
         {/* Action Buttons */}
         <div className="flex gap-3 mt-4">
-          <Button
-           className='w-full'
-            variant="disabled_outline"
-            onClick={onClose}
-            disabled={loading}
-          >
+          <Button className="w-full" variant="disabled_outline" onClick={onClose} disabled={loading}>
             Cancel
           </Button>
 

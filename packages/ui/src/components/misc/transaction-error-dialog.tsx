@@ -4,7 +4,7 @@ import { CustomModal } from './custom-modal';
 import { Button } from '../ui/button';
 import { Typography } from './typography';
 import { cn } from '@ui/lib/utils';
-import { CloseSquare } from "iconsax-reactjs"
+import { CloseSquare } from 'iconsax-reactjs';
 
 export type TransactionErrorDialogProps = {
   open: boolean;
@@ -39,8 +39,7 @@ export const TransactionErrorDialog: React.FC<TransactionErrorDialogProps> = ({
     >
       <div className="rounded-[28px] bg-white p-6 sm:p-10">
         <div className="flex flex-col items-center text-center">
-         
-          <CloseSquare variant='Bulk' color='red'  size={60} strokeWidth={2.3} />
+          <CloseSquare variant="Bulk" color="red" size={60} strokeWidth={2.3} />
 
           <Typography as="h3" className=" font-semibold leading-none text-[#B91C1C]">
             {title}
@@ -50,19 +49,13 @@ export const TransactionErrorDialog: React.FC<TransactionErrorDialogProps> = ({
           </Typography>
           {errorCode ? (
             <div className="mt-5 rounded-full border border-[#FECACA] bg-[#FEF2F2] px-4 py-2">
-              <Typography className=" font-medium text-[#B91C1C]">
-                {errorCode}
-              </Typography>
+              <Typography className=" font-medium text-[#B91C1C]">{errorCode}</Typography>
             </div>
           ) : null}
         </div>
 
         <div className="mt-10 flex flex-col gap-3">
-          <Button
-            type="button"
-            variant="disabled_outline"      
-            onClick={onCancel}
-          >
+          <Button type="button" variant="disabled_outline" onClick={onCancel}>
             <X className="h-5 w-5" />
             {cancelLabel}
           </Button>

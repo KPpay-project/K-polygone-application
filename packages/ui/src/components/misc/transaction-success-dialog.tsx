@@ -4,7 +4,7 @@ import { CustomModal } from './custom-modal';
 import { Button } from '../ui/button';
 import { Typography } from './typography';
 import { cn } from '@ui/lib/utils';
-import {TickSquare} from 'iconsax-reactjs'
+import { TickSquare } from 'iconsax-reactjs';
 
 export type SuccessDetailRow = {
   label: string;
@@ -61,9 +61,28 @@ export const TransactionSuccessDialog: React.FC<TransactionSuccessDialogProps> =
     >
       <div className="rounded-[28px] bg-white p-6 sm:p-10">
         <div className="flex flex-col items-center text-center mb-4">
-          <TickSquare variant="Bulk"  size={80} color='green'/>
-          
-          <Typography variant={'h5'}  className=" font-medium leading-none text-[#04A65A] mt-2">
+          <div
+            className="bg-green-500 
+          w-[60px] h-[60px] flex items-center animate-pulse
+           rounded-xl justify-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              className="lucide lucide-check-icon lucide-check"
+            >
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+          </div>
+
+          <Typography variant={'h5'} className=" font-medium leading-none text-[#04A65A] mt-2">
             {title}
           </Typography>
           {amount ? (
@@ -81,8 +100,6 @@ export const TransactionSuccessDialog: React.FC<TransactionSuccessDialogProps> =
             </Typography>
           ) : null}
         </div>
-
-   
 
         <div className="">
           {detailRows?.length ? (
@@ -136,7 +153,6 @@ export const TransactionSuccessDialog: React.FC<TransactionSuccessDialogProps> =
           </Button>
           <Button type="button" className="mt-4 w-full" onClick={onPrimaryAction}>
             {primaryLabel}
-            
           </Button>
         </div>
       </div>
