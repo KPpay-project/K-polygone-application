@@ -312,7 +312,7 @@ export function WalletToWalletTransferAction({ onSuccess }: WalletToWalletTransf
 
         <Button
           type="button"
-          // disabled={processDisabled}
+           disabled={processDisabled}
           className="w-full"
           onClick={async () => {
             const amountStr = formatNumberFixed(watchedAmountNum, 2);

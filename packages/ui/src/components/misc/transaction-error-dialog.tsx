@@ -40,7 +40,7 @@ export const TransactionErrorDialog: React.FC<TransactionErrorDialogProps> = ({
       <div className="rounded-[28px] bg-white p-6 sm:p-10">
         <div className="flex flex-col items-center text-center">
          
-          <CloseSquare  />
+          <CloseSquare variant='Bulk' color='red'  size={60} strokeWidth={2.3} />
 
           <Typography as="h3" className=" font-semibold leading-none text-[#B91C1C]">
             {title}
@@ -60,8 +60,7 @@ export const TransactionErrorDialog: React.FC<TransactionErrorDialogProps> = ({
         <div className="mt-10 flex flex-col gap-3">
           <Button
             type="button"
-            variant="outline"
-            className="h-14 rounded-[18px] border-[#E5E7EB]  font-semibold text-[#6B7280]"
+            variant="disabled_outline"      
             onClick={onCancel}
           >
             <X className="h-5 w-5" />

@@ -15,6 +15,7 @@ import { NumberInput } from '@/components/ui/input';
 import { PrimaryPhoneNumberInput } from '@repo/ui';
 import { useGetMyWallets } from '@/hooks/api';
 import { SuccessModal } from '@/components/ui/success-modal';
+import { TransactionSuccessDialog, TransactionErrorDialog } from '@repo/ui';
 
 interface DepositActionProps {
   walletId?: string;

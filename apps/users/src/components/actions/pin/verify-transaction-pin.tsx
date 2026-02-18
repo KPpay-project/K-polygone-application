@@ -1,6 +1,6 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { SecuritySafe } from 'iconsax-reactjs';
+import { Keyboard, SecuritySafe } from 'iconsax-reactjs';
 import { IoBackspaceOutline } from 'react-icons/io5';
 import { cn } from '@/lib/utils';
 
@@ -104,9 +104,7 @@ const VerifyTransactionPin = ({
     <>
       {/* Header */}
       <div className="flex flex-col items-center justify-center mb-6">
-        <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4 shadow-inner">
-          <SecuritySafe size="32" color="#FF8A65" variant="Bulk" />
-        </div>
+         <Keyboard size="50" color="red" variant="Bulk"  />
         <h4 className="text-xl font-bold text-center text-gray-900">{title}</h4>
         <p className="text-sm text-gray-500 text-center mt-2 max-w-[80%] mx-auto">{description}</p>
       </div>
@@ -167,8 +165,8 @@ const VerifyTransactionPin = ({
         {/* Action Buttons */}
         <div className="flex gap-3 mt-4">
           <Button
-            className="w-full h-12 rounded-xl text-base font-medium shadow-none hover:bg-gray-100"
-            variant="ghost"
+           className='w-full'
+            variant="disabled_outline"
             onClick={onClose}
             disabled={loading}
           >

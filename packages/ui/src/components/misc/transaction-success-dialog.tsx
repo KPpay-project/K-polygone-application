@@ -61,7 +61,7 @@ export const TransactionSuccessDialog: React.FC<TransactionSuccessDialogProps> =
     >
       <div className="rounded-[28px] bg-white p-6 sm:p-10">
         <div className="flex flex-col items-center text-center mb-4">
-          <TickSquare variant="Bulk"  size={80} color='red'/>
+          <TickSquare variant="Bulk"  size={80} color='green'/>
           
           <Typography variant={'h5'}  className=" font-medium leading-none text-[#04A65A] mt-2">
             {title}
@@ -81,6 +81,8 @@ export const TransactionSuccessDialog: React.FC<TransactionSuccessDialogProps> =
             </Typography>
           ) : null}
         </div>
+
+   
 
         <div className="">
           {detailRows?.length ? (
