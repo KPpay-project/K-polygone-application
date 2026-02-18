@@ -278,14 +278,16 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
               className="w-full"
             />
           </div>
-            
+
           <div className="space-y-2">
             <PrimaryPhoneNumberInput value={phone} onChange={(e) => setPhone(e)} />
           </div>
 
           {selectedProvider === SupportedProviders.MTN_MOMO && momoUserInfo ? (
             <div className="rounded-md border p-3 text-sm">
-              {momoUserInfo?.name || `${momoUserInfo?.givenName || ''} ${momoUserInfo?.familyName || ''}`.trim() || 'N/A'}
+              {momoUserInfo?.name ||
+                `${momoUserInfo?.givenName || ''} ${momoUserInfo?.familyName || ''}`.trim() ||
+                'N/A'}
             </div>
           ) : null}
           {selectedProvider === SupportedProviders.MTN_MOMO && !momoUserInfo && momoLookupError ? (
@@ -293,7 +295,11 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
           ) : null}
 
           <div className="flex justify-end space-x-2 pt-4">
-            <Button onClick={handleDeposit} disabled={loading || verifyingMomo} className="bg-primary hover:bg-primary/90 w-full">
+            <Button
+              onClick={handleDeposit}
+              disabled={loading || verifyingMomo}
+              className="bg-primary hover:bg-primary/90 w-full"
+            >
               {loading || verifyingMomo ? 'Processing...' : 'Deposit'}
             </Button>
           </div>

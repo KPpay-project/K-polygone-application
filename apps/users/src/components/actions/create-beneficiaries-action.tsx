@@ -12,9 +12,10 @@ import ErrorAndSuccessFallback from '../sub-modules/modal-contents/error-success
 import { useMutation, useLazyQuery } from '@apollo/client';
 import { BENEFICIARY_TYPE_ENUM } from '@/enums';
 import { PROVIDER_LABELS } from '@/constant';
-import { PrimaryPhoneNumberInput } from '@repo/ui';
-import { InputWithSearch } from '@repo/ui';
+import { PrimaryPhoneNumberInput, InputWithSearch, type CurrencyOption } from '@repo/ui';
 import { GET_USER_WALLET_CODE } from '@repo/api';
+import UsersCurrencyDropdown from '@/components/currency-dropdown/users-currency-dropdown';
+import { useGetMyWallets } from '@/hooks/api';
 
 const beneficiaryTypes = ['bank_transfer', 'kpay_user', 'mobile_money', 'airtime'] as const;
 
@@ -61,6 +62,8 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
     status: 'success' | 'error';
     message: string;
   } | null>(null);
+  const [selectedCurrencyOption, setSelectedCurrencyOption] = React.useState<CurrencyOption | null>(null);
+  const { data: userWalletsData } = useGetMyWallets();
 
   const [createBeneficiary, { loading }] = useMutation(CREATE_BENEFICIARY_MUTATION, {
     refetchQueries: [{ query: FETCH_BENEFICIARIES_QUERY }],
@@ -105,6 +108,16 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
   const selectedType = form.watch('type');
   const identifier = form.watch('identifier');
   const [verifyWalletCode, { data: verifiedUserData, loading: verifyingUser }] = useLazyQuery(GET_USER_WALLET_CODE);
+  const selectedCurrencyId = React.useMemo(() => {
+    if (!selectedCurrencyOption) return undefined;
+
+    const selectedWallet = userWalletsData?.myWallet?.find((wallet) => wallet.id === selectedCurrencyOption.walletId);
+    const selectedBalance = selectedWallet?.balances?.find(
+      (balance) => balance.currency?.code === selectedCurrencyOption.currencyCode
+    );
+
+    return selectedBalance?.currency?.id;
+  }, [selectedCurrencyOption, userWalletsData]);
 
   React.useEffect(() => {
     const code = identifier?.trim();
@@ -143,7 +156,8 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
         name: values.name,
         number: values.identifier,
         type: typeToGraphQLEnum[values.type],
-        providerName: values.providerName || undefined
+        providerName: values.providerName || undefined,
+        currencyId: selectedCurrencyId
       }
     });
   };
@@ -158,6 +172,7 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
     }
   };
 
+  
   const getIdentifierLabel = () => {
     switch (selectedType) {
       case 'bank_transfer':
@@ -261,6 +276,16 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
             )}
           />
 
+          <div className="space-y-2">
+            <UsersCurrencyDropdown
+              label="Select currency"
+              value={selectedCurrencyOption}
+              onChange={setSelectedCurrencyOption}
+              dedupeByCurrency
+            />
+            {!selectedCurrencyId ? <p className="text-[0.8rem] font-medium text-destructive">Please select a currency</p> : null}
+          </div>
+
           {/* Conditional Identifier Field */}
           {selectedType && (
             <FormField
@@ -339,7 +364,7 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
             />
           )}
 
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full" disabled={loading || !selectedCurrencyId}>
             {loading ? 'Adding Beneficiary...' : <>Add Beneficiary</>}
           </Button>
         </form>
