@@ -95,19 +95,19 @@ const VALIDATE_CARD_PAYMENT = gql`
 `;
 
 const GET_MTN_MOMO_BASIC_USER_INFO = gql`
-query GetMtnMomoBasicUserInfo($phoneNumber: String!, $service: MtnMomoService) {
-  mtnMomoBasicUserInfo(phoneNumber: $phoneNumber, service: $service) {
-    msisdn
-    service
-    found
-    targetEnvironment
-    basicUserInfo {
-      givenName
-      familyName
+  query GetMtnMomoBasicUserInfo($phoneNumber: String!, $service: MtnMomoService) {
+    mtnMomoBasicUserInfo(phoneNumber: $phoneNumber, service: $service) {
+      msisdn
+      service
+      found
+      targetEnvironment
+      basicUserInfo {
+        givenName
+        familyName
+      }
     }
   }
-}
-`
+`;
 
 export {
   DEPOSIT,
@@ -115,5 +115,5 @@ export {
   DEPOSIT_VIA_CARD,
   DEPOSIT_VIA_BANK,
   VALIDATE_CARD_PAYMENT,
-  GET_MTN_MOMO_BASIC_USER_INFO
+  GET_MTN_MOMO_BASIC_USER_INFO,
 };

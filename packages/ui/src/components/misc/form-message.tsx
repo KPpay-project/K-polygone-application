@@ -5,7 +5,7 @@ export const CustomFormMessage = ({
   message,
   scope,
 }: {
-  message?: { message?: string };
+  message?: string;
   scope: 'error' | 'warning' | 'success';
 }) => {
   const classNameMapping = {
@@ -20,9 +20,9 @@ export const CustomFormMessage = ({
 
   return (
     message && (
-      <div className={cn('flex gap-[5px] items-center px-[5px] py-[4px] rounded-[6px]', className)}>
+      <div className={cn('flex items-center gap-1.5 px-2 py-1 rounded-md', className)}>
         <Icon size={16} />
-        {message.message}
+        <span>{message}</span>
       </div>
     )
   );

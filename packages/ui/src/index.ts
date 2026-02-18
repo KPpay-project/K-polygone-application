@@ -37,3 +37,5 @@ export * from './components/misc/network-status';
 export * from './components/misc/form-message';
 export * from './components/misc/typography';
 export * from './components/misc/custom-modal';
+export * from './components/misc/transaction-success-dialog';
+export * from './components/misc/transaction-error-dialog';

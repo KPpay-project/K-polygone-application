@@ -31,7 +31,7 @@ export const useMenuItems = (): SidebarItemProps[] => {
     {
       icon: <Profile2User size={18} variant="Outline" />,
       label: t('sidebar.beneficiaries'),
-      href: '/dashboard/beneficiaries',
+      href: '/dashboard/beneficiaries'
       // subItems: [
       //   { label: 'Bank Transfer', href: '/dashboard/beneficiaries?type=BANK' },
       //   { label: 'KPay User', href: '/dashboard/beneficiaries?type=WALLET_CODE' },

@@ -17,11 +17,10 @@ import { BENEFICIARY_TYPE_ENUM, TRANSFER_METHOD_ENUM } from '@/enums';
 import { useTransferQuote } from '@/hooks/api/use-transfer';
 import UsersCurrencyDropdown from '@/components/currency-dropdown/users-currency-dropdown.tsx';
 import { useGetMyWallets } from '@/hooks/api';
-import ErrorAndSuccessFallback from '@/components/sub-modules/modal-contents/error-success-fallback';
 import ListBeneficiariesPanel, { Beneficiary } from '@/components/modules/beneficiaries/list-beneficiaries-panel';
 import { EmptyState } from '@/components/common/fallbacks';
 import { CREATE_BENEFICIARY_MUTATION } from '@repo/api';
-import { Typography, type CurrencyOption } from '@repo/ui';
+import { Typography, type CurrencyOption, TransactionSuccessDialog, TransactionErrorDialog } from '@repo/ui';
 
 interface WalletToWalletTransferResponse {
   fromBalance: { availableBalance: number };
@@ -58,6 +57,7 @@ export function WalletToWalletTransferAction({ onSuccess }: WalletToWalletTransf
   const [resultOpen, setResultOpen] = useState(false);
   const [resultStatus, setResultStatus] = useState<'success' | 'error'>('success');
   const [resultMessage, setResultMessage] = useState('');
+  const [resultReference, setResultReference] = useState('');
   const [selectedBeneficiary, setSelectedBeneficiary] = useState<Beneficiary | null>(null);
   const [selectedCurrencyOption, setSelectedCurrencyOption] = useState<CurrencyOption | null>(null);
 
@@ -86,22 +86,25 @@ export function WalletToWalletTransferAction({ onSuccess }: WalletToWalletTransf
         refetchWallets();
         setResultStatus('success');
         setResultMessage(response?.message || t('transfer.transferSuccessful') || 'Transfer successful');
+        setResultReference(response?.outTransaction?.reference || '');
         setResultOpen(true);
         onSuccess?.();
       } else {
         setResultStatus('error');
         setResultMessage(response?.message || t('transfer.failed') || 'Transfer failed');
+        setResultReference('');
         setResultOpen(true);
       }
     },
     onError: (error) => {
       setResultStatus('error');
       setResultMessage(error.message || t('common.error') || 'An error occurred');
+      setResultReference('');
       setResultOpen(true);
     }
   });
 
-  const [createBeneficiary, { loading: createBeneficiaryLoading }] = useMutation(CREATE_BENEFICIARY_MUTATION, {
+  const [createBeneficiary] = useMutation(CREATE_BENEFICIARY_MUTATION, {
     onCompleted: (data) => {
       if (data.createBeneficiary.success) {
         toast.success(data.createBeneficiary.message || 'Beneficiary added successfully');
@@ -247,6 +250,11 @@ export function WalletToWalletTransferAction({ onSuccess }: WalletToWalletTransf
     return <div className="p-4 text-center text-red-500">{t('transfer.invalidWallet')}</div>;
   }
 
+  const closeResultDialog = () => {
+    setResultOpen(false);
+    setIsModalOpen(false);
+  };
+
   return (
     <>
       <form onSubmit={handleSubmit(handleTransfer)} className="space-y-4">
@@ -331,46 +339,70 @@ export function WalletToWalletTransferAction({ onSuccess }: WalletToWalletTransf
         </Button>
       </form>
 
-      <DefaultModal open={isModalOpen} onClose={() => setIsModalOpen(false)} className="max-w-md" trigger={<></>}>
+      <DefaultModal
+        open={isModalOpen && !resultOpen}
+        onClose={() => setIsModalOpen(false)}
+        className="max-w-md"
+        trigger={<></>}
+      >
         <div className="p-4">
-          {resultOpen ? (
-            <>
-              <ErrorAndSuccessFallback
-                status={resultStatus}
-                title={resultStatus === 'success' ? t('transfer.transferSuccessful') : t('transfer.transferFailed')}
-                body={resultMessage}
-                onAction={() => {
-                  setResultOpen(false);
-                  setIsModalOpen(false);
-                }}
-              />
-
-              <Button
-                variant={'outline'}
-                className="w-full"
-                onClick={handleAddBeneficiary}
-                disabled={createBeneficiaryLoading || !receiverData?.getUserByWalletCode?.user}
-              >
-                {createBeneficiaryLoading ? 'Adding...' : 'Add Beneficiary'}
-              </Button>
-            </>
-          ) : (
-            <TransferConfirmation
-              amount={formatNumberFixed(watchedAmountNum, 2)}
-              destination={watchedReceiverCode || ''}
-              recipientEmail={''}
-              description={watchedDescription}
-              currency={effectiveCurrencyCode || 'USD'}
-              transferMethod={TRANSFER_METHOD_ENUM.WALLET}
-              onFormSubmit={onFormSubmit}
-              onFormSubmitWithPin={onFormSubmitWithPin}
-              quote={normalizedQuote}
-              quoteLoading={quoteLoading}
-              loading={transferLoading}
-            />
-          )}
+          <TransferConfirmation
+            amount={formatNumberFixed(watchedAmountNum, 2)}
+            destination={watchedReceiverCode || ''}
+            recipientEmail={''}
+            description={watchedDescription}
+            currency={effectiveCurrencyCode || 'USD'}
+            transferMethod={TRANSFER_METHOD_ENUM.WALLET}
+            onFormSubmit={onFormSubmit}
+            onFormSubmitWithPin={onFormSubmitWithPin}
+            quote={normalizedQuote}
+            quoteLoading={quoteLoading}
+            loading={transferLoading}
+          />
         </div>
       </DefaultModal>
+
+      <TransactionSuccessDialog
+        open={resultOpen && resultStatus === 'success'}
+        onOpenChange={(open) => {
+          if (!open) closeResultDialog();
+        }}
+        title={t('transfer.transferSuccessful') || 'Transfer successful'}
+        amount={`${effectiveCurrencyCode || 'USD'} ${formatNumberFixed(watchedAmountNum, 2)}`}
+        subtitle={resultMessage}
+        details={[
+          {
+            label: 'Recipient',
+            value: receiverData?.getUserByWalletCode?.user
+              ? `${receiverData.getUserByWalletCode.user.firstName || ''} ${receiverData.getUserByWalletCode.user.lastName || ''}`.trim()
+              : watchedReceiverCode || '-'
+          },
+          { label: 'Account', value: watchedReceiverCode || '-' },
+          { label: 'Date', value: new Date().toLocaleString() }
+        ]}
+        reference={resultReference}
+        onCopyReference={() => {
+          if (resultReference) navigator.clipboard.writeText(resultReference);
+        }}
+        onPrimaryAction={closeResultDialog}
+        onShareReceipt={handleAddBeneficiary}
+        shareLabel="Add Beneficiary"
+        primaryLabel="Done"
+      />
+
+      <TransactionErrorDialog
+        open={resultOpen && resultStatus === 'error'}
+        onOpenChange={(open) => {
+          if (!open) closeResultDialog();
+        }}
+        title={t('transfer.transferFailed') || 'Transfer failed'}
+        description={resultMessage}
+        onRetry={() => {
+          setResultOpen(false);
+          setResultStatus('error');
+        }}
+        onCancel={closeResultDialog}
+      />
     </>
   );
 }
