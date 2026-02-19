@@ -23,9 +23,11 @@ import { toast } from 'sonner';
 import { Typography } from '@/components/sub-modules/typography/typography';
 import { FLW_BANK_WITHDRAWAL_QUOTE, WITHDRAW_TO_BANK } from '@repo/api';
 import { TransferConfirmation } from '@/components/modules/transfer/transfer-confirmation.tsx';
-import { TRANSFER_METHOD_ENUM } from '@/enums';
+import { BENEFICIARY_TYPE_ENUM, TRANSFER_METHOD_ENUM } from '@/enums';
 import { PAYSTACK_TEST_KEY } from '@/constant';
 import { useUnifiedBanks } from '@repo/common';
+import ListBeneficiariesPanel, { Beneficiary } from '@/pages/dashboard/list-beneficiaries-panel';
+import { useGetMyWallets } from '@/hooks/api';
 
 type CurrencyOption = {
   currencyCode: string;
@@ -50,6 +52,7 @@ interface Props {
 const BankTransferAction = ({ onSuccess }: Props) => {
   const { t } = useTranslation();
   const { profile } = useProfileStore();
+  const { data: walletsData } = useGetMyWallets();
   const defaultWalletId = profile?.wallets?.[0]?.id;
   const defaultCurrency = profile?.wallets?.[0]?.balances?.[0]?.currency?.code || 'USD';
 
@@ -93,6 +96,7 @@ const BankTransferAction = ({ onSuccess }: Props) => {
   const [resultMessage, setResultMessage] = useState<string>('');
   const [selectedCurrencyOption, setSelectedCurrencyOption] = useState<CurrencyOption | null>(null);
   const [currentQuote, setCurrentQuote] = useState<any>(null);
+  const [selectedBeneficiary, setSelectedBeneficiary] = useState<Beneficiary | null>(null);
 
   const bankOptions = useMemo(() => {
     return banks.map((b: any) => ({
@@ -100,6 +104,38 @@ const BankTransferAction = ({ onSuccess }: Props) => {
       value: b.code
     }));
   }, [banks]);
+
+  const currencyById = useMemo(() => {
+    const map = new Map<string, CurrencyOption>();
+    for (const wallet of walletsData?.myWallet || []) {
+      for (const balance of wallet?.balances || []) {
+        const currencyId = balance?.currency?.id;
+        const currencyCode = balance?.currency?.code;
+        if (!currencyId || !currencyCode || map.has(currencyId)) continue;
+        map.set(currencyId, {
+          currencyCode,
+          walletId: wallet.id,
+          balanceId: `${wallet.id}-${currencyCode}`
+        });
+      }
+    }
+    return map;
+  }, [walletsData]);
+
+  const handleSelectBeneficiary = (beneficiary: Beneficiary) => {
+    setSelectedBeneficiary(beneficiary);
+    setValue('bankCode', beneficiary.providerName || '', { shouldValidate: true });
+    setValue('accountNumber', beneficiary.number || '', { shouldValidate: true });
+    clearErrors(['bankCode', 'accountNumber']);
+
+    if (beneficiary.currencyId) {
+      const matchedCurrency = currencyById.get(beneficiary.currencyId);
+      if (matchedCurrency) {
+        setSelectedCurrencyOption(matchedCurrency);
+        setValue('currency', matchedCurrency.currencyCode, { shouldValidate: true });
+      }
+    }
+  };
 
   useEffect(() => {
     if (watchedAccountNumber.length === 10 && watchedBankCode) {
@@ -243,6 +279,11 @@ const BankTransferAction = ({ onSuccess }: Props) => {
 
   return (
     <>
+      <ListBeneficiariesPanel
+        beneficiaryType={BENEFICIARY_TYPE_ENUM.BANK}
+        selectedBeneficiary={selectedBeneficiary}
+        onSelectBeneficiary={handleSelectBeneficiary}
+      />
       <form onSubmit={handleSubmit(openConfirm)} className="px-4 pb-6 space-y-6" autoComplete="on">
         {actionIsLoading && <Loader />}
         <div>

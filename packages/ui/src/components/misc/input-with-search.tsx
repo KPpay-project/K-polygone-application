@@ -77,7 +77,11 @@ export const InputWithSearch = React.forwardRef<HTMLButtonElement, InputWithSear
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className={cn('justify-between bg-gray-100 border-black text-black', width, className)}
+            className={cn(
+              'justify-between bg-gray-100 border-gray-200 text-black',
+              width,
+              className,
+            )}
             disabled={disabled}
           >
             {selectedValue ? selectedLabel : placeholder}

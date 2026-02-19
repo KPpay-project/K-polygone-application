@@ -476,23 +476,22 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
             />
           )}
 
-          <div className='hidden'>
+          <div className="hidden">
             {(selectedType === 'kpay_user' || selectedType === 'airtime') && (
-            <FormField
-              control={form.control}
-              name="providerName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Provider</FormLabel>
-                  <FormControl>
-                    <Input {...field} disabled className="bg-muted" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-
+              <FormField
+                control={form.control}
+                name="providerName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Provider</FormLabel>
+                    <FormControl>
+                      <Input {...field} disabled className="bg-muted" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
           </div>
 
           <FormField

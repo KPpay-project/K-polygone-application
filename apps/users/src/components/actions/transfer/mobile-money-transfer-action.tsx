@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 import Loading from '@/components/common/loading';
 import { Typography } from '@/components/sub-modules/typography/typography';
 import { SupportedProviders } from '@repo/types';
-import { PrimaryPhoneNumberInput } from '@repo/ui';
+import { PrimaryPhoneNumberInput, type CurrencyOption } from '@repo/ui';
 import ErrorAndSuccessFallback from '@/components/sub-modules/modal-contents/error-success-fallback';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { VerifyTransactionPin } from '@/components/actions/pin/verify-transaction-pin';
@@ -21,6 +21,7 @@ import { BENEFICIARY_TYPE_ENUM } from '@/enums';
 import { CREATE_BENEFICIARY_MUTATION, FETCH_BENEFICIARIES_QUERY } from '@repo/api';
 import { useMutation } from '@apollo/client';
 import { Button as ShadcnButton } from '@/components/ui/button';
+import { useGetMyWallets } from '@/hooks/api';
 
 const schema = z.object({
   amount: z.string().min(1, 'Amount is required'),
@@ -38,6 +39,7 @@ interface Props {
 const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
   const { t } = useTranslation();
   const { profile } = useProfileStore();
+  const { data: walletsData } = useGetMyWallets();
 
   const defaultWalletId = profile?.wallets?.[0]?.id ?? '';
   const defaultCurrencyCode = profile?.wallets?.[0]?.balances?.[0]?.currency?.code || 'USD';
@@ -47,6 +49,7 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
   const [pendingData, setPendingData] = useState<FormData | null>(null);
   const [selectedBeneficiary, setSelectedBeneficiary] = useState<Beneficiary | null>(null);
+  const [selectedCurrencyOption, setSelectedCurrencyOption] = useState<CurrencyOption | null>(null);
 
   const [resultStatus, setResultStatus] = useState<'success' | 'error'>('success');
   const [resultMessage, setResultMessage] = useState('');
@@ -69,6 +72,23 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
   const watchedAmount = watch('amount');
   const watchedCurrency = watch('currency');
   const watchedPhone = watch('receiverPhone');
+
+  const currencyById = useMemo(() => {
+    const map = new Map<string, CurrencyOption>();
+    for (const wallet of walletsData?.myWallet || []) {
+      for (const balance of wallet?.balances || []) {
+        const currencyId = balance?.currency?.id;
+        const currencyCode = balance?.currency?.code;
+        if (!currencyId || !currencyCode || map.has(currencyId)) continue;
+        map.set(currencyId, {
+          currencyCode,
+          walletId: wallet.id,
+          balanceId: `${wallet.id}-${currencyCode}`
+        });
+      }
+    }
+    return map;
+  }, [walletsData]);
 
   const { withdrawOrTransfer, loading } = useWithdrawOrTransfer({
     onCompleted: (data) => {
@@ -145,6 +165,15 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
   const handleSelectBeneficiary = (beneficiary: Beneficiary) => {
     setSelectedBeneficiary(beneficiary);
     setValue('receiverPhone', beneficiary.number);
+
+    if (beneficiary.currencyId) {
+      const matchedCurrency = currencyById.get(beneficiary.currencyId);
+      if (matchedCurrency) {
+        setSelectedCurrencyOption(matchedCurrency);
+        setSelectedWalletId(matchedCurrency.walletId);
+        setValue('currency', matchedCurrency.currencyCode);
+      }
+    }
   };
 
   const [createBeneficiary, { loading: createBeneficiaryLoading }] = useMutation(CREATE_BENEFICIARY_MUTATION, {
@@ -204,9 +233,11 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
 
         {/* Currency Selector */}
         <UsersCurrencyDropdown
+          value={selectedCurrencyOption}
           selectedCurrency={watchedCurrency || defaultCurrencyCode}
           onChange={(opt) => {
             if (opt) {
+              setSelectedCurrencyOption(opt);
               setSelectedWalletId(opt.walletId ?? '');
               setValue('currency', opt.currencyCode ?? defaultCurrencyCode);
             }

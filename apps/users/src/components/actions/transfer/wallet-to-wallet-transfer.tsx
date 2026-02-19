@@ -163,6 +163,23 @@ export function WalletToWalletTransferAction({ onSuccess }: WalletToWalletTransf
   const senderWalletId = senderWallet?.id;
   const senderCurrencyCode = senderWallet?.balances?.[0]?.currency?.code || 'USD';
 
+  const currencyById = useMemo(() => {
+    const map = new Map<string, CurrencyOption>();
+    for (const wallet of wallets) {
+      for (const balance of wallet?.balances || []) {
+        const currencyId = balance?.currency?.id;
+        const currencyCode = balance?.currency?.code;
+        if (!currencyId || !currencyCode || map.has(currencyId)) continue;
+        map.set(currencyId, {
+          currencyCode,
+          walletId: wallet.id,
+          balanceId: `${wallet.id}-${currencyCode}`
+        });
+      }
+    }
+    return map;
+  }, [wallets]);
+
   const effectiveCurrencyCode = selectedCurrencyOption?.currencyCode || senderCurrencyCode;
   const effectiveSenderWalletId = selectedCurrencyOption?.walletId || senderWalletId;
 
@@ -203,8 +220,13 @@ export function WalletToWalletTransferAction({ onSuccess }: WalletToWalletTransf
 
   const handleSelectBeneficiary = (beneficiary: Beneficiary) => {
     setSelectedBeneficiary(beneficiary);
-    console.log(beneficiary);
     setValue('receivers_wallet_code', beneficiary.number);
+    if (beneficiary.currencyId) {
+      const matchedCurrency = currencyById.get(beneficiary.currencyId);
+      if (matchedCurrency) {
+        setSelectedCurrencyOption(matchedCurrency);
+      }
+    }
   };
 
   const handleTransfer = async (form: WalletToWalletTransferFormData, paymentPin?: string) => {
