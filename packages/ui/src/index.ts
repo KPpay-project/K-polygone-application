@@ -39,3 +39,4 @@ export * from './components/misc/typography';
 export * from './components/misc/custom-modal';
 export * from './components/misc/transaction-success-dialog';
 export * from './components/misc/transaction-error-dialog';
+export * from './components/misc/popup/confirmation-dialog';

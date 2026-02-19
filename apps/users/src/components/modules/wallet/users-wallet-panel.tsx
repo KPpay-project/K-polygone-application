@@ -2,7 +2,7 @@
 import { FC, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
-import { Copy, EllipsisVertical, Eye, EyeOff, Lock, Unlock } from 'lucide-react';
+import { Copy, Eye, EyeOff, Lock, Unlock } from 'lucide-react';
 import { useProfile } from '@/store/profile-store.ts';
 import ErrorAndSuccessFallback from '@/components/sub-modules/modal-contents/error-success-fallback.tsx';
 import { extractErrorMessages } from '@/utils';
@@ -155,7 +155,22 @@ const UserWalletCard: FC<WalletCardProps> = ({
               className="p-1.5 rounded-md hover:bg-gray-50 text-gray-600"
               aria-label="Wallet options"
             >
-              <EllipsisVertical size={18} />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-ellipsis-vertical-icon lucide-ellipsis-vertical"
+              >
+                <circle cx="12" cy="12" r="1" />
+                <circle cx="12" cy="5" r="1" />
+                <circle cx="12" cy="19" r="1" />
+              </svg>
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="min-w-[180px]">
