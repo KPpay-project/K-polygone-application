@@ -26,12 +26,14 @@ interface CrossCurrencyQuote {
 
 interface CrossCurrencyPreviewAndConvertionActionProps {
   quote: CrossCurrencyQuote;
-  onSuccess?: () => void;
+  onSuccess?: (payload?: { message?: string }) => void;
+  onError?: (payload?: { message?: string }) => void;
 }
 
 const CrossCurrencyPreviewAndConvertionAction = ({
   quote,
-  onSuccess
+  onSuccess,
+  onError
 }: CrossCurrencyPreviewAndConvertionActionProps) => {
   const [crossCurrencyTransfer, { loading }] = useMutation(CROSS_CURRENCY_TRANSFER);
   const [error, setError] = useState<string | null>(null);
@@ -54,14 +56,15 @@ const CrossCurrencyPreviewAndConvertionAction = ({
 
       if (result.errors && result.errors.length > 0) {
         handleGraphQLError(result, 'Transfer failed. Please try again.');
-        setError(result.errors[0].message);
+        const message = result.errors[0].message;
+        setError(message);
+        onError?.({ message });
         return;
       }
 
-      toast.success(
-        `Successfully exchanged ${quote.sendAmount} ${quote.fromCurrencyCode} to ${quote.receiveAmount} ${quote.toCurrencyCode}`
-      );
-      onSuccess?.();
+      const successMessage = `Successfully exchanged ${quote.sendAmount} ${quote.fromCurrencyCode} to ${quote.receiveAmount} ${quote.toCurrencyCode}`;
+      toast.success(successMessage);
+      onSuccess?.({ message: successMessage });
     } catch (error: any) {
       console.error('Transfer failed:', error);
 
@@ -70,11 +73,13 @@ const CrossCurrencyPreviewAndConvertionAction = ({
         const friendlyMessage = toFriendlyMessage(normalizedError);
         setError(friendlyMessage);
         toast.error(friendlyMessage);
+        onError?.({ message: friendlyMessage });
       } catch {
         handleGraphQLError(error, 'Transfer failed. Please try again.');
         const fallbackMessage =
           error?.message || error?.graphQLErrors?.[0]?.message || 'Transfer failed. Please try again.';
         setError(fallbackMessage);
+        onError?.({ message: fallbackMessage });
       }
     }
   };

@@ -7,7 +7,6 @@ import { toast } from 'sonner';
 import { ModularCard } from '@/components/sub-modules/card/card';
 import { FormProgress } from '@/components/common/forms/form-progress';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button, IconArrowRight } from 'k-polygon-assets';
 import { ArrowLeft, ArrowRight } from 'iconsax-reactjs';
 import { exchangeSchema } from '@/schema/dashboard';
@@ -20,18 +19,21 @@ import { handleGraphQLError } from '@/utils/error-handling';
 import { normalizeApolloError, toFriendlyMessage } from '@/helpers/errors';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/common/fallbacks';
+import { InputWithSearch, TransactionErrorDialog, TransactionSuccessDialog } from '@ui/index';
+
 const ExchangeMoney = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [quote, setQuote] = useState(null);
+  const [quote, setQuote] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [setLiveQuote] = useState<any>(null);
+  const [, setLiveQuote] = useState<any>(null);
   const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null);
   const { data: walletsData, loading: walletsLoading } = useGetMyWallets();
   const wallets = walletsData?.myWallet || [];
   const [getCrossQuote, { loading: quoteLoading }] = useMutation(CROSS_CURRENCY_QUOTE);
-
-  console.log(wallets, 'wallets');
+  const [resultOpen, setResultOpen] = useState(false);
+  const [resultStatus, setResultStatus] = useState<'success' | 'error' | null>(null);
+  const [resultMessage, setResultMessage] = useState('');
 
   const availableOptions = wallets.map((wallet) => ({
     value: wallet.currency?.code || '',
@@ -52,7 +54,7 @@ const ExchangeMoney = () => {
   });
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(formSchema as unknown as any),
     defaultValues: formData,
     values: formData
   });
@@ -290,27 +292,19 @@ const ExchangeMoney = () => {
               <div className="grid grid-cols-4 gap-[17px] border border-gray-300 py-[15px] px-[24px] rounded-[10px]">
                 <div className="col-span-1">
                   <small>From</small>
-                  <Select
+                  <InputWithSearch
+                    options={availableOptions}
                     value={formData.currencyFrom}
-                    onValueChange={(value) => {
+                    onChange={(value: string) => {
                       setFormData((prev) => ({ ...prev, currencyFrom: value }));
                       form.setValue('currencyFrom', value);
                       if (formData.amountFrom) {
                         getLiveQuote(formData.amountFrom, value, formData.currencyTo);
                       }
                     }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select currency" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    placeholder="Select currency"
+                    emptyMessage="No currency found."
+                  />
                 </div>
                 <div className="col-span-3">
                   <small>
@@ -327,12 +321,7 @@ const ExchangeMoney = () => {
                     value={formData.amountFrom}
                     onChange={(e) => {
                       const inputValue = e.target.value;
-                      const numericValue = parseFloat(inputValue) || 0;
-                      const maxBalance = getBalanceNumber(formData.currencyFrom);
-
-                      if (inputValue === '' || numericValue <= maxBalance) {
-                        handleAmountChange(inputValue);
-                      }
+                      handleAmountChange(inputValue);
                     }}
                     type="number"
                     placeholder="Enter Amount"
@@ -353,27 +342,19 @@ const ExchangeMoney = () => {
               <div className="grid grid-cols-4 gap-[17px] border border-gray-300 py-[15px] px-[24px] rounded-[10px]">
                 <div className="col-span-1">
                   <small>To</small>
-                  <Select
+                  <InputWithSearch
+                    options={availableOptions}
                     value={formData.currencyTo}
-                    onValueChange={(value) => {
+                    onChange={(value: string) => {
                       setFormData((prev) => ({ ...prev, currencyTo: value }));
                       form.setValue('currencyTo', value);
                       if (formData.amountFrom) {
                         getLiveQuote(formData.amountFrom, formData.currencyFrom, value);
                       }
                     }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select currency" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    placeholder="Select currency"
+                    emptyMessage="No currency found."
+                  />
                 </div>
                 <div className="col-span-3">
                   <small>
@@ -414,8 +395,75 @@ const ExchangeMoney = () => {
           )}
 
           <DefaultModal open={isOpen} onClose={() => setIsOpen(false)} trigger={<div />}>
-            {quote && <CrossCurrencyPreviewAndConvertionAction quote={quote} onSuccess={() => setIsOpen(false)} />}
+            {quote && (
+              <CrossCurrencyPreviewAndConvertionAction
+                quote={quote as any}
+                onSuccess={(payload?: { message?: string }) => {
+                  setIsOpen(false);
+                  setResultStatus('success');
+                  setResultMessage(payload?.message || 'Exchange completed successfully');
+                  setResultOpen(true);
+                }}
+                onError={(payload?: { message?: string }) => {
+                  setResultStatus('error');
+                  setResultMessage(payload?.message || 'Exchange failed. Please try again.');
+                  setResultOpen(true);
+                }}
+              />
+            )}
           </DefaultModal>
+          <TransactionSuccessDialog
+            open={resultOpen && resultStatus === 'success'}
+            onOpenChange={(open) => {
+              if (!open) {
+                setResultOpen(false);
+              }
+            }}
+            title="Exchange Successful"
+            amount={
+              quote
+                ? `${Number(quote.receiveAmount).toFixed(2)} ${
+                    quote.toCurrencyCode
+                  }`
+                : undefined
+            }
+            subtitle={resultMessage}
+            details={
+              quote
+                ? [
+                    {
+                      label: 'From',
+                      value: `${quote.sendAmount} ${quote.fromCurrencyCode}`
+                    },
+                    {
+                      label: 'To',
+                      value: `${Number(quote.receiveAmount).toFixed(
+                        2
+                      )} ${quote.toCurrencyCode}`
+                    },
+                    {
+                      label: 'Rate',
+                      value: Number(quote.exchangeRate).toFixed(4)
+                    }
+                  ]
+                : []
+            }
+            onPrimaryAction={() => setResultOpen(false)}
+          />
+          <TransactionErrorDialog
+            open={resultOpen && resultStatus === 'error'}
+            onOpenChange={(open) => {
+              if (!open) {
+                setResultOpen(false);
+              }
+            }}
+            title="Exchange Failed"
+            description={resultMessage}
+            onRetry={() => {
+              setResultOpen(false);
+            }}
+            onCancel={() => setResultOpen(false)}
+          />
         </div>
       </div>
     </ModularCard>
