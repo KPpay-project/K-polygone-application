@@ -52,7 +52,7 @@ const DEPOSIT_VIA_BANK = gql`
       bankName
       currency
       expiresAt
-      isPermanent
+
       message
       success
     }
