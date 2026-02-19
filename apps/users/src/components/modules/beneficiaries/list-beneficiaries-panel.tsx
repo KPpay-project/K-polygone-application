@@ -12,6 +12,7 @@ export interface Beneficiary {
   name: string;
   number: string;
   type: string;
+  currencyId?: string;
   providerName?: string;
   insertedAt?: string;
   updatedAt?: string;

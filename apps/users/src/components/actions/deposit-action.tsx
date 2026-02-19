@@ -14,7 +14,7 @@ import { extractErrorMessages } from '@/utils';
 import { NumberInput } from '@/components/ui/input';
 import { PrimaryPhoneNumberInput } from '@repo/ui';
 import { useGetMyWallets } from '@/hooks/api';
-import { TransactionSuccessDialog, TransactionErrorDialog } from '@repo/ui';
+import { ConfirmationDialog, TransactionSuccessDialog, TransactionErrorDialog } from '@repo/ui';
 
 interface DepositActionProps {
   walletId?: string;
@@ -96,6 +96,7 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
     name: string | null;
   } | null>(null);
   const [resultOpen, setResultOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const [resultStatus, setResultStatus] = useState<'success' | 'error'>('success');
   const [resultMessage, setResultMessage] = useState('');
   const [resultReference, setResultReference] = useState('');
@@ -121,6 +122,17 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
   const currencyForNumberInput: Currency | undefined = ['USD', 'NGN', 'EUR', 'GBP'].includes(selectedCurrencyCode)
     ? (selectedCurrencyCode as Currency)
     : undefined;
+  const normalizedPhone = phone.replace(/\D/g, '');
+  const isPhoneComplete = normalizedPhone.length >= 10 && normalizedPhone.length <= 15;
+  const momoDisplayName =
+    momoUserInfo?.name || `${momoUserInfo?.givenName || ''} ${momoUserInfo?.familyName || ''}`.trim() || phone;
+  const formattedAmount =
+    Number(amount) > 0
+      ? `${selectedCurrencyCode || ''} ${Number(amount).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })}`.trim()
+      : '';
 
   useEffect(() => {
     if (selectedProvider !== SupportedProviders.MTN_MOMO) {
@@ -129,8 +141,7 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
       return;
     }
 
-    const normalizedPhone = phone.replace(/\s+/g, '');
-    if (!normalizedPhone || normalizedPhone.length < 8) {
+    if (!isPhoneComplete) {
       setMomoUserInfo(null);
       setMomoLookupError('');
       return;
@@ -166,9 +177,9 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
     }, 500);
 
     return () => clearTimeout(timeout);
-  }, [phone, selectedProvider, getMtnMomoBasicUserInfo]);
+  }, [isPhoneComplete, normalizedPhone, selectedProvider, getMtnMomoBasicUserInfo]);
 
-  const handleDeposit = async () => {
+  const processDeposit = async () => {
     const finalWalletId = selectedWalletId || resolvedWalletId;
     if (!finalWalletId || !selectedCurrencyCode || !phone) {
       toast.error('Please fill in all required fields');
@@ -178,6 +189,10 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
     const amountNumber = Number(amount);
     if (isNaN(amountNumber) || amountNumber <= 0) {
       toast.error('Please enter a valid amount');
+      return;
+    }
+    if (!isPhoneComplete) {
+      toast.error('Please enter a complete phone number');
       return;
     }
 
@@ -226,6 +241,7 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
       if (success) {
         refetchWallets();
         setAmount(0);
+        setConfirmOpen(false);
         await fetchProfile();
         if (selectedProvider !== SupportedProviders.MTN_MOMO) {
           setMomoUserInfo(null);
@@ -242,6 +258,7 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
         setResultReference('');
         setResultAmount('');
         setResultOpen(true);
+        setConfirmOpen(false);
       }
     } catch (e: any) {
       const msgs = extractErrorMessages(e);
@@ -250,7 +267,34 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
       setResultReference('');
       setResultAmount('');
       setResultOpen(true);
+      setConfirmOpen(false);
     }
+  };
+
+  const handleDeposit = () => {
+    const finalWalletId = selectedWalletId || resolvedWalletId;
+    if (!finalWalletId || !selectedCurrencyCode || !phone) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
+    const amountNumber = Number(amount);
+    if (isNaN(amountNumber) || amountNumber <= 0) {
+      toast.error('Please enter a valid amount');
+      return;
+    }
+
+    if (!isPhoneComplete) {
+      toast.error('Please enter a complete phone number');
+      return;
+    }
+
+    if (selectedProvider === SupportedProviders.MTN_MOMO && !momoUserInfo) {
+      toast.error(momoLookupError || 'Please enter a valid MTN MoMo number');
+      return;
+    }
+
+    setConfirmOpen(true);
   };
 
   return (
@@ -312,6 +356,18 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
           {loading || verifyingMomo ? 'Processing...' : 'Deposit'}
         </Button>
       </div>
+
+      <ConfirmationDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title="Confirm Deposit"
+        description={`You are about to deposit ${formattedAmount || '-'} from ${momoDisplayName || '-'} to your account.`}
+        cancelLabel="Cancel"
+        confirmLabel={loading || verifyingMomo ? 'Processing...' : 'Continue'}
+        onCancel={() => setConfirmOpen(false)}
+        onConfirm={processDeposit}
+        confirmDisabled={loading || verifyingMomo}
+      />
 
       <TransactionSuccessDialog
         open={resultOpen && resultStatus === 'success'}

@@ -8,11 +8,16 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { FETCH_BENEFICIARIES_QUERY, CREATE_BENEFICIARY_MUTATION } from '@repo/api';
-import ErrorAndSuccessFallback from '../sub-modules/modal-contents/error-success-fallback';
 import { useMutation, useLazyQuery } from '@apollo/client';
 import { BENEFICIARY_TYPE_ENUM } from '@/enums';
 import { PAYSTACK_TEST_KEY, PROVIDER_LABELS } from '@/constant';
-import { PrimaryPhoneNumberInput, InputWithSearch, type CurrencyOption } from '@repo/ui';
+import {
+  PrimaryPhoneNumberInput,
+  InputWithSearch,
+  type CurrencyOption,
+  TransactionSuccessDialog,
+  TransactionErrorDialog
+} from '@repo/ui';
 import { GET_USER_WALLET_CODE } from '@repo/api';
 import UsersCurrencyDropdown from '@/components/currency-dropdown/users-currency-dropdown';
 import { useGetMyWallets } from '@/hooks/api';
@@ -306,16 +311,37 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
   };
 
   if (step === 'result' && mutationResult) {
-    return (
-      <div className="p-6 max-w-md mx-auto bg-background rounded-lg shadow-sm">
-        <ErrorAndSuccessFallback
-          status={mutationResult.status}
-          title={mutationResult.status === 'success' ? 'Beneficiary Added' : 'Failed to Add Beneficiary'}
-          body={mutationResult.message}
-          onAction={handleResultAction}
-          buttonText={mutationResult.status === 'success' ? 'Done' : 'Try Again'}
+    if (mutationResult.status === 'success') {
+      return (
+        <TransactionSuccessDialog
+          open
+          onOpenChange={(open) => {
+            if (!open) {
+              handleResultAction();
+            }
+          }}
+          title="Beneficiary Added"
+          subtitle={mutationResult.message}
+          onPrimaryAction={handleResultAction}
         />
-      </div>
+      );
+    }
+
+    return (
+      <TransactionErrorDialog
+        open
+        onOpenChange={(open) => {
+          if (!open) {
+            handleResultAction();
+          }
+        }}
+        title="Failed to Add Beneficiary"
+        description={mutationResult.message}
+        onCancel={handleResultAction}
+        cancelLabel="Try Again"
+        onRetry={handleResultAction}
+        retryLabel="Try Again"
+      />
     );
   }
 
@@ -342,20 +368,6 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
                     placeholder="Select a type"
                     searchPlaceholder="Search types..."
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Beneficiary Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter beneficiary name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -401,14 +413,13 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
             ) : null}
           </div>
 
-          {/* Conditional Identifier Field */}
           {selectedType && (
             <FormField
               control={form.control}
               name="identifier"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{getIdentifierLabel()}</FormLabel>
+                  {/* <FormLabel>{getIdentifierLabel()}</FormLabel> */}
                   <FormControl>
                     {selectedType === 'mobile_money' || selectedType === 'airtime' ? (
                       <PrimaryPhoneNumberInput
@@ -465,22 +476,37 @@ const CreateBeneficiariesActions = ({ onSuccess, onClose }: CreateBeneficiariesA
             />
           )}
 
-          {(selectedType === 'kpay_user' || selectedType === 'airtime') && (
-            <FormField
-              control={form.control}
-              name="providerName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Provider</FormLabel>
-                  <FormControl>
-                    <Input {...field} disabled className="bg-muted" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
+          <div className="hidden">
+            {(selectedType === 'kpay_user' || selectedType === 'airtime') && (
+              <FormField
+                control={form.control}
+                name="providerName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Provider</FormLabel>
+                    <FormControl>
+                      <Input {...field} disabled className="bg-muted" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+          </div>
 
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Beneficiary Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter beneficiary name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <Button type="submit" className="w-full" disabled={loading || !selectedCurrencyId}>
             {loading ? 'Adding Beneficiary...' : <>Add Beneficiary</>}
           </Button>
