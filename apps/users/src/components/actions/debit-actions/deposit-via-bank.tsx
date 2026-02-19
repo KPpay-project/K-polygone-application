@@ -2,11 +2,12 @@ import { useMutation } from '@apollo/client';
 import { useState } from 'react';
 import { DEPOSIT_VIA_BANK } from '@repo/api';
 import { Button } from 'k-polygon-assets/components';
-import { UsersCurrencyDropdown } from '@repo/ui';
-import { toast } from 'sonner';
+import UsersCurrencyDropdown from '@/components/currency-dropdown/users-currency-dropdown';
 import DefaultModal from '@/components/sub-modules/popups/modal.tsx';
+import { extractErrorMessages } from '@/utils';
 import { copyToClipboard } from '@/utils/copy-to-clipboard.tsx';
 import { Copy } from 'lucide-react';
+import { TransactionErrorDialog } from '@repo/ui';
 
 type BankResp = {
   accountName?: string | null;
@@ -19,6 +20,10 @@ type BankResp = {
   success?: boolean | null;
 };
 
+type DepositViaBankMutationResponse = {
+  depositViaBank?: BankResp;
+};
+
 const DepositViaBank = () => {
   const [form, setForm] = useState({
     currencyCode: '',
@@ -27,8 +32,12 @@ const DepositViaBank = () => {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [bankDetails, setBankDetails] = useState<BankResp | null>(null);
+  const [errorOpen, setErrorOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const [mutate, { loading }] = useMutation(DEPOSIT_VIA_BANK);
+  const [mutate, { loading }] = useMutation<DepositViaBankMutationResponse>(DEPOSIT_VIA_BANK, {
+    errorPolicy: 'all'
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +48,15 @@ const DepositViaBank = () => {
     };
 
     try {
-      const { data } = await mutate({ variables: { input } });
+      const res = await mutate({ variables: { input } });
+      if (res.errors?.length) {
+        const msgs = extractErrorMessages(res);
+        setErrorMessage(msgs.join('\n') || 'An error occurred while initiating bank deposit.');
+        setErrorOpen(true);
+        return;
+      }
+
+      const { data } = res;
       const resp: BankResp | undefined = data?.depositViaBank;
       const success = Boolean(resp?.success);
       const message =
@@ -51,12 +68,14 @@ const DepositViaBank = () => {
         setBankDetails(resp ?? null);
         setModalOpen(true);
       } else {
-        toast.error(message);
+        const msgs = extractErrorMessages(res);
+        setErrorMessage(msgs.join('\n') || message);
+        setErrorOpen(true);
       }
     } catch (err: any) {
-      const fallback =
-        err?.message || err?.networkError?.message || 'Unable to process deposit via bank at the moment.';
-      toast.error(fallback);
+      const msgs = extractErrorMessages(err);
+      setErrorMessage(msgs.join('\n') || 'Unable to process deposit via bank at the moment.');
+      setErrorOpen(true);
     }
   };
 
@@ -136,6 +155,15 @@ const DepositViaBank = () => {
           </div>
         </div>
       </DefaultModal>
+
+      <TransactionErrorDialog
+        open={errorOpen}
+        onOpenChange={setErrorOpen}
+        title="Deposit Failed"
+        description={errorMessage}
+        onRetry={() => setErrorOpen(false)}
+        onCancel={() => setErrorOpen(false)}
+      />
     </>
   );
 };

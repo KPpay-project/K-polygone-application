@@ -63,7 +63,7 @@ const CrossCurrencyPreviewAndConvertionAction = ({
       }
 
       const successMessage = `Successfully exchanged ${quote.sendAmount} ${quote.fromCurrencyCode} to ${quote.receiveAmount} ${quote.toCurrencyCode}`;
-      toast.success(successMessage);
+      // toast.success(successMessage);
       onSuccess?.({ message: successMessage });
     } catch (error: any) {
       console.error('Transfer failed:', error);

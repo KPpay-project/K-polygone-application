@@ -208,7 +208,6 @@ const ExchangeMoney = () => {
     } catch (error: any) {
       console.error('Quote failed:', error);
 
-      // Use error handling utilities for better error messages
       try {
         const normalizedError = normalizeApolloError(error);
         const friendlyMessage = toFriendlyMessage(normalizedError);
@@ -420,13 +419,7 @@ const ExchangeMoney = () => {
               }
             }}
             title="Exchange Successful"
-            amount={
-              quote
-                ? `${Number(quote.receiveAmount).toFixed(2)} ${
-                    quote.toCurrencyCode
-                  }`
-                : undefined
-            }
+            amount={quote ? `${Number(quote.receiveAmount).toFixed(2)} ${quote.toCurrencyCode}` : undefined}
             subtitle={resultMessage}
             details={
               quote
@@ -437,9 +430,7 @@ const ExchangeMoney = () => {
                     },
                     {
                       label: 'To',
-                      value: `${Number(quote.receiveAmount).toFixed(
-                        2
-                      )} ${quote.toCurrencyCode}`
+                      value: `${Number(quote.receiveAmount).toFixed(2)} ${quote.toCurrencyCode}`
                     },
                     {
                       label: 'Rate',

@@ -1,7 +1,7 @@
 import { cn } from '@ui/lib/utils';
 import React, { useState, useMemo, useEffect } from 'react';
 
-type Currency = 'USD' | 'NGN' | 'EUR' | 'GBP';
+type Currency = string;
 
 interface NumberInputProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
@@ -12,11 +12,14 @@ interface NumberInputProps extends Omit<
   currency?: Currency;
 }
 
-const currencySymbols: Record<Currency, string> = {
+const currencySymbols: Record<string, string> = {
   USD: '$',
   NGN: '₦',
   EUR: '€',
   GBP: '£',
+  XOF: 'CFA',
+  XAF: 'FCFA',
+  ZMW: 'ZK',
 };
 
 const getPlaceValue = (num: number) => {
@@ -53,7 +56,7 @@ const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
       value !== undefined && value !== null ? value.toLocaleString() : '',
     );
 
-    const symbol = currency ? currencySymbols[currency] : '';
+    const symbol = currency ? currencySymbols[currency] || currency : '';
 
     useEffect(() => {
       if (value !== undefined && value !== null) {

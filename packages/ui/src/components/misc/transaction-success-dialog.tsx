@@ -1,10 +1,9 @@
 import React from 'react';
-import { Check, Copy, Share2, Star, ArrowRight } from 'lucide-react';
+import { Copy } from 'lucide-react';
 import { CustomModal } from './custom-modal';
 import { Button } from '../ui/button';
 import { Typography } from './typography';
 import { cn } from '@ui/lib/utils';
-import { TickSquare } from 'iconsax-reactjs';
 
 export type SuccessDetailRow = {
   label: string;
@@ -38,12 +37,12 @@ export const TransactionSuccessDialog: React.FC<TransactionSuccessDialogProps> =
   details = [],
   reference,
   onCopyReference,
-  onShareReceipt,
+  //onShareReceipt,
   onPrimaryAction,
-  shareLabel = 'Share receipt',
-  primaryLabel = 'New transfer',
-  experienceTitle = 'How was your experience?',
-  experienceSubtitle = 'Tap a star to rate',
+  // shareLabel = 'Share receipt',
+  // primaryLabel = 'New transfer',
+  // experienceTitle = 'How was your experience?',
+  // experienceSubtitle = 'Tap a star to rate',
   className,
 }) => {
   const detailRows = React.useMemo(() => {
@@ -142,7 +141,7 @@ export const TransactionSuccessDialog: React.FC<TransactionSuccessDialogProps> =
         </div>
 
         <div className="flex flex-col items-center text-center mt-[2em]">
-          <Button
+          {/* <Button
             // type="button"
             className="w-full"
             variant="disabled_outline"
@@ -150,9 +149,14 @@ export const TransactionSuccessDialog: React.FC<TransactionSuccessDialogProps> =
           >
             <Share2 className="h-5 w-5" />
             {shareLabel}
-          </Button>
-          <Button type="button" className="mt-4 w-full" onClick={onPrimaryAction}>
-            {primaryLabel}
+          </Button> */}
+          <Button
+            type="button"
+            variant={'disabled_outline'}
+            className="mt-4 w-full"
+            onClick={onPrimaryAction}
+          >
+            {/* {primaryLabel} */} Done
           </Button>
         </div>
       </div>

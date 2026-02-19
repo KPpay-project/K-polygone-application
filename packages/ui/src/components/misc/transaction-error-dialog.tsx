@@ -56,10 +56,10 @@ export const TransactionErrorDialog: React.FC<TransactionErrorDialogProps> = ({
 
         <div className="mt-10 flex flex-col gap-3">
           <Button type="button" variant="disabled_outline" onClick={onCancel}>
-            <X className="h-5 w-5" />
+            {/* <X className="h-5 w-5" /> */}
             {cancelLabel}
           </Button>
-          <Button
+          {/* <Button
             type="button"
             variant="destructive"
             className="h-14 rounded-[18px] font-semibold"
@@ -67,7 +67,7 @@ export const TransactionErrorDialog: React.FC<TransactionErrorDialogProps> = ({
           >
             <RotateCcw className="h-5 w-5" />
             {retryLabel}
-          </Button>
+          </Button> */}
         </div>
       </div>
     </CustomModal>

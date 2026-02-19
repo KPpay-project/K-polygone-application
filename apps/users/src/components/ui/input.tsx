@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 
-type Currency = 'USD' | 'NGN' | 'EUR' | 'GBP';
+type Currency = string;
 
 type NumberInputProps = {
   value?: number;
@@ -15,7 +15,10 @@ const currencySymbols: Record<string, string> = {
   USD: '$',
   NGN: '₦',
   EUR: '€',
-  GBP: '£'
+  GBP: '£',
+  XOF: 'CFA',
+  XAF: 'FCFA',
+  ZMW: 'ZK'
 };
 
 const getPlaceValue = (num: number) => {
@@ -32,7 +35,7 @@ const NumberInput: React.FC<NumberInputProps> = ({ value = 0, onChange, currency
   const inputRef = useRef<HTMLInputElement>(null);
   const measureRef = useRef<HTMLSpanElement>(null);
 
-  const symbol = currency ? currencySymbols[currency] || '' : '';
+  const symbol = currency ? currencySymbols[currency] || currency : '';
 
   const placeValue = useMemo(() => {
     const plainNumber = Number(inputValue.replace(/,/g, ''));
