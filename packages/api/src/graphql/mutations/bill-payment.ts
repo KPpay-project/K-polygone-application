@@ -31,6 +31,22 @@ export const CREATE_BILL_PAYMENT = gql`
   }
 `;
 
+export const PAY_FLUTTERWAVE_BILL = gql`
+  mutation PayFlutterwaveBill($input: FlutterwaveBillPaymentInput!) {
+    payFlutterwaveBill(input: $input) {
+      amount
+      billPaymentId
+      currency
+      flutterwaveReference
+      message
+      providerStatus
+      reference
+      status
+      success
+    }
+  }
+`;
+
 export const VERIFY_BILL_PAYMENT = gql`
   mutation VerifyBillPayment($reference: String!) {
     verifyBillPayment(reference: $reference) {

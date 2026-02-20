@@ -5,6 +5,7 @@ export * from './activities-log';
 export * from './admin-dashboard-stats';
 export * from './dashboard';
 export * from './billers';
+export * from './bill-payment';
 export * from './wallets-admin';
 export * from './currencies';
 export * from './transactions';
