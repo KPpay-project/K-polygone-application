@@ -3,11 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CountrySelector } from '@/components/common/country-selector';
 import { useQuery } from '@apollo/client';
-import {
-  FLUTTERWAVE_BILL_CATEGORIES,
-  FLUTTERWAVE_BILLERS,
-  FLUTTERWAVE_BILL_ITEMS
-} from '@repo/api';
+import { FLUTTERWAVE_BILL_CATEGORIES, FLUTTERWAVE_BILLERS, FLUTTERWAVE_BILL_ITEMS } from '@repo/api';
 import { InputWithSearch } from '@repo/ui';
 
 type FlutterwaveBillCategory = {
@@ -60,16 +56,13 @@ const BillPayment = () => {
     skip: !selectedCategoryCode || !selectedCountryCode
   });
 
-  const { data: billItemsData } = useQuery<{ flutterwaveBillItems: FlutterwaveBillItem[] }>(
-    FLUTTERWAVE_BILL_ITEMS,
-    {
-      variables: {
-        billerCode: (billersData?.flutterwaveBillers || []).find((item) => item.id === selectedBillerId)?.billerCode,
-        countryCode: selectedCountryCode
-      },
-      skip: !selectedBillerId || !selectedCountryCode
-    }
-  );
+  const { data: billItemsData } = useQuery<{ flutterwaveBillItems: FlutterwaveBillItem[] }>(FLUTTERWAVE_BILL_ITEMS, {
+    variables: {
+      billerCode: (billersData?.flutterwaveBillers || []).find((item) => item.id === selectedBillerId)?.billerCode,
+      countryCode: selectedCountryCode
+    },
+    skip: !selectedBillerId || !selectedCountryCode
+  });
 
   useEffect(() => {
     setSelectedBillerId(null);

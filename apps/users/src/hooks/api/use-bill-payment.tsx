@@ -48,20 +48,19 @@ export const useBillPayment = () => {
     }
   });
 
-  const [validateFlutterwaveBillCustomer, { loading: validatingCustomer, error: validateCustomerError }] =
-    useLazyQuery<
-      {
-        validateFlutterwaveBillCustomer: {
-          customerName: string | null;
-          message: string;
-          status: string;
-          valid: boolean;
-        };
-      },
-      { customerId: string; itemCode: string }
-    >(VALIDATE_FLUTTERWAVE_BILL_CUSTOMER, {
-      fetchPolicy: 'no-cache'
-    });
+  const [validateFlutterwaveBillCustomer, { loading: validatingCustomer, error: validateCustomerError }] = useLazyQuery<
+    {
+      validateFlutterwaveBillCustomer: {
+        customerName: string | null;
+        message: string;
+        status: string;
+        valid: boolean;
+      };
+    },
+    { customerId: string; itemCode: string }
+  >(VALIDATE_FLUTTERWAVE_BILL_CUSTOMER, {
+    fetchPolicy: 'no-cache'
+  });
 
   const [getFlutterwaveBillPaymentStatus, { loading: checkingPaymentStatus, error: paymentStatusError }] = useLazyQuery<
     {

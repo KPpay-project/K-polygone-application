@@ -26,14 +26,14 @@ export interface FlutterwaveBillPaymentInput {
 }
 
 export interface FlutterwaveBillPaymentResponse {
-  amount: number | string;
-  billPaymentId: string;
-  currency: string;
+  amount: number | string | null;
+  billPaymentId: string | null;
+  currency: string | null;
   flutterwaveReference?: string | null;
   message?: string | null;
   providerStatus?: string | null;
-  reference: string;
-  status: string;
+  reference: string | null;
+  status: string | null;
   success: boolean;
 }
 
