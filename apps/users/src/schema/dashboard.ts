@@ -457,20 +457,20 @@ export const contactInfoSchema = () =>
     mailingAddress1: z
       .string()
       .max(100, {
-        message: getTranslation('validation.mailingAddress.max')
+        message: 'Mailing address must be at most 100 characters'
       })
       .regex(/^[A-Za-z0-9\s.,'/-]*$/, {
-        message: getTranslation('validation.mailingAddress.format')
+        message: 'Mailing address can only contain letters, numbers, spaces, and basic punctuation'
       })
       .optional()
       .or(z.literal('')),
     mailingAddress2: z
       .string()
       .max(100, {
-        message: getTranslation('validation.mailingAddress.max')
+        message: 'Mailing address must be at most 100 characters'
       })
       .regex(/^[A-Za-z0-9\s.,'/-]*$/, {
-        message: getTranslation('validation.mailingAddress.format')
+        message: 'Mailing address can only contain letters, numbers, spaces, and basic punctuation'
       })
       .optional()
       .or(z.literal('')),
@@ -496,7 +496,7 @@ export const contactInfoSchema = () =>
       .optional()
       .or(z.literal('')),
     email: z.string().email({
-      message: getTranslation('validation.email.format')
+      message: 'Please enter a valid email address'
     }),
     addressProofUrl: z.any().refine((file) => file instanceof File, {
       message: getTranslation('validation.required')

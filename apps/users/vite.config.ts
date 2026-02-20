@@ -19,7 +19,8 @@ export default defineConfig({
     }),
     react(),
     VitePWA({
-      registerType: 'prompt',
+      disable: process.env.NODE_ENV === 'production',
+      registerType: 'autoUpdate',
       includeAssets: ['vite.svg', 'pwa-icon-192.png', 'pwa-icon-512.png'],
       devOptions: {
         enabled: true
@@ -54,8 +55,11 @@ export default defineConfig({
         ]
       },
       workbox: {
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,jpeg,jpg,woff2}'],
-        maximumFileSizeToCacheInBytes: 8 * 1024 * 1024
+        maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
+        skipWaiting: true
       }
     })
   ],
