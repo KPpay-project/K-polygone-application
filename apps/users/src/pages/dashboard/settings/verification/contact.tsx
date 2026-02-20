@@ -12,13 +12,13 @@ import { Loading } from '@/components/common';
 import { CustomFormMessage } from '@/components/common/forms/form-message';
 import React from 'react';
 import { useKycContactInfoStore } from '@/store/kyc';
-import { CountrySelector } from '@/components/common';
-import { StateSelector } from '@/components/common/state-selector';
 import { PrimaryPhoneNumberInput, Form, FormControl, FormField, FormItem, FormLabel, Input } from '@repo/ui';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { OtpInputAction } from '@/components/actions/otp-input';
+import { InputWithSearch } from '@repo/ui';
+import { countries, getStatesByCountry } from '@/utils/constants';
 
 const ContactVerificationScreen = () => {
   const navigate = useNavigate();
@@ -31,6 +31,15 @@ const ContactVerificationScreen = () => {
   const [isPhoneVerified, setIsPhoneVerified] = React.useState(false);
   const [isSendingEmailVerification, setIsSendingEmailVerification] = React.useState(false);
   const [isEmailVerificationSent, setIsEmailVerificationSent] = React.useState(false);
+
+  const normalizeCountryCode = React.useCallback((value?: string | null) => {
+    if (!value) return 'NG';
+    const byCode = countries.find((c) => c.code.toLowerCase() === value.toLowerCase());
+    if (byCode) return byCode.code;
+    const byName = countries.find((c) => c.name.toLowerCase() === value.toLowerCase());
+    if (byName) return byName.code;
+    return 'NG';
+  }, []);
 
   const handleSendOtp = async () => {
     const phoneNumber = form.getValues('primaryPhone');
@@ -70,16 +79,17 @@ const ContactVerificationScreen = () => {
   };
 
   const handleSendEmailVerification = async () => {
-    const email = form.getValues('email');
+    const email = form.getValues('email')?.trim();
     if (!email) {
       toast.error('Please enter an email address first');
       return;
     }
 
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      toast.error('Please enter a valid email address');
+    // Keep validation consistent with schema
+    form.setValue('email', email, { shouldValidate: true, shouldDirty: true });
+    const isEmailValid = await form.trigger('email');
+    if (!isEmailValid) {
+      toast.error(form.formState.errors.email?.message || 'Please enter a valid email address');
       return;
     }
 
@@ -112,6 +122,15 @@ const ContactVerificationScreen = () => {
     }
   });
 
+  const watchedEmail = form.watch('email');
+
+  // If user edits email after verification has been sent, require re-verification.
+  React.useEffect(() => {
+    if (isEmailVerificationSent) {
+      setIsEmailVerificationSent(false);
+    }
+  }, [watchedEmail, isEmailVerificationSent]);
+
   React.useEffect(() => {
     const s = kycStore;
     if (!s) return;
@@ -128,7 +147,7 @@ const ContactVerificationScreen = () => {
     );
     if (hasAny) {
       form.reset({
-        country: s.country || 'NG',
+        country: normalizeCountryCode(s.country || 'NG'),
         street: s.street || '',
         city: s.city || '',
         postalCode: s.postalCode || '',
@@ -139,7 +158,26 @@ const ContactVerificationScreen = () => {
         email: s.email || ''
       });
     }
-  }, []);
+  }, [form, kycStore, normalizeCountryCode]);
+
+  const selectedCountryCode = form.watch('country');
+  const stateOptions = React.useMemo(
+    () =>
+      getStatesByCountry(normalizeCountryCode(selectedCountryCode)).map((state) => ({
+        value: state.name,
+        label: state.name
+      })),
+    [selectedCountryCode, normalizeCountryCode]
+  );
+
+  const countryOptions = React.useMemo(
+    () =>
+      countries.map((country) => ({
+        value: country.code,
+        label: `${country.flag} ${country.name}`
+      })),
+    []
+  );
 
   const {
     createContactDetail,
@@ -268,17 +306,19 @@ const ContactVerificationScreen = () => {
                   <FormItem>
                     <FormLabel>Country</FormLabel>
                     <FormControl>
-                      <CountrySelector
+                      <InputWithSearch
+                        options={countryOptions}
                         value={field.value}
-                        onValueChange={(value: string, country: { code: string }) => {
-                          field.onChange(country.code);
+                        onChange={(value: string) => {
+                          field.onChange(value);
                           form.setValue('city', '');
                         }}
                         placeholder="Select country"
                         disabled={createContactDetailLoading}
-                        hasFlag
-                        showPrefix={false}
-                        className="max-h-[300px] overflow-y-auto"
+                        searchPlaceholder="Search country"
+                        emptyMessage="No country found"
+                        width="w-full"
+                        className="!h-11 !border-input !bg-transparent"
                       />
                     </FormControl>
                     <CustomFormMessage message={form.formState.errors.country} scope="error" />
@@ -308,13 +348,16 @@ const ContactVerificationScreen = () => {
                   <FormItem>
                     <FormLabel>City</FormLabel>
                     <FormControl>
-                      <StateSelector
+                      <InputWithSearch
+                        options={stateOptions}
                         value={field.value}
-                        countryCode={form.getValues('country')}
-                        onValueChange={field.onChange}
+                        onChange={field.onChange}
                         placeholder="Select city"
-                        disabled={createContactDetailLoading}
-                        className="max-h-[300px] overflow-y-auto"
+                        disabled={createContactDetailLoading || !selectedCountryCode || stateOptions.length === 0}
+                        searchPlaceholder="Search city"
+                        emptyMessage="No city found"
+                        width="w-full"
+                        className="!h-11 !border-input !bg-transparent"
                       />
                     </FormControl>
                     <CustomFormMessage message={form.formState.errors.city} scope="error" />
