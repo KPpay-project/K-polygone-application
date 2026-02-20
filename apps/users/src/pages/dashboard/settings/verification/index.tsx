@@ -1,4 +1,4 @@
-import { Button } from 'k-polygon-assets';
+import { Button } from '@repo/ui';
 import { ArrowRight } from 'iconsax-reactjs';
 import { Bank, ProfileAdd, Money, ProfileCircle, Document, CopySuccess, Call } from 'iconsax-reactjs';
 import { useNavigate } from '@tanstack/react-router';
@@ -166,9 +166,10 @@ const IndexVerificationScreen = () => {
           })}
         </div>
 
-        <div className="flex  mt-8">
+        <div className="flex  mt-8 items-center flex justify-center">
           <Button
-            className="bg-red-500 w-full md:w-[300px] py-4 hover:bg-red-600 text-white rounded-md flex items-center justify-center gap-2"
+            variant={'disabled_outline'}
+            className="w-[300px] "
             onClick={() => navigate({ to: findFirstActionableStep() })}
           >
             Start Verification

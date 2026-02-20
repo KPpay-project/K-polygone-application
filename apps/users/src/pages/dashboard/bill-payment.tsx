@@ -1,38 +1,113 @@
 import BillsPaymentForm from '@/components/modules/bill-payment/form.tsx';
-import { SearchBar } from '@/components/modules/search-bar';
-import { ServiceItem } from '@/components/modules/bill-payment/service-item';
-import { billPaymentServices } from '@/data/bill-payment-services';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CountrySelector } from '@/components/common/country-selector';
-import { getBrandsFor } from '@/data/bill-payment-brands';
+import { useQuery } from '@apollo/client';
+import { FLUTTERWAVE_BILL_CATEGORIES, FLUTTERWAVE_BILLERS, FLUTTERWAVE_BILL_ITEMS } from '@repo/api';
+import { InputWithSearch } from '@repo/ui';
+
+type FlutterwaveBillCategory = {
+  code: string;
+  country: string;
+  id: string;
+  name: string;
+};
+
+type FlutterwaveBiller = {
+  billerCode: string;
+  category: string;
+  country: string;
+  id: string;
+  isActive: boolean | null;
+  name: string;
+};
+
+type FlutterwaveBillItem = {
+  amount: string;
+  billerCode: string;
+  country: string;
+  currency: string | null;
+  id: string;
+  isAmountFixed: boolean | null;
+  itemCode: string;
+  name: string;
+};
 
 const BillPayment = () => {
   const { t } = useTranslation();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [selectedCategoryCode, setSelectedCategoryCode] = useState<string | null>(null);
   const [selectedCountryCode, setSelectedCountryCode] = useState<string>('NG');
-  const [selectedNetwork, setSelectedNetwork] = useState<string | null>(null);
+  const [selectedBillerId, setSelectedBillerId] = useState<string | null>(null);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
-  const handleServiceSelect = (serviceId: string) => {
-    console.log('Selected service:', serviceId);
-    setSelectedService(serviceId);
-  };
-
-  const filteredServices = billPaymentServices.filter((service) =>
-    t(service.labelKey).toLowerCase().includes(searchQuery.toLowerCase())
+  const { data: categoriesData } = useQuery<{ flutterwaveBillCategories: FlutterwaveBillCategory[] }>(
+    FLUTTERWAVE_BILL_CATEGORIES,
+    {
+      variables: { countryCode: selectedCountryCode },
+      skip: !selectedCountryCode
+    }
   );
 
-  const selectedServiceData = billPaymentServices.find((service) => service.id === selectedService);
+  const { data: billersData } = useQuery<{ flutterwaveBillers: FlutterwaveBiller[] }>(FLUTTERWAVE_BILLERS, {
+    variables: {
+      category: selectedCategoryCode,
+      countryCode: selectedCountryCode
+    },
+    skip: !selectedCategoryCode || !selectedCountryCode
+  });
+
+  const { data: billItemsData } = useQuery<{ flutterwaveBillItems: FlutterwaveBillItem[] }>(FLUTTERWAVE_BILL_ITEMS, {
+    variables: {
+      billerCode: (billersData?.flutterwaveBillers || []).find((item) => item.id === selectedBillerId)?.billerCode,
+      countryCode: selectedCountryCode
+    },
+    skip: !selectedBillerId || !selectedCountryCode
+  });
 
   useEffect(() => {
-    setSelectedNetwork(null);
-  }, [selectedService, selectedCountryCode]);
+    setSelectedBillerId(null);
+    setSelectedItemId(null);
+  }, [selectedCategoryCode, selectedCountryCode]);
 
-  const availableBrands = useMemo(() => {
-    if (!selectedService) return [];
-    return getBrandsFor(selectedCountryCode, selectedService);
-  }, [selectedCountryCode, selectedService]);
+  const availableBillers = useMemo(() => {
+    return billersData?.flutterwaveBillers || [];
+  }, [billersData]);
+
+  const availableBillerOptions = useMemo(() => {
+    return availableBillers.map((biller) => ({
+      value: biller.id,
+      label: biller.name
+    }));
+  }, [availableBillers]);
+
+  const availableBillItemOptions = useMemo(() => {
+    return (billItemsData?.flutterwaveBillItems || []).map((item) => ({
+      value: item.id,
+      label: `${item.name}${item.amount ? ` - ${item.amount}` : ''} (${item.itemCode})`
+    }));
+  }, [billItemsData]);
+
+  const categoryOptions = useMemo(() => {
+    return (categoriesData?.flutterwaveBillCategories || []).map((category) => ({
+      value: category.code,
+      label: category.name
+    }));
+  }, [categoriesData]);
+
+  const selectedCategory = useMemo(
+    () => (categoriesData?.flutterwaveBillCategories || []).find((item) => item.code === selectedCategoryCode) || null,
+    [categoriesData, selectedCategoryCode]
+  );
+
+  const selectedBiller = useMemo(
+    () => availableBillers.find((item) => item.id === selectedBillerId) || null,
+    [availableBillers, selectedBillerId]
+  );
+
+  const selectedItem = useMemo(
+    () => (billItemsData?.flutterwaveBillItems || []).find((item) => item.id === selectedItemId) || null,
+    [billItemsData, selectedItemId]
+  );
 
   return (
     <div className="min-h-screen bg-[#F6F6F6] p-3 sm:p-4 md:p-6 lg:p-8">
@@ -41,20 +116,21 @@ const BillPayment = () => {
           {/* Left Card - Services Selection */}
           <div
             className={`bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 transition-all duration-500 ease-in-out ${
-              selectedService ? 'w-1/2 transform translate-x-0' : 'w-full mx-auto max-w-2xl'
+              selectedCategoryCode ? 'w-1/2 transform translate-x-0' : 'w-full mx-auto max-w-2xl'
             }`}
           >
             <h1 className="text-xl sm:text-xl font-semibold text-gray-900 mb-6 sm:mb-8">{t('billPayment.title')}</h1>
 
             <div className="mb-6 sm:mb-8">
-              <SearchBar
-                value={searchQuery}
-                onChange={setSearchQuery}
-                placeholder={t('placeholders.searchBillType')}
-                variant="default"
-                size="md"
-                searchIconPosition="right"
-                className="border-1 border-primary-800"
+              <InputWithSearch
+                options={categoryOptions}
+                value={selectedCategoryCode || ''}
+                onChange={(value) => setSelectedCategoryCode(value || null)}
+                placeholder={t('placeholders.searchBillType') || 'Select bill category'}
+                searchPlaceholder={t('placeholders.searchBillType') || 'Search bill category'}
+                emptyMessage="No bill category found"
+                width="w-full"
+                className="!h-12 !border-gray-200 !bg-white"
               />
             </div>
 
@@ -76,58 +152,45 @@ const BillPayment = () => {
               />
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4">
-              {filteredServices.map((item) => (
-                <ServiceItem
-                  key={item.id}
-                  item={item}
-                  onClick={handleServiceSelect}
-                  isSelected={selectedService === item.id}
-                />
-              ))}
-            </div>
-
-            {filteredServices.length === 0 && searchQuery && (
+            {categoryOptions.length === 0 && (
               <div className="text-center py-8">
-                <p className="text-gray-500">No services found matching "{searchQuery}"</p>
+                <p className="text-gray-500">No services found for this country.</p>
               </div>
             )}
 
             {/* Brands available for selected country and service */}
-            {selectedService && (
+            {selectedCategoryCode && (
               <div className="mt-6">
                 <h3 className="text-sm font-semibold text-gray-900 mb-3">
                   {t('billPayment.availableBrands') || 'Available brands'}
                 </h3>
-                {availableBrands.length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                    {availableBrands.map((brand) => (
-                      <button
-                        key={`${brand.id}-${brand.name}`}
-                        type="button"
-                        onClick={() => setSelectedNetwork(brand.networkValue || brand.id)}
-                        className={`flex items-center gap-3 p-3 rounded-xl border transition hover:shadow-sm ${
-                          selectedNetwork === (brand.networkValue || brand.id)
-                            ? 'border-primary-500 bg-primary-50'
-                            : 'border-gray-200 bg-gray-50'
-                        }`}
-                        title={brand.name}
-                      >
-                        {brand.logoUrl ? (
-                          <img
-                            src={brand.logoUrl}
-                            alt={brand.name}
-                            className="w-8 h-8 rounded object-contain"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div className="w-8 h-8 rounded bg-gray-200 flex items-center justify-center text-gray-700 text-sm font-semibold">
-                            {brand.name[0]}
-                          </div>
-                        )}
-                        <span className="text-sm font-medium text-gray-900">{brand.name}</span>
-                      </button>
-                    ))}
+                {availableBillerOptions.length > 0 ? (
+                  <div className="space-y-2">
+                    <InputWithSearch
+                      options={availableBillerOptions}
+                      value={selectedBillerId || ''}
+                      onChange={(value) => {
+                        setSelectedBillerId(value || null);
+                        setSelectedItemId(null);
+                      }}
+                      placeholder={t('placeholders.selectNetwork') || 'Select biller'}
+                      searchPlaceholder={t('placeholders.searchBillType') || 'Search biller'}
+                      emptyMessage="No biller found"
+                      width="w-full"
+                      className="!h-12 !border-gray-200 !bg-white"
+                    />
+                    {selectedBillerId ? (
+                      <InputWithSearch
+                        options={availableBillItemOptions}
+                        value={selectedItemId || ''}
+                        onChange={(value) => setSelectedItemId(value || null)}
+                        placeholder="Select bill item"
+                        searchPlaceholder="Search bill item"
+                        emptyMessage="No bill item found"
+                        width="w-full"
+                        className="!h-12 !border-gray-200 !bg-white"
+                      />
+                    ) : null}
                   </div>
                 ) : (
                   <p className="text-gray-500 text-sm">
@@ -141,17 +204,18 @@ const BillPayment = () => {
           {/* Right Card - Payment Form */}
           <div
             className={`transition-all duration-500 ease-in-out ${
-              selectedService
+              selectedCategoryCode
                 ? 'w-1/2 opacity-100 transform translate-x-0'
                 : 'w-0 opacity-0 transform translate-x-full overflow-hidden'
             }`}
           >
-            {selectedService && (
+            {selectedCategoryCode && (
               <div className="flex justify-center">
                 <BillsPaymentForm
-                  selectedService={selectedServiceData}
+                  selectedCategory={selectedCategory}
+                  selectedBiller={selectedBiller}
+                  selectedItem={selectedItem}
                   countryCode={selectedCountryCode}
-                  selectedNetwork={selectedNetwork}
                 />
               </div>
             )}

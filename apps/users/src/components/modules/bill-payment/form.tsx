@@ -1,8 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useEffect, useState, useMemo } from 'react';
-import { toast } from 'sonner';
+
+import { useBillPayment } from '@/hooks/api/use-bill-payment';
+import { useProfileStore } from '@/store/profile-store';
+import { FlutterwaveBillPaymentInput } from '@repo/types';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -11,38 +14,64 @@ import { Input, NumberInput } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { createBillPaymentSchema, billPaymentDefaultValues, BillPaymentFormData } from '@/schema/bill-payment';
 import { FormProgress } from '@/components/common/forms/form-progress';
-import { BillPaymentService, billPaymentServices } from '@/data/bill-payment-services';
-import { PhoneCountrySelector } from '@/components/common';
-import { countries } from '@/utils/constants';
-import { getBrandsFor } from '@/data/bill-payment-brands';
-import DefaultModal from '@/components/sub-modules/popups/modal';
-import { BillPaymentConfirmation } from './bill-payment-confirmation';
-import { useBillPayment } from '@/hooks/api/use-bill-payment';
-import { BillPaymentInput } from '@repo/types';
+import { ConfirmationDialog, TransactionErrorDialog, TransactionSuccessDialog } from '@repo/ui';
 
-const ISO_TO_SCHEMA_COUNTRY: Record<string, BillPaymentFormData['country']> = {
-  NG: 'nigeria',
-  GH: 'ghana',
-  KE: 'kenya'
-} as const;
+type SelectedCategory = {
+  code: string;
+  country: string;
+  id: string;
+  name: string;
+};
 
-const SCHEMA_TO_ISO_COUNTRY: Record<BillPaymentFormData['country'], string> = {
-  nigeria: 'NG',
-  ghana: 'GH',
-  kenya: 'KE'
-} as const;
+type SelectedBiller = {
+  billerCode: string;
+  category: string;
+  country: string;
+  id: string;
+  isActive: boolean | null;
+  name: string;
+};
+
+type SelectedItem = {
+  amount: string;
+  billerCode: string;
+  country: string;
+  currency: string | null;
+  id: string;
+  isAmountFixed: boolean | null;
+  itemCode: string;
+  name: string;
+};
 
 interface BillsPaymentFormProps {
-  selectedService?: BillPaymentService | null;
+  selectedCategory?: SelectedCategory | null;
+  selectedBiller?: SelectedBiller | null;
+  selectedItem?: SelectedItem | null;
   countryCode?: string;
-  selectedNetwork?: string | null;
 }
 
-const BillsPaymentForm = ({ selectedService, countryCode, selectedNetwork }: BillsPaymentFormProps) => {
+const BillsPaymentForm = ({ selectedCategory, selectedBiller, selectedItem, countryCode }: BillsPaymentFormProps) => {
   const { t } = useTranslation();
-  const [selectedPhoneCountry, setSelectedPhoneCountry] = useState(countries[0]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const { createBillPayment, creating } = useBillPayment();
+  const { profile } = useProfileStore();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [resultOpen, setResultOpen] = useState(false);
+  const [resultStatus, setResultStatus] = useState<'success' | 'error'>('success');
+  const [resultMessage, setResultMessage] = useState('');
+  const [resultReference, setResultReference] = useState('');
+  const [resultAmount, setResultAmount] = useState('');
+  const [customerValidation, setCustomerValidation] = useState<{
+    checking: boolean;
+    valid: boolean | null;
+    message: string;
+    customerName: string;
+  }>({
+    checking: false,
+    valid: null,
+    message: '',
+    customerName: ''
+  });
+  const { createBillPayment, getFlutterwaveBillPaymentStatus, validateFlutterwaveBillCustomer, creating } =
+    useBillPayment();
 
   const formSchema = createBillPaymentSchema(t);
 
@@ -53,256 +82,256 @@ const BillsPaymentForm = ({ selectedService, countryCode, selectedNetwork }: Bil
     reValidateMode: 'onChange'
   });
 
-  useEffect(() => {
-    if (selectedService) {
-      const serviceDefaults = getServiceDefaults(selectedService.id, countryCode);
-      form.reset(serviceDefaults, {
-        keepErrors: false,
-        keepDirty: false,
-        keepIsSubmitted: false,
-        keepTouched: false,
-        keepIsValid: false,
-        keepSubmitCount: false
-      });
-
-      if (countryCode) {
-        const schemaCountry = ISO_TO_SCHEMA_COUNTRY[countryCode];
-        if (schemaCountry) {
-          form.setValue('country', schemaCountry);
+  const currencyOptions = useMemo(() => {
+    const currencies = new Set<string>();
+    (profile?.wallets || []).forEach((wallet) => {
+      (wallet.balances || []).forEach((balance) => {
+        if (balance.currency?.code) {
+          currencies.add(balance.currency.code);
         }
+      });
+    });
+
+    return Array.from(currencies);
+  }, [profile?.wallets]);
+
+  const isAmountFixed = selectedItem?.isAmountFixed === true;
+  const watchedAccount = form.watch('account');
+
+  const showError = (message: string) => {
+    setConfirmOpen(false);
+    setResultStatus('error');
+    setResultMessage(message);
+    setResultReference('');
+    setResultAmount('');
+    setResultOpen(true);
+  };
+
+  const showSuccess = (message: string, reference?: string | null, amount?: string) => {
+    setConfirmOpen(false);
+    setResultStatus('success');
+    setResultMessage(message);
+    setResultReference(reference || '');
+    setResultAmount(amount || '');
+    setResultOpen(true);
+  };
+
+  useEffect(() => {
+    form.setValue('service', selectedCategory?.code || '');
+    form.setValue('country', countryCode || selectedCategory?.country || '');
+    form.setValue('network', selectedItem?.itemCode || '');
+
+    if (selectedItem?.currency) {
+      form.setValue('currency', selectedItem.currency.toUpperCase());
+    } else if (!form.getValues('currency') && currencyOptions.length > 0) {
+      form.setValue('currency', currencyOptions[0]);
+    }
+
+    if (selectedItem?.amount) {
+      form.setValue('amount', Number(selectedItem.amount).toLocaleString());
+    }
+  }, [selectedCategory, selectedItem, countryCode, form, currencyOptions]);
+
+  useEffect(() => {
+    const customerId = watchedAccount?.trim();
+    const itemCode = selectedItem?.itemCode;
+
+    if (!itemCode || !customerId || customerId.length < 3) {
+      setCustomerValidation({
+        checking: false,
+        valid: null,
+        message: '',
+        customerName: ''
+      });
+      return;
+    }
+
+    let active = true;
+    setCustomerValidation((prev) => ({ ...prev, checking: true }));
+
+    const timeout = setTimeout(async () => {
+      try {
+        const validationResult = await validateFlutterwaveBillCustomer({
+          variables: {
+            customerId,
+            itemCode
+          }
+        });
+
+        const validationData = validationResult.data?.validateFlutterwaveBillCustomer;
+        if (!active) return;
+
+        if (!validationData) {
+          setCustomerValidation({
+            checking: false,
+            valid: false,
+            message: 'Unable to validate customer',
+            customerName: ''
+          });
+          return;
+        }
+
+        setCustomerValidation({
+          checking: false,
+          valid: validationData.valid,
+          message: validationData.message || '',
+          customerName: validationData.customerName || ''
+        });
+      } catch {
+        if (!active) return;
+        setCustomerValidation({
+          checking: false,
+          valid: false,
+          message: 'Unable to validate customer',
+          customerName: ''
+        });
       }
+    }, 500);
 
-      if (selectedNetwork) {
-        form.setValue('network', selectedNetwork);
-      }
+    return () => {
+      active = false;
+      clearTimeout(timeout);
+    };
+  }, [watchedAccount, selectedItem?.itemCode, validateFlutterwaveBillCustomer]);
+
+  const onSubmit = () => {
+    if (!selectedCategory || !selectedBiller || !selectedItem) {
+      showError('Please select a category, biller and bill item');
+      return;
     }
-  }, [selectedService, countryCode, selectedNetwork, form]);
-
-  const getServiceDefaults = (serviceId: string, isoCountryCode?: string): BillPaymentFormData => {
-    const baseDefaults = { ...billPaymentDefaultValues };
-    const brandOptions = getBrandsFor(isoCountryCode, serviceId);
-    const firstBrandNetwork = brandOptions?.[0]?.networkValue;
-    const resolvedCountry: BillPaymentFormData['country'] =
-      (isoCountryCode ? ISO_TO_SCHEMA_COUNTRY[isoCountryCode] : undefined) ?? baseDefaults.country;
-
-    switch (serviceId) {
-      case 'airtime':
-        return {
-          ...baseDefaults,
-          service: serviceId,
-          country: resolvedCountry,
-          network: firstBrandNetwork || 'mtn'
-        };
-      case 'data':
-        return {
-          ...baseDefaults,
-          service: serviceId,
-          country: resolvedCountry,
-          network: firstBrandNetwork || 'mtn'
-        };
-      case 'electricity':
-        return {
-          ...baseDefaults,
-          service: serviceId,
-          country: resolvedCountry,
-          network: firstBrandNetwork || 'sbee'
-        };
-      case 'cabletv':
-        return {
-          ...baseDefaults,
-          service: serviceId,
-          country: resolvedCountry,
-          network: firstBrandNetwork || 'sbee'
-        };
-      case 'betting':
-        return {
-          ...baseDefaults,
-          service: serviceId,
-          country: resolvedCountry,
-          network: firstBrandNetwork || 'bet9ja'
-        };
-      case 'giftcard':
-        return {
-          ...baseDefaults,
-          service: serviceId,
-          country: resolvedCountry
-        };
-      default:
-        return {
-          ...baseDefaults,
-          service: serviceId,
-          country: resolvedCountry
-        };
-    }
-  };
-
-  const getNetworkOptions = (serviceId: string, country?: string) => {
-    const brandOptions = getBrandsFor(country, serviceId);
-    if (brandOptions.length > 0) {
-      return brandOptions.map((b) => ({ value: b.networkValue || b.id, label: b.name }));
-    }
-
-    switch (serviceId) {
-      case 'airtime':
-      case 'data':
-        return [
-          { value: 'mtn', label: t('billPayment.networks.mtn') },
-          { value: 'airtel', label: t('billPayment.networks.airtel') },
-          { value: 'glo', label: t('billPayment.networks.glo') },
-          { value: '9mobile', label: t('billPayment.networks.9mobile') }
-        ];
-      case 'electricity':
-      case 'cabletv':
-        return [
-          { value: 'sbee', label: t('billPayment.networks.sbee') },
-          { value: 'ekedc', label: t('billPayment.networks.ekedc') },
-          { value: 'ikedc', label: t('billPayment.networks.ikedc') }
-        ];
-      case 'betting':
-        return [{ value: 'bet9ja', label: t('billPayment.networks.bet9ja') }];
-      default:
-        return [
-          { value: 'sbee', label: t('billPayment.networks.sbee') },
-          { value: 'mtn', label: t('billPayment.networks.mtn') },
-          { value: 'airtel', label: t('billPayment.networks.airtel') }
-        ];
-    }
-  };
-
-  const getAccountLabel = (serviceId: string) => {
-    switch (serviceId) {
-      case 'airtime':
-      case 'data':
-        return t('billPayment.form.phoneNumber');
-      case 'electricity':
-        return t('billPayment.form.meterNumber');
-      case 'cabletv':
-        return t('billPayment.form.smartCardNumber');
-      case 'betting':
-        return t('billPayment.form.betAccountId');
-      case 'giftcard':
-        return t('billPayment.form.recipientEmail');
-      default:
-        return t('billPayment.form.accountNumber');
-    }
-  };
-
-  const requiresPhoneInput = (serviceId: string) => {
-    return serviceId === 'airtime' || serviceId === 'data';
-  };
-
-  const getAccountPlaceholder = (serviceId: string) => {
-    switch (serviceId) {
-      case 'airtime':
-      case 'data':
-        return t('placeholders.enterPhoneNumber');
-      case 'electricity':
-        return t('placeholders.enterMeterNumber');
-      case 'cabletv':
-        return t('placeholders.enterSmartCardNumber');
-      case 'betting':
-        return t('placeholders.enterBetAccountId');
-      case 'giftcard':
-        return t('placeholders.enterRecipientEmail');
-      default:
-        return t('placeholders.enterAccountNumber');
-    }
-  };
-
-  const onSubmit = (data: BillPaymentFormData) => {
-    console.log('Form submitted:', data);
-    setIsModalOpen(true);
+    setConfirmOpen(true);
   };
 
   const handleFormSubmit = async () => {
     try {
       const formData = form.getValues();
 
-      const billPaymentInput: BillPaymentInput = {
-        service: formData.service,
-        network: formData.network,
-        amount: parseFloat(formData.amount.replace(/,/g, '')),
-        currency: formData.currency,
-        account: formData.account,
+      if (!selectedItem?.itemCode) {
+        showError('Please select a bill item');
+        return;
+      }
 
-        country: countryCode ?? SCHEMA_TO_ISO_COUNTRY[formData.country] ?? formData.country,
-        paymentMethod: formData.paymentMethod,
-        walletId: 'default-wallet',
-        description: `${selectedService?.labelKey} payment for ${formData.account}`
+      const parsedAmount = Number(formData.amount?.toString().replace(/,/g, ''));
+      if (!parsedAmount || Number.isNaN(parsedAmount) || parsedAmount <= 0) {
+        showError(t('validation.amountNumeric'));
+        return;
+      }
+
+      const resolvedCurrency = (selectedItem.currency || formData.currency).toUpperCase();
+      const resolvedWallet = (profile?.wallets || []).find((wallet) =>
+        (wallet.balances || []).some((balance) => balance.currency?.code?.toUpperCase() === resolvedCurrency)
+      );
+
+      if (!resolvedWallet?.id) {
+        showError(`No wallet found for ${resolvedCurrency}`);
+        return;
+      }
+
+      const validationResult = await validateFlutterwaveBillCustomer({
+        variables: {
+          customerId: formData.account,
+          itemCode: selectedItem.itemCode
+        }
+      });
+
+      const validationData = validationResult.data?.validateFlutterwaveBillCustomer;
+      if (!validationData?.valid) {
+        showError(validationData?.message || 'Invalid customer account details');
+        return;
+      }
+
+      const billPaymentInput: FlutterwaveBillPaymentInput = {
+        amount: parsedAmount,
+        billerCode: selectedBiller.billerCode,
+        billerId: selectedBiller.id,
+        countryCode: countryCode || selectedCategory.country,
+        currencyCode: resolvedCurrency,
+        customerId: formData.account,
+        itemCode: selectedItem.itemCode,
+        walletId: resolvedWallet.id,
+        description: `${selectedCategory.name} - ${selectedBiller.name}`,
+        narration: `${selectedCategory.name} for ${formData.account}`
       };
 
-      await createBillPayment({
+      const createResult = await createBillPayment({
         variables: {
           input: billPaymentInput
         }
       });
 
-      setIsModalOpen(false);
-      form.reset(getServiceDefaults(selectedService?.id || '', countryCode));
-      toast.success(t('billPayment.paymentSuccessful'));
+      const paymentResult = createResult.data?.payFlutterwaveBill;
+      if (!paymentResult) {
+        showError(t('billPayment.paymentFailed'));
+        return;
+      }
+
+      if (!paymentResult.success) {
+        showError(paymentResult.message || t('billPayment.paymentFailed'));
+        return;
+      }
+
+      const reference = paymentResult.reference || paymentResult.flutterwaveReference;
+      if (reference) {
+        const statusResult = await getFlutterwaveBillPaymentStatus({
+          variables: { reference }
+        });
+
+        const paymentStatus = statusResult.data?.flutterwaveBillPaymentStatus;
+        if (paymentStatus && !paymentStatus.success) {
+          showError(paymentStatus.message || t('billPayment.paymentFailed'));
+          return;
+        }
+      }
+
+      setConfirmOpen(false);
+      form.reset({
+        ...billPaymentDefaultValues,
+        service: selectedCategory.code,
+        network: selectedItem.itemCode,
+        country: countryCode || selectedCategory.country,
+        currency: (selectedItem.currency || formData.currency || '').toUpperCase(),
+        amount: selectedItem.amount ? Number(selectedItem.amount).toLocaleString() : ''
+      });
+      showSuccess(
+        paymentResult.message || t('billPayment.paymentSuccessful'),
+        paymentResult.reference || paymentResult.flutterwaveReference || '',
+        `${resolvedCurrency} ${parsedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+      );
     } catch (error) {
       console.error('Payment failed:', error);
-      toast.error(t('billPayment.paymentFailed'));
+      showError(t('billPayment.paymentFailed'));
     }
-  };
-
-  const isValidEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
   };
 
   const watchedValues = form.watch();
 
   const isFormValid = useMemo(() => {
-    const { service, currency, amount, account, network } = watchedValues;
+    const { amount, account, currency } = watchedValues;
+    const hasRequiredValues = !!(account && account.trim().length >= 3 && currency);
+    const parsedAmount = Number((amount || '').toString().replace(/,/g, ''));
+    const validAmount = !Number.isNaN(parsedAmount) && parsedAmount > 0;
 
-    const hasRequiredFields = service && currency && amount && account;
+    const resolvedCurrency = (selectedItem?.currency || currency || '').toUpperCase();
+    const hasWalletForCurrency = !!(profile?.wallets || []).find((wallet) =>
+      (wallet.balances || []).some((balance) => balance.currency?.code?.toUpperCase() === resolvedCurrency)
+    );
 
-    const hasValidNetwork = selectedService?.id === 'giftcard' || network;
+    return hasRequiredValues && validAmount && !!selectedItem?.itemCode && hasWalletForCurrency && !creating;
+  }, [watchedValues, selectedItem?.itemCode, selectedItem?.currency, creating, profile?.wallets]);
 
-    const isValidAmount =
-      amount && !isNaN(parseFloat(amount.replace(/,/g, ''))) && parseFloat(amount.replace(/,/g, '')) >= 1;
-
-    let isValidAccount = true;
-    if (selectedService?.id === 'giftcard') {
-      isValidAccount = !!(account && isValidEmail(account));
-    } else {
-      isValidAccount = !!(account && account.trim().length >= 3);
-    }
-
-    return hasRequiredFields && hasValidNetwork && isValidAmount && isValidAccount && !form.formState.isSubmitting;
-  }, [watchedValues, selectedService?.id, form.formState.isSubmitting]);
-
-  if (!selectedService) {
+  if (!selectedCategory) {
     return null;
   }
-
-  const getServiceName = (service: BillPaymentService) => {
-    return t(service.labelKey);
-  };
 
   return (
     <>
       <Card className="shadow-lg w-full md:w-[480px] py-6 animate-in slide-in-from-right duration-500">
         <CardContent>
-          {selectedService && (
-            <div className="mb-6 p-3 rounded-lg" style={{ backgroundColor: selectedService.bgColor }}>
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-8 h-8 flex items-center justify-center rounded-full"
-                  style={{ backgroundColor: selectedService.color + '20' }}
-                >
-                  <selectedService.icon className="w-4 h-4" style={{ color: selectedService.color }} />
-                </div>
-                <div>
-                  <h3 className="font-medium text-gray-900">{getServiceName(selectedService)}</h3>
-                  <p className="text-sm text-gray-600">
-                    {t(`billPayment.services.${selectedService.id}Description`) || getServiceName(selectedService)}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
+          <div className="mb-6 p-3 rounded-lg bg-gray-50 border border-gray-100">
+            <h3 className="font-semibold text-gray-900">{selectedCategory.name}</h3>
+            {selectedBiller ? <p className="text-sm text-gray-600 mt-1">Biller: {selectedBiller.name}</p> : null}
+            {selectedItem ? <p className="text-sm text-gray-600 mt-1">Item: {selectedItem.name}</p> : null}
+          </div>
 
           <div className="mb-6">
             <FormProgress steps={2} currentStep={1} title={t('billPayment.form.title')} />
@@ -312,109 +341,38 @@ const BillsPaymentForm = ({ selectedService, countryCode, selectedNetwork }: Bil
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
-                name="service"
+                name="currency"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="!text-black">{t('billPayment.form.service')}</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder={t('billPayment.form.selectService')} />
+                    <FormLabel className="!text-black">{t('billPayment.form.currency')}</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        disabled={!!selectedItem?.currency || currencyOptions.length === 0}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select currency" />
                         </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {billPaymentServices.map((service) => (
-                          <SelectItem key={service.id} value={service.id}>
-                            {getServiceName(service)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {selectedService.id !== 'giftcard' && (
-                <FormField
-                  control={form.control}
-                  name="network"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="!text-black">{t('billPayment.form.network')}</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder={t('billPayment.form.selectNetwork')} />
-                          </SelectTrigger>
-                        </FormControl>
                         <SelectContent>
-                          {getNetworkOptions(selectedService.id, countryCode).map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
+                          {currencyOptions.map((currencyCode) => (
+                            <SelectItem key={currencyCode} value={currencyCode}>
+                              {currencyCode}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-
-              <FormField
-                control={form.control}
-                name="currency"
-                render={({ field }) => {
-                  return (
-                    <FormItem>
-                      <FormLabel className="!text-black">{t('billPayment.form.currency')}</FormLabel>
-                      <FormControl>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <SelectTrigger className="w-full">
-                            <SelectValue>
-                              {field.value && (
-                                <div className="flex items-center gap-2">
-                                  <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
-                                    <span className="text-white text-xs font-bold">
-                                      {field.value === 'USD' ? '$' : field.value === 'EUR' ? '€' : '₦'}
-                                    </span>
-                                  </div>
-                                  <span>{field.value}</span>
-                                </div>
-                              )}
-                            </SelectValue>
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="USD">
-                              <div className="flex items-center gap-2">
-                                <span>USD</span>
-                              </div>
-                            </SelectItem>
-                            <SelectItem value="EUR">
-                              <div className="flex items-center gap-2">
-                                <span>EUR</span>
-                              </div>
-                            </SelectItem>
-                            <SelectItem value="NGN">
-                              <div className="flex items-center gap-2">
-                                <span>NGN</span>
-                              </div>
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
 
               <FormField
                 control={form.control}
                 name="amount"
                 render={({ field }) => {
-                  const selectedCurrency = (form.watch('currency') || '').toUpperCase() as 'USD' | 'NGN' | 'EUR';
+                  const selectedCurrency = (form.watch('currency') || '').toUpperCase();
 
                   return (
                     <FormItem>
@@ -425,11 +383,13 @@ const BillsPaymentForm = ({ selectedService, countryCode, selectedNetwork }: Bil
                           currency={selectedCurrency}
                           value={Number(field.value?.toString().replace(/,/g, '') || 0)}
                           onChange={(value) => {
+                            if (isAmountFixed) return;
                             field.onChange(value.toLocaleString());
                           }}
                           placeholder={t('placeholders.enterAmount')}
                         />
                       </FormControl>
+                      {isAmountFixed ? <p className="text-xs text-gray-500">Amount is fixed for this item.</p> : null}
                       <FormMessage />
                     </FormItem>
                   );
@@ -441,64 +401,44 @@ const BillsPaymentForm = ({ selectedService, countryCode, selectedNetwork }: Bil
                 name="account"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="!text-black">{getAccountLabel(selectedService.id)}</FormLabel>
-                    {requiresPhoneInput(selectedService.id) ? (
-                      <div className="flex items-center relative">
-                        <div className="absolute flex items-center z-10">
-                          <PhoneCountrySelector
-                            value={selectedPhoneCountry.code}
-                            onCountryChange={(country) => {
-                              setSelectedPhoneCountry(country);
-                            }}
-                          />
-                          <span className="text-sm text-[#6C727F] ml-1">{selectedPhoneCountry.prefix}</span>
-                        </div>
-                        <div className="flex-1">
-                          <FormControl>
-                            <Input
-                              className="pl-24 !rounded-0 font-mono"
-                              type="tel"
-                              placeholder={getAccountPlaceholder(selectedService.id)}
-                              {...field}
-                            />
-                          </FormControl>
-                        </div>
-                      </div>
-                    ) : (
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type={selectedService.id === 'giftcard' ? 'email' : 'text'}
-                          className={`${
-                            selectedService.id === 'giftcard'
-                              ? field.value && !isValidEmail(field.value)
-                                ? 'border-red-500'
-                                : ''
-                              : 'font-mono'
-                          }`}
-                          placeholder={getAccountPlaceholder(selectedService.id)}
-                          autoComplete={selectedService.id === 'giftcard' ? 'email' : 'off'}
-                        />
-                      </FormControl>
-                    )}
+                    <FormLabel className="!text-black">Customer ID / Account Number</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="text"
+                        className="font-mono"
+                        placeholder="Enter customer account ID"
+                        autoComplete="off"
+                      />
+                    </FormControl>
+                    {customerValidation.checking ? (
+                      <p className="text-xs text-gray-500">Validating customer...</p>
+                    ) : null}
+                    {!customerValidation.checking && customerValidation.valid === true ? (
+                      <p className="text-xs text-green-600">
+                        {customerValidation.customerName
+                          ? `Valid customer: ${customerValidation.customerName}`
+                          : customerValidation.message || 'Customer validated'}
+                      </p>
+                    ) : null}
+                    {!customerValidation.checking && customerValidation.valid === false ? (
+                      <p className="text-xs text-red-600">{customerValidation.message || 'Invalid customer'}</p>
+                    ) : null}
                     <FormMessage />
-                    {selectedService.id === 'giftcard' && field.value && !isValidEmail(field.value) && (
-                      <p className="text-sm text-red-500 mt-1">{t('validation.emailInvalid')}</p>
-                    )}
                   </FormItem>
                 )}
               />
 
               <Button
                 type="submit"
-                disabled={!isFormValid || creating}
+                disabled={!isFormValid}
                 className={`w-full py-6 text-base font-medium transition-all duration-200 ${
-                  isFormValid && !creating
+                  isFormValid
                     ? 'bg-primary hover:bg-primary/90 text-white'
                     : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 }`}
               >
-                {form.formState.isSubmitting || creating ? (
+                {creating ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                     {t('billPayment.form.processing')}
@@ -517,18 +457,49 @@ const BillsPaymentForm = ({ selectedService, countryCode, selectedNetwork }: Bil
         </CardContent>
       </Card>
 
-      <DefaultModal open={isModalOpen} onClose={() => setIsModalOpen(false)} className="max-w-md" trigger={<></>}>
-        <div className="p-4">
-          <BillPaymentConfirmation
-            amount={form.watch('amount') || '0'}
-            currency={form.watch('currency') || 'USD'}
-            destination={form.watch('account') || ''}
-            serviceName={selectedService ? getServiceName(selectedService) : ''}
-            onFormSubmit={handleFormSubmit}
-            isLoading={creating}
-          />
-        </div>
-      </DefaultModal>
+      <ConfirmationDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title="Confirm Bill Payment"
+        description={`You are about to pay ${form.watch('currency')} ${form.watch('amount')} for ${selectedCategory.name} (${selectedBiller?.name || '-'}) to ${form.watch('account')}.`}
+        cancelLabel="Cancel"
+        confirmLabel={creating ? 'Processing...' : 'Continue'}
+        onCancel={() => setConfirmOpen(false)}
+        onConfirm={handleFormSubmit}
+        confirmDisabled={creating}
+      />
+
+      <TransactionSuccessDialog
+        open={resultOpen && resultStatus === 'success'}
+        onOpenChange={(open) => {
+          if (!open) setResultOpen(false);
+        }}
+        title="Bill Payment Successful"
+        amount={resultAmount}
+        subtitle={resultMessage}
+        details={[
+          { label: 'Category', value: selectedCategory.name || '-' },
+          { label: 'Biller', value: selectedBiller?.name || '-' },
+          { label: 'Item', value: selectedItem?.name || '-' },
+          { label: 'Customer ID', value: form.watch('account') || '-' },
+          { label: 'Date', value: new Date().toLocaleString() }
+        ]}
+        reference={resultReference}
+        onCopyReference={() => {
+          if (resultReference) navigator.clipboard.writeText(resultReference);
+        }}
+        onPrimaryAction={() => setResultOpen(false)}
+      />
+
+      <TransactionErrorDialog
+        open={resultOpen && resultStatus === 'error'}
+        onOpenChange={(open) => {
+          if (!open) setResultOpen(false);
+        }}
+        title="Bill Payment Failed"
+        description={resultMessage}
+        onCancel={() => setResultOpen(false)}
+      />
     </>
   );
 };
