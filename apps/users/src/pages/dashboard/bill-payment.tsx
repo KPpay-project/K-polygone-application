@@ -112,6 +112,7 @@ const BillPayment = () => {
   return (
     <div className="min-h-screen bg-[#F6F6F6] p-3 sm:p-4 md:p-6 lg:p-8">
       <div className="max-w-6xl mx-auto">
+        
         <div className="flex gap-6 lg:gap-8 transition-all duration-500 ease-in-out">
           {/* Left Card - Services Selection */}
           <div
