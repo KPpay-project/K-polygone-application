@@ -1,6 +1,4 @@
 import BillsPaymentForm from '@/components/modules/bill-payment/form.tsx';
-import { ServiceItem } from '@/components/modules/bill-payment/service-item';
-import { billPaymentServices } from '@/data/bill-payment-services';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CountrySelector } from '@/components/common/country-selector';
@@ -39,23 +37,12 @@ type FlutterwaveBillItem = {
   name: string;
 };
 
-const SERVICE_TO_CATEGORY_CODE: Record<string, string> = {
-  airtime: 'AIRTIME',
-  data: 'MOBILEDATA',
-  cabletv: 'CABLEBILLS',
-  electricity: 'UTILITYBILLS',
-  betting: 'TRANSLOG'
-};
-
-const CATEGORY_CODE_TO_SERVICE: Record<string, string> = Object.fromEntries(
-  Object.entries(SERVICE_TO_CATEGORY_CODE).map(([service, category]) => [category, service])
-);
-
 const BillPayment = () => {
   const { t } = useTranslation();
-  const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [selectedCategoryCode, setSelectedCategoryCode] = useState<string | null>(null);
   const [selectedCountryCode, setSelectedCountryCode] = useState<string>('NG');
-  const [selectedNetwork, setSelectedNetwork] = useState<string | null>(null);
+  const [selectedBillerId, setSelectedBillerId] = useState<string | null>(null);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   const { data: categoriesData } = useQuery<{ flutterwaveBillCategories: FlutterwaveBillCategory[] }>(
     FLUTTERWAVE_BILL_CATEGORIES,
@@ -64,8 +51,6 @@ const BillPayment = () => {
       skip: !selectedCountryCode
     }
   );
-
-  const selectedCategoryCode = selectedService ? SERVICE_TO_CATEGORY_CODE[selectedService] : undefined;
 
   const { data: billersData } = useQuery<{ flutterwaveBillers: FlutterwaveBiller[] }>(FLUTTERWAVE_BILLERS, {
     variables: {
@@ -79,60 +64,57 @@ const BillPayment = () => {
     FLUTTERWAVE_BILL_ITEMS,
     {
       variables: {
-        billerCode: selectedNetwork,
+        billerCode: (billersData?.flutterwaveBillers || []).find((item) => item.id === selectedBillerId)?.billerCode,
         countryCode: selectedCountryCode
       },
-      skip: !selectedNetwork || !selectedCountryCode
+      skip: !selectedBillerId || !selectedCountryCode
     }
   );
 
-  const handleServiceSelect = (serviceId: string) => {
-    console.log('Selected service:', serviceId);
-    setSelectedService(serviceId);
-  };
-
-  const allowedServiceIdsFromApi = useMemo(() => {
-    return (
-      categoriesData?.flutterwaveBillCategories
-        ?.map((category) => CATEGORY_CODE_TO_SERVICE[category.code])
-        .filter(Boolean) || []
-    );
-  }, [categoriesData]);
-
-  const filteredServices = billPaymentServices.filter((service) =>
-    allowedServiceIdsFromApi.length ? allowedServiceIdsFromApi.includes(service.id) : true
-  );
-
-  const selectedServiceData = billPaymentServices.find((service) => service.id === selectedService);
-
   useEffect(() => {
-    setSelectedNetwork(null);
-  }, [selectedService, selectedCountryCode]);
+    setSelectedBillerId(null);
+    setSelectedItemId(null);
+  }, [selectedCategoryCode, selectedCountryCode]);
 
   const availableBillers = useMemo(() => {
-    const list = billersData?.flutterwaveBillers || [];
-    const uniqueByCode = new Map<string, FlutterwaveBiller>();
-    list.forEach((item) => {
-      if (!uniqueByCode.has(item.billerCode)) {
-        uniqueByCode.set(item.billerCode, item);
-      }
-    });
-    return Array.from(uniqueByCode.values());
+    return billersData?.flutterwaveBillers || [];
   }, [billersData]);
 
   const availableBillerOptions = useMemo(() => {
     return availableBillers.map((biller) => ({
-      value: biller.billerCode,
+      value: biller.id,
       label: biller.name
     }));
   }, [availableBillers]);
 
-  const serviceOptions = useMemo(() => {
-    return filteredServices.map((service) => ({
-      value: service.id,
-      label: t(service.labelKey)
+  const availableBillItemOptions = useMemo(() => {
+    return (billItemsData?.flutterwaveBillItems || []).map((item) => ({
+      value: item.id,
+      label: `${item.name}${item.amount ? ` - ${item.amount}` : ''} (${item.itemCode})`
     }));
-  }, [filteredServices, t]);
+  }, [billItemsData]);
+
+  const categoryOptions = useMemo(() => {
+    return (categoriesData?.flutterwaveBillCategories || []).map((category) => ({
+      value: category.code,
+      label: category.name
+    }));
+  }, [categoriesData]);
+
+  const selectedCategory = useMemo(
+    () => (categoriesData?.flutterwaveBillCategories || []).find((item) => item.code === selectedCategoryCode) || null,
+    [categoriesData, selectedCategoryCode]
+  );
+
+  const selectedBiller = useMemo(
+    () => availableBillers.find((item) => item.id === selectedBillerId) || null,
+    [availableBillers, selectedBillerId]
+  );
+
+  const selectedItem = useMemo(
+    () => (billItemsData?.flutterwaveBillItems || []).find((item) => item.id === selectedItemId) || null,
+    [billItemsData, selectedItemId]
+  );
 
   return (
     <div className="min-h-screen bg-[#F6F6F6] p-3 sm:p-4 md:p-6 lg:p-8">
@@ -141,16 +123,16 @@ const BillPayment = () => {
           {/* Left Card - Services Selection */}
           <div
             className={`bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 transition-all duration-500 ease-in-out ${
-              selectedService ? 'w-1/2 transform translate-x-0' : 'w-full mx-auto max-w-2xl'
+              selectedCategoryCode ? 'w-1/2 transform translate-x-0' : 'w-full mx-auto max-w-2xl'
             }`}
           >
             <h1 className="text-xl sm:text-xl font-semibold text-gray-900 mb-6 sm:mb-8">{t('billPayment.title')}</h1>
 
             <div className="mb-6 sm:mb-8">
               <InputWithSearch
-                options={serviceOptions}
-                value={selectedService || ''}
-                onChange={(value) => handleServiceSelect(value)}
+                options={categoryOptions}
+                value={selectedCategoryCode || ''}
+                onChange={(value) => setSelectedCategoryCode(value || null)}
                 placeholder={t('placeholders.searchBillType') || 'Select bill category'}
                 searchPlaceholder={t('placeholders.searchBillType') || 'Search bill category'}
                 emptyMessage="No bill category found"
@@ -177,25 +159,14 @@ const BillPayment = () => {
               />
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4">
-              {filteredServices.map((item) => (
-                <ServiceItem
-                  key={item.id}
-                  item={item}
-                  onClick={handleServiceSelect}
-                  isSelected={selectedService === item.id}
-                />
-              ))}
-            </div>
-
-            {filteredServices.length === 0 && (
+            {categoryOptions.length === 0 && (
               <div className="text-center py-8">
                 <p className="text-gray-500">No services found for this country.</p>
               </div>
             )}
 
             {/* Brands available for selected country and service */}
-            {selectedService && (
+            {selectedCategoryCode && (
               <div className="mt-6">
                 <h3 className="text-sm font-semibold text-gray-900 mb-3">
                   {t('billPayment.availableBrands') || 'Available brands'}
@@ -204,18 +175,28 @@ const BillPayment = () => {
                   <div className="space-y-2">
                     <InputWithSearch
                       options={availableBillerOptions}
-                      value={selectedNetwork || ''}
-                      onChange={(value) => setSelectedNetwork(value || null)}
+                      value={selectedBillerId || ''}
+                      onChange={(value) => {
+                        setSelectedBillerId(value || null);
+                        setSelectedItemId(null);
+                      }}
                       placeholder={t('placeholders.selectNetwork') || 'Select biller'}
                       searchPlaceholder={t('placeholders.searchBillType') || 'Search biller'}
                       emptyMessage="No biller found"
                       width="w-full"
                       className="!h-12 !border-gray-200 !bg-white"
                     />
-                    {selectedNetwork && billItemsData?.flutterwaveBillItems?.length ? (
-                      <p className="text-xs text-gray-500">
-                        {billItemsData.flutterwaveBillItems.length} bill item(s) found for selected biller.
-                      </p>
+                    {selectedBillerId ? (
+                      <InputWithSearch
+                        options={availableBillItemOptions}
+                        value={selectedItemId || ''}
+                        onChange={(value) => setSelectedItemId(value || null)}
+                        placeholder="Select bill item"
+                        searchPlaceholder="Search bill item"
+                        emptyMessage="No bill item found"
+                        width="w-full"
+                        className="!h-12 !border-gray-200 !bg-white"
+                      />
                     ) : null}
                   </div>
                 ) : (
@@ -230,17 +211,18 @@ const BillPayment = () => {
           {/* Right Card - Payment Form */}
           <div
             className={`transition-all duration-500 ease-in-out ${
-              selectedService
+              selectedCategoryCode
                 ? 'w-1/2 opacity-100 transform translate-x-0'
                 : 'w-0 opacity-0 transform translate-x-full overflow-hidden'
             }`}
           >
-            {selectedService && (
+            {selectedCategoryCode && (
               <div className="flex justify-center">
                 <BillsPaymentForm
-                  selectedService={selectedServiceData}
+                  selectedCategory={selectedCategory}
+                  selectedBiller={selectedBiller}
+                  selectedItem={selectedItem}
                   countryCode={selectedCountryCode}
-                  selectedNetwork={selectedNetwork}
                 />
               </div>
             )}

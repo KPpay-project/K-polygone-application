@@ -10,6 +10,33 @@ export interface BillPaymentInput {
   description?: string;
 }
 
+export interface FlutterwaveBillPaymentInput {
+  amount: number;
+  billerCode: string;
+  billerId: string;
+  callbackUrl?: string;
+  countryCode: string;
+  currencyCode: string;
+  customerId: string;
+  description?: string;
+  itemCode: string;
+  narration?: string;
+  reference?: string;
+  walletId: string;
+}
+
+export interface FlutterwaveBillPaymentResponse {
+  amount: number | string;
+  billPaymentId: string;
+  currency: string;
+  flutterwaveReference?: string | null;
+  message?: string | null;
+  providerStatus?: string | null;
+  reference: string;
+  status: string;
+  success: boolean;
+}
+
 export interface BillPaymentResponse {
   id: string;
   amount: number;
@@ -73,4 +100,12 @@ export interface GetBillPaymentFeesVariables {
 
 export interface GetBillPaymentFeesResult {
   billPaymentFees: BillPaymentFees;
+}
+
+export interface PayFlutterwaveBillVariables {
+  input: FlutterwaveBillPaymentInput;
+}
+
+export interface PayFlutterwaveBillResult {
+  payFlutterwaveBill: FlutterwaveBillPaymentResponse;
 }

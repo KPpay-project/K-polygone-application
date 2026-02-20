@@ -96,3 +96,30 @@ export const FLUTTERWAVE_BILL_ITEMS = gql`
     }
   }
 `;
+
+export const VALIDATE_FLUTTERWAVE_BILL_CUSTOMER = gql`
+  query ValidateFlutterwaveBillCustomer($customerId: String!, $itemCode: String!) {
+    validateFlutterwaveBillCustomer(customerId: $customerId, itemCode: $itemCode) {
+      customerName
+      message
+      status
+      valid
+    }
+  }
+`;
+
+export const FLUTTERWAVE_BILL_PAYMENT_STATUS = gql`
+  query FlutterwaveBillPaymentStatus($reference: String!) {
+    flutterwaveBillPaymentStatus(reference: $reference) {
+      amount
+      billPaymentId
+      currency
+      flutterwaveReference
+      message
+      providerStatus
+      reference
+      status
+      success
+    }
+  }
+`;
