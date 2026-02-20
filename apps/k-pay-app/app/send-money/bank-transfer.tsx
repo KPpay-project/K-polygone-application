@@ -287,6 +287,7 @@ export default function BankTransferScreen() {
 
   return (
     <ContainerLayout>
+      
       <View className="flex-1 bg-white">
         <ScrollView className="px-6 pt-6" showsVerticalScrollIndicator={false}>
           <HeaderWithTitle
