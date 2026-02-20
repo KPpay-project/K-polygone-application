@@ -110,63 +110,73 @@ const BillPayment = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#F6F6F6] p-3 sm:p-4 md:p-6 lg:p-8">
-      <div className="max-w-6xl mx-auto">
-        
+    <div className="min-h-screen bg-[radial-gradient(1300px_450px_at_top,_#EFF6FF,_#F3F4F6,_#F6F6F6)] p-3 sm:p-4 md:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-5">
+        <div className="rounded-3xl border border-slate-200/80 bg-white/85 px-5 py-4 shadow-sm backdrop-blur-sm sm:px-6 sm:py-5">
+          <h1 className="text-2xl font-semibold tracking-tight text-gray-900">{t('billPayment.title')}</h1>
+          <p className="mt-1 text-sm text-gray-600">Select category, biller, and item details to continue payment.</p>
+        </div>
+
         <div className="flex gap-6 lg:gap-8 transition-all duration-500 ease-in-out">
-          {/* Left Card - Services Selection */}
           <div
-            className={`bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 transition-all duration-500 ease-in-out ${
-              selectedCategoryCode ? 'w-1/2 transform translate-x-0' : 'w-full mx-auto max-w-2xl'
+            className={`rounded-3xl border border-slate-200/80 bg-white/95 shadow-[0_10px_40px_rgba(15,23,42,0.06)] p-4 sm:p-6 transition-all duration-500 ease-in-out ${
+              selectedCategoryCode ? 'w-full lg:w-1/2 transform translate-x-0' : 'w-full mx-auto max-w-3xl'
             }`}
           >
-            <h1 className="text-xl sm:text-xl font-semibold text-gray-900 mb-6 sm:mb-8">{t('billPayment.title')}</h1>
-
-            <div className="mb-6 sm:mb-8">
-              <InputWithSearch
-                options={categoryOptions}
-                value={selectedCategoryCode || ''}
-                onChange={(value) => setSelectedCategoryCode(value || null)}
-                placeholder={t('placeholders.searchBillType') || 'Select bill category'}
-                searchPlaceholder={t('placeholders.searchBillType') || 'Search bill category'}
-                emptyMessage="No bill category found"
-                width="w-full"
-                className="!h-12 !border-gray-200 !bg-white"
-              />
+            <div className="mb-4 flex items-center gap-2 text-xs font-medium text-slate-600">
+              <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-blue-600 px-2 text-[11px] text-white">
+                1
+              </span>
+              <span>Choose destination and service</span>
             </div>
 
-            {/* Country Selector */}
-            <div className="mb-4">
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="text-sm font-medium text-gray-700">{t('billPayment.form.country') || 'Country'}</h2>
+            <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2">
+              <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-3.5">
+                <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                  {t('billPayment.form.country') || 'Country'}
+                </div>
+                <CountrySelector
+                  value={selectedCountryCode}
+                  onValueChange={(_, country) => {
+                    setSelectedCountryCode(country.code);
+                  }}
+                  placeholder={t('placeholders.selectCountry') || 'Select country'}
+                  hasFlag
+                  showPrefix={false}
+                  className="max-h-[300px] overflow-y-auto"
+                />
               </div>
-              <CountrySelector
-                value={selectedCountryCode}
-                onValueChange={(_, country) => {
-                  // Use country.code as the canonical ISO code
-                  setSelectedCountryCode(country.code);
-                }}
-                placeholder={t('placeholders.selectCountry') || 'Select country'}
-                hasFlag
-                showPrefix={false}
-                className="max-h-[300px] overflow-y-auto"
-              />
+
+              <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-3.5">
+                <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                  {t('placeholders.searchBillType') || 'Bill category'}
+                </div>
+                <InputWithSearch
+                  options={categoryOptions}
+                  value={selectedCategoryCode || ''}
+                  onChange={(value) => setSelectedCategoryCode(value || null)}
+                  placeholder={t('placeholders.searchBillType') || 'Select bill category'}
+                  searchPlaceholder={t('placeholders.searchBillType') || 'Search bill category'}
+                  emptyMessage="No bill category found"
+                  width="w-full"
+                  className="!h-11 !border-slate-200 !bg-white"
+                />
+              </div>
             </div>
 
             {categoryOptions.length === 0 && (
-              <div className="text-center py-8">
-                <p className="text-gray-500">No services found for this country.</p>
+              <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">
+                No services found for this country.
               </div>
             )}
 
-            {/* Brands available for selected country and service */}
             {selectedCategoryCode && (
-              <div className="mt-6">
-                <h3 className="text-sm font-semibold text-gray-900 mb-3">
-                  {t('billPayment.availableBrands') || 'Available brands'}
-                </h3>
-                {availableBillerOptions.length > 0 ? (
-                  <div className="space-y-2">
+              <div className="space-y-4">
+                <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-3.5">
+                  <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                    {t('billPayment.availableBrands') || 'Available brands'}
+                  </div>
+                  {availableBillerOptions.length > 0 ? (
                     <InputWithSearch
                       options={availableBillerOptions}
                       value={selectedBillerId || ''}
@@ -178,40 +188,61 @@ const BillPayment = () => {
                       searchPlaceholder={t('placeholders.searchBillType') || 'Search biller'}
                       emptyMessage="No biller found"
                       width="w-full"
-                      className="!h-12 !border-gray-200 !bg-white"
+                      className="!h-11 !border-slate-200 !bg-white"
                     />
-                    {selectedBillerId ? (
-                      <InputWithSearch
-                        options={availableBillItemOptions}
-                        value={selectedItemId || ''}
-                        onChange={(value) => setSelectedItemId(value || null)}
-                        placeholder="Select bill item"
-                        searchPlaceholder="Search bill item"
-                        emptyMessage="No bill item found"
-                        width="w-full"
-                        className="!h-12 !border-gray-200 !bg-white"
-                      />
-                    ) : null}
+                  ) : (
+                    <p className="text-sm text-slate-500">
+                      {t('billPayment.noBrands') || 'No brands available for this selection.'}
+                    </p>
+                  )}
+                </div>
+
+                {selectedBillerId ? (
+                  <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-3.5">
+                    <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Bill item</div>
+                    <InputWithSearch
+                      options={availableBillItemOptions}
+                      value={selectedItemId || ''}
+                      onChange={(value) => setSelectedItemId(value || null)}
+                      placeholder="Select bill item"
+                      searchPlaceholder="Search bill item"
+                      emptyMessage="No bill item found"
+                      width="w-full"
+                      className="!h-11 !border-slate-200 !bg-white"
+                    />
                   </div>
-                ) : (
-                  <p className="text-gray-500 text-sm">
-                    {t('billPayment.noBrands') || 'No brands available for this selection.'}
-                  </p>
-                )}
+                ) : null}
+
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {selectedCategory ? (
+                    <span className="rounded-full bg-blue-50 text-blue-700 text-xs font-medium px-3 py-1 border border-blue-100">
+                      Category: {selectedCategory.name}
+                    </span>
+                  ) : null}
+                  {selectedBiller ? (
+                    <span className="rounded-full bg-emerald-50 text-emerald-700 text-xs font-medium px-3 py-1 border border-emerald-100">
+                      Biller: {selectedBiller.name}
+                    </span>
+                  ) : null}
+                  {selectedItem ? (
+                    <span className="rounded-full bg-amber-50 text-amber-700 text-xs font-medium px-3 py-1 border border-amber-100">
+                      Item: {selectedItem.itemCode}
+                    </span>
+                  ) : null}
+                </div>
               </div>
             )}
           </div>
 
-          {/* Right Card - Payment Form */}
           <div
             className={`transition-all duration-500 ease-in-out ${
               selectedCategoryCode
-                ? 'w-1/2 opacity-100 transform translate-x-0'
+                ? 'w-full lg:w-1/2 opacity-100 transform translate-x-0'
                 : 'w-0 opacity-0 transform translate-x-full overflow-hidden'
             }`}
           >
             {selectedCategoryCode && (
-              <div className="flex justify-center">
+              <div className="rounded-3xl border border-slate-200/80 bg-white/95 p-2 shadow-[0_10px_40px_rgba(15,23,42,0.06)]">
                 <BillsPaymentForm
                   selectedCategory={selectedCategory}
                   selectedBiller={selectedBiller}
