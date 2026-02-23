@@ -123,39 +123,3 @@ export const FLUTTERWAVE_BILL_PAYMENT_STATUS = gql`
     }
   }
 `;
-
-export const GET_FLUTTERWAVE_COUNTRIES = gql`
-  query Countries(
-    $page: Int
-    $perPage: Int
-    $search: String
-    $sortBy: String
-    $sortDirection: String
-    $fromDate: Date
-    $toDate: Date
-  ) {
-    countries(
-      page: $page
-      perPage: $perPage
-      search: $search
-      sortBy: $sortBy
-      sortDirection: $sortDirection
-      fromDate: $fromDate
-      toDate: $toDate
-    ) {
-      entries {
-        id
-        code
-        name
-        countryFlag
-        active
-        insertedAt
-        updatedAt
-      }
-      totalEntries
-      pageNumber
-      pageSize
-      totalPages
-    }
-  }
-`;

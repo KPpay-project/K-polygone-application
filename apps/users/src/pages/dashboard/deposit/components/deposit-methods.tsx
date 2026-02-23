@@ -10,10 +10,7 @@ interface DepositMethodsProps {
   onMethodSelect?: (method: DepositMethodKey) => void;
 }
 
-export const DepositMethods = ({
-  selectedMethod = DEPOSITE_METHOD_ENUM.PROVIDERS,
-  onMethodSelect
-}: DepositMethodsProps) => {
+export const DepositMethods = ({ selectedMethod = DEPOSITE_METHOD_ENUM.PROVIDERS, onMethodSelect }: DepositMethodsProps) => {
   const { t } = useTranslation();
   const isDev = import.meta.env.DEV;
 

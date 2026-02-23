@@ -40,103 +40,81 @@ export function BalancePanel() {
   const { selectedCurrency } = useCurrencyStore();
   const { getCurrencySymbol } = useCurrencies();
 
-  const wallets = useMemo(
-    () =>
-      userWalletsData?.myWallet?.map((wallet, idx) => {
-        const balanceObj = wallet.balances?.[0];
-        const currencyCode = (wallet.currency?.code || 'USD').toUpperCase();
-        const amount = Number(balanceObj?.availableBalance) || 0;
-        const walletId = wallet.id || String(idx);
-        const maybeDefault = (wallet as any)?.isDefault;
+  const wallets =
+    userWalletsData?.myWallet?.map((wallet, idx) => {
+      const balanceObj = wallet.balances?.[0];
+      const currencyCode = (wallet.currency?.code || 'USD').toUpperCase();
+      const amount = Number(balanceObj?.availableBalance) || 0;
+      const walletId = wallet.id || String(idx);
 
-        const meta = (countryToCurrency as any)?.currencies?.[currencyCode];
-        const symbol: string =
-          wallet.currency?.symbol ||
-          (meta?.symbol as string) ||
-          (meta?.sign as string) ||
-          getCurrencySymbol(currencyCode) ||
-          currencyCode.charAt(0);
+      if (walletBalanceVisibility[String(walletId)] === undefined) {
+        setWalletBalanceVisibility((prev) => ({ ...prev, [String(walletId)]: true }));
+      }
 
-        const label: string = (meta?.name as string) || (meta?.currency as string) || currencyCode;
+      const meta = (countryToCurrency as any)?.currencies?.[currencyCode];
+      const symbol: string =
+        wallet.currency?.symbol ||
+        (meta?.symbol as string) ||
+        (meta?.sign as string) ||
+        getCurrencySymbol(currencyCode) ||
+        currencyCode.charAt(0);
 
-        const color =
-          currencyCode === 'ZMW'
-            ? 'bg-yellow-600'
-            : currencyCode === 'USD'
-              ? 'bg-green-600'
-              : currencyCode === 'XOF'
-                ? 'bg-primary'
-                : currencyCode === 'NGN'
-                  ? 'bg-blue-600'
-                  : currencyCode === 'XAF'
-                    ? 'bg-purple-600'
-                    : 'bg-gray-400';
+      const label: string = (meta?.name as string) || (meta?.currency as string) || currencyCode;
 
-        const textColor =
-          currencyCode === 'ZMW'
-            ? 'text-yellow-600'
-            : currencyCode === 'USD'
-              ? 'text-green-600'
-              : currencyCode === 'XOF'
-                ? 'text-primary'
-                : currencyCode === 'NGN'
-                  ? 'text-blue-600'
-                  : currencyCode === 'XAF'
-                    ? 'text-purple-600'
-                    : 'text-gray-400';
+      const color =
+        currencyCode === 'ZMW'
+          ? 'bg-yellow-600'
+          : currencyCode === 'USD'
+            ? 'bg-green-600'
+            : currencyCode === 'XOF'
+              ? 'bg-primary'
+              : currencyCode === 'NGN'
+                ? 'bg-blue-600'
+                : currencyCode === 'XAF'
+                  ? 'bg-purple-600'
+                  : 'bg-gray-400';
 
-        return {
-          id: walletId,
-          symbol,
-          code: currencyCode,
-          label,
-          amount,
-          color,
-          textColor,
-          walletId: wallet.id,
-          dailyLimit: wallet.dailyLimit,
-          monthlyLimit: wallet.monthlyLimit,
-          status: wallet.status,
-          isFrozen: wallet.isFrozen,
-          ownerType: wallet.ownerType,
-          isDefault: typeof maybeDefault === 'boolean' ? maybeDefault : idx === 0
-        };
-      }) || [],
-    [getCurrencySymbol, userWalletsData?.myWallet]
-  );
+      const textColor =
+        currencyCode === 'ZMW'
+          ? 'text-yellow-600'
+          : currencyCode === 'USD'
+            ? 'text-green-600'
+            : currencyCode === 'XOF'
+              ? 'text-primary'
+              : currencyCode === 'NGN'
+                ? 'text-blue-600'
+                : currencyCode === 'XAF'
+                  ? 'text-purple-600'
+                  : 'text-gray-400';
 
-  useEffect(() => {
-    if (!wallets.length) return;
-
-    setWalletBalanceVisibility((prev) => {
-      let changed = false;
-      const next = { ...prev };
-
-      wallets.forEach((wallet) => {
-        const key = String(wallet.id);
-        if (next[key] === undefined) {
-          next[key] = true;
-          changed = true;
-        }
-      });
-
-      return changed ? next : prev;
-    });
-  }, [wallets]);
+      return {
+        id: walletId,
+        symbol,
+        code: currencyCode,
+        label,
+        amount,
+        color,
+        textColor,
+        walletId: wallet.id,
+        dailyLimit: wallet.dailyLimit,
+        monthlyLimit: wallet.monthlyLimit,
+        status: wallet.status,
+        isFrozen: wallet.isFrozen,
+        ownerType: wallet.ownerType
+      };
+    }) || [];
 
   const selectedCode = (selectedCurrency || 'USD').toUpperCase();
 
-  const displayWallet = useMemo(() => {
-    const explicitDefault = wallets.find((wallet) => wallet.isDefault);
-    if (explicitDefault) return explicitDefault;
-
-    return wallets[0] || wallets.find((wallet) => (wallet.code || '').toUpperCase() === selectedCode);
+  const selectedWallet = useMemo(() => {
+    return wallets.find((w) => (w.code || '').toUpperCase() === selectedCode);
   }, [wallets, selectedCode]);
 
-  const displayCode = (displayWallet?.code || selectedCode).toUpperCase();
-  const displayAmount = displayWallet ? Number(displayWallet.amount) || 0 : 0;
-  const currencySymbol = getCurrencySymbol(displayCode) || '$';
-  const displayedBalance = showBalance ? formatCurrencyAmount(displayAmount, displayCode, currencySymbol) : '****';
+  const selectedAmount = selectedWallet ? Number(selectedWallet.amount) || 0 : 0;
+
+  const currencySymbol = getCurrencySymbol(selectedCode) || '$';
+
+  const displayedBalance = showBalance ? formatCurrencyAmount(selectedAmount, selectedCode, currencySymbol) : '****';
 
   const handleCopyWalletId = (walletId: string) => {
     copyToClipboard(walletId, 'Wallet ID copied to clipboard');
