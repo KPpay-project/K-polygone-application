@@ -1,9 +1,13 @@
 import BillsPaymentForm from '@/components/modules/bill-payment/form.tsx';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CountrySelector } from '@/components/common/country-selector';
 import { useQuery } from '@apollo/client';
-import { FLUTTERWAVE_BILL_CATEGORIES, FLUTTERWAVE_BILLERS, FLUTTERWAVE_BILL_ITEMS } from '@repo/api';
+import {
+  FLUTTERWAVE_BILL_CATEGORIES,
+  FLUTTERWAVE_BILLERS,
+  FLUTTERWAVE_BILL_ITEMS,
+  GET_FLUTTERWAVE_COUNTRIES
+} from '@repo/api';
 import { InputWithSearch } from '@repo/ui';
 
 type FlutterwaveBillCategory = {
@@ -33,12 +37,41 @@ type FlutterwaveBillItem = {
   name: string;
 };
 
+type FlutterwaveCountry = {
+  id: string;
+  code: string;
+  name: string;
+  countryFlag: string | null;
+  active: boolean;
+  insertedAt: string;
+  updatedAt: string;
+};
+
+type CountriesResponse = {
+  countries: {
+    entries: FlutterwaveCountry[];
+    totalEntries: number;
+    pageNumber: number;
+    pageSize: number;
+    totalPages: number;
+  };
+};
+
 const BillPayment = () => {
   const { t } = useTranslation();
   const [selectedCategoryCode, setSelectedCategoryCode] = useState<string | null>(null);
   const [selectedCountryCode, setSelectedCountryCode] = useState<string>('NG');
   const [selectedBillerId, setSelectedBillerId] = useState<string | null>(null);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+
+  const { data: countriesData } = useQuery<CountriesResponse>(GET_FLUTTERWAVE_COUNTRIES, {
+    variables: {
+      page: 1,
+      perPage: 250,
+      sortBy: 'name',
+      sortDirection: 'asc'
+    }
+  });
 
   const { data: categoriesData } = useQuery<{ flutterwaveBillCategories: FlutterwaveBillCategory[] }>(
     FLUTTERWAVE_BILL_CATEGORIES,
@@ -94,6 +127,15 @@ const BillPayment = () => {
     }));
   }, [categoriesData]);
 
+  const countryOptions = useMemo(() => {
+    return (countriesData?.countries?.entries || [])
+      .filter((country) => country.active)
+      .map((country) => ({
+        value: country.code,
+        label: `${country.name} (${country.code})`
+      }));
+  }, [countriesData]);
+
   const selectedCategory = useMemo(
     () => (categoriesData?.flutterwaveBillCategories || []).find((item) => item.code === selectedCategoryCode) || null,
     [categoriesData, selectedCategoryCode]
@@ -135,15 +177,15 @@ const BillPayment = () => {
                 <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
                   {t('billPayment.form.country') || 'Country'}
                 </div>
-                <CountrySelector
+                <InputWithSearch
+                  options={countryOptions}
                   value={selectedCountryCode}
-                  onValueChange={(_, country) => {
-                    setSelectedCountryCode(country.code);
-                  }}
+                  onChange={(value) => setSelectedCountryCode(value || 'NG')}
                   placeholder={t('placeholders.selectCountry') || 'Select country'}
-                  hasFlag
-                  showPrefix={false}
-                  className="max-h-[300px] overflow-y-auto"
+                  searchPlaceholder={t('placeholders.searchCountry') || 'Search country'}
+                  emptyMessage="No country found"
+                  width="w-full"
+                  className="!h-11 !border-slate-200 !bg-white"
                 />
               </div>
 
@@ -199,7 +241,9 @@ const BillPayment = () => {
 
                 {selectedBillerId ? (
                   <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-3.5">
-                    <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Bill item</div>
+                    <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                      Bill item
+                    </div>
                     <InputWithSearch
                       options={availableBillItemOptions}
                       value={selectedItemId || ''}

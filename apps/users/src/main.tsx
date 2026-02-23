@@ -36,7 +36,8 @@ const cleanupLegacyServiceWorkersOnce = async () => {
   try {
     const registrations = await navigator.serviceWorker.getRegistrations();
     const legacyRegistrations = registrations.filter((registration) => {
-      const scriptUrl = registration.active?.scriptURL || registration.waiting?.scriptURL || registration.installing?.scriptURL || '';
+      const scriptUrl =
+        registration.active?.scriptURL || registration.waiting?.scriptURL || registration.installing?.scriptURL || '';
       return !scriptUrl.endsWith('/sw.js');
     });
 
@@ -72,7 +73,8 @@ const setupPwa = async () => {
 
       if (!registration) return;
 
-      const checkForUpdate = () => registration.update().catch((error) => console.warn('[PWA] Update check failed:', error));
+      const checkForUpdate = () =>
+        registration.update().catch((error) => console.warn('[PWA] Update check failed:', error));
       setInterval(checkForUpdate, 60_000);
       window.addEventListener('online', checkForUpdate);
       document.addEventListener('visibilitychange', () => {

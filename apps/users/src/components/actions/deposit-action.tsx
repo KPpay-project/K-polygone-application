@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { DEPOSIT, GET_MTN_MOMO_BASIC_USER_INFO } from '@repo/api';
+import { DEPOSIT_VIA_MOBIILE_MONEY, GET_MTN_MOMO_BASIC_USER_INFO } from '@repo/api';
 import { Button } from 'k-polygon-assets/components';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -28,37 +28,35 @@ interface DepositInput {
   walletId: string;
   currencyCode: string;
   amount: number;
-  provider?: string;
-  customerPhone?: string;
+  phoneNumber: string;
+  network: string;
+  countryCode: string;
+  email: string;
+  description?: string;
 }
 
 interface DepositResponse {
-  deposit: {
+  depositViaMobileMoney: {
     success: boolean;
     message: string;
-    balance: {
-      id: string;
-      amount: number;
-      currency: string;
-      wallet_id: string;
-      updated_at: string;
-    };
+    reference: string;
+    status: string;
+    flutterwaveTransactionId?: string | null;
     transaction: {
       id: string;
-      amount: number;
-      currency: string;
-      transaction_type: string;
       status: string;
-      description: string;
       reference: string;
-      wallet_id: string;
-      created_at: string;
-      updated_at: string;
     };
   };
 }
 
 type Currency = 'USD' | 'NGN' | 'EUR' | 'GBP';
+const NETWORK_BY_PROVIDER: Record<SupportedProviders, string> = {
+  [SupportedProviders.MTN_MOMO]: 'MTN',
+  [SupportedProviders.M_PESA]: 'MPESA',
+  [SupportedProviders.ORANGE]: 'ORANGE',
+  [SupportedProviders.AIRTEL]: 'AIRTEL'
+};
 
 export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess }: DepositActionProps) {
   const { profile, fetchProfile } = useProfileStore();
@@ -103,7 +101,7 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
   const [resultAmount, setResultAmount] = useState('');
   const [momoLookupError, setMomoLookupError] = useState('');
 
-  const [deposit, { loading }] = useMutation<DepositResponse, { input: DepositInput }>(DEPOSIT, {
+  const [deposit, { loading }] = useMutation<DepositResponse, { input: DepositInput }>(DEPOSIT_VIA_MOBIILE_MONEY, {
     errorPolicy: 'all'
   });
   const [getMtnMomoBasicUserInfo, { loading: verifyingMomo }] = useLazyQuery<{
@@ -124,6 +122,10 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
     : undefined;
   const normalizedPhone = phone.replace(/\D/g, '');
   const isPhoneComplete = normalizedPhone.length >= 10 && normalizedPhone.length <= 15;
+  const selectedCurrencyMeta = apiCurrencies?.find((currency: any) => currency.code === selectedCurrencyCode);
+  const countryCodeForDeposit = selectedCurrencyMeta?.countryCode || '';
+  const emailForDeposit = profile?.user?.email || '';
+  const networkForDeposit = NETWORK_BY_PROVIDER[selectedProvider];
   const momoDisplayName =
     momoUserInfo?.name || `${momoUserInfo?.givenName || ''} ${momoUserInfo?.familyName || ''}`.trim() || phone;
   const formattedAmount =
@@ -195,6 +197,14 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
       toast.error('Please enter a complete phone number');
       return;
     }
+    if (!countryCodeForDeposit) {
+      toast.error('Unable to determine country code for selected currency');
+      return;
+    }
+    if (!emailForDeposit) {
+      toast.error('Unable to determine account email for this deposit');
+      return;
+    }
 
     try {
       if (selectedProvider === SupportedProviders.MTN_MOMO) {
@@ -214,8 +224,11 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
             walletId: finalWalletId,
             currencyCode: selectedCurrencyCode,
             amount: amountNumber,
-            provider: selectedProvider,
-            customerPhone: phone
+            phoneNumber: normalizedPhone,
+            network: networkForDeposit,
+            countryCode: countryCodeForDeposit,
+            email: emailForDeposit,
+            description: `Mobile money deposit via ${networkForDeposit}`
           }
         }
       });
@@ -228,12 +241,12 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
         setResultOpen(true);
         return;
       }
-      const success = res.data?.deposit?.success;
-      const message = res.data?.deposit?.message || (success ? 'Deposit successful' : 'Deposit failed');
-      const tx = res.data?.deposit?.transaction;
+      const success = res.data?.depositViaMobileMoney?.success;
+      const message = res.data?.depositViaMobileMoney?.message || (success ? 'Deposit successful' : 'Deposit failed');
+      const tx = res.data?.depositViaMobileMoney?.transaction;
       const displayAmount =
-        tx?.amount && tx?.currency
-          ? `${tx.currency} ${Number(tx.amount).toLocaleString(undefined, {
+        amountNumber > 0
+          ? `${selectedCurrencyCode} ${Number(amountNumber).toLocaleString(undefined, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2
             })}`
@@ -248,7 +261,7 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
         }
         setResultStatus('success');
         setResultMessage(message);
-        setResultReference(tx?.reference || '');
+        setResultReference(tx?.reference || res.data?.depositViaMobileMoney?.reference || '');
         setResultAmount(displayAmount);
         setResultOpen(true);
         onSuccess?.();
@@ -286,6 +299,14 @@ export function DepositAction({ walletId, currencyCode, customerPhone, onSuccess
 
     if (!isPhoneComplete) {
       toast.error('Please enter a complete phone number');
+      return;
+    }
+    if (!countryCodeForDeposit) {
+      toast.error('Unable to determine country code for selected currency');
+      return;
+    }
+    if (!emailForDeposit) {
+      toast.error('Unable to determine account email for this deposit');
       return;
     }
 
