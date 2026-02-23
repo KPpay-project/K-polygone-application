@@ -1,9 +1,10 @@
 import { SETUP_PIN_MUTATION, type SetupPaymentPinInput } from '@repo/api';
 import { useMutation } from '@apollo/client';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui';
 import { useState, useRef, useEffect } from 'react';
 import { Keyboard } from 'iconsax-reactjs';
 import ErrorAndSuccessFallback from '@/components/sub-modules/modal-contents/error-success-fallback';
+import { Typography } from '@ui/index';
 
 interface SetupPinActionProps {
   onClose: () => void;
@@ -169,12 +170,14 @@ const SetupPinAction = ({ onClose, onSuccess }: SetupPinActionProps) => {
         <div className="flex items-center justify-center mb-4">
           <Keyboard size="50" color="#FF8A65" variant="Bulk" />
         </div>
-        <h4 className="text-xl font-semibold text-center uppercase">Set Up Payment PIN</h4>
+        <Typography className='text-center font-semibold'>
+          Set Up Payment PIN
+        </Typography>
         <div className="flex flex-col gap-4 mt-6">
-          <p className="text-md text-gray-600">
+        <Typography  className='text-gray-600 text-center'>
             To secure your transactions, please set up a payment PIN. This PIN will be required for all payment
             operations.
-          </p>
+        </Typography>
           <div className="flex gap-3 justify-end mt-2">
             <Button className="w-full bg-red-400/20" variant="outline" onClick={onClose}>
               Later

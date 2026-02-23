@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from '@tanstack/react-router';
 import { AlertCircle, ArrowRight, CheckCircle, Info, XCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
-import { Button } from '../ui/button';
+import { Button } from '@repo/ui';
 import { useKycStatus } from '../../hooks/api/use-kyc-status';
 
 interface KycStatusBannerProps {
@@ -43,12 +43,12 @@ const KycStatusBanner: React.FC<KycStatusBannerProps> = ({ className }) => {
           <AlertDescription>{kycStatus.message}</AlertDescription>
         </div>
         {kycStatus.actionText && (
-          <Button asChild size="sm" className="ml-4 shrink-0" data-tour="start-verification-btn">
-            <Link to={kycStatus.redirectUrl}>
-              {kycStatus.actionText}
+          <Link to={kycStatus.redirectUrl}>
+              <Button data-tour="start-verification-btn" variant={"disabled_outline"} >
+                {kycStatus.actionText}
               <ArrowRight />
+              </Button>
             </Link>
-          </Button>
         )}
       </div>
     </Alert>
