@@ -19,10 +19,11 @@ export default defineConfig({
     }),
     react(),
     VitePWA({
+      disable: true,
       registerType: 'autoUpdate',
       includeAssets: ['vite.svg', 'pwa-icon-192.png', 'pwa-icon-512.png'],
       devOptions: {
-        enabled: false
+        enabled: true
       },
       manifest: {
         name: 'KP-Pay',
