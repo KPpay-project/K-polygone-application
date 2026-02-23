@@ -19,6 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu.tsx';
+import { Typography } from '@ui/index.ts';
 
 const UserWalletCard: FC<WalletCardProps> = ({
   wallet,
@@ -147,7 +148,7 @@ const UserWalletCard: FC<WalletCardProps> = ({
             {wallet?.label}
           </span>
         </div>
-
+{/* 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
@@ -188,7 +189,7 @@ const UserWalletCard: FC<WalletCardProps> = ({
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
       </div>
 
       <div className="mb-3 flex items-center">
@@ -200,7 +201,9 @@ const UserWalletCard: FC<WalletCardProps> = ({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
         >
-          {formattedAmount}
+          <Typography variant={"h4"}>
+            {formattedAmount}
+          </Typography>
         </motion.div>
         <button
           type="button"

@@ -9,51 +9,45 @@ import { TourGuildProvider } from '@/providers/tour-guild-provider';
 
 const queryClient = new QueryClient();
 
-const clearServiceWorkerAndCaches = async () => {
-  let changed = false;
+const renderApp = () => {
+  const rootElement = document.getElementById('root');
+  if (!rootElement || rootElement.innerHTML) return;
 
-  if ('serviceWorker' in navigator) {
-    const registrations = await navigator.serviceWorker.getRegistrations();
-    if (registrations.length > 0) {
-      changed = true;
-      await Promise.all(registrations.map((registration) => registration.unregister()));
-    }
-  }
-
-  if ('caches' in window) {
-    const keys = await caches.keys();
-    if (keys.length > 0) {
-      changed = true;
-      await Promise.all(keys.map((key) => caches.delete(key)));
-    }
-  }
-
-  return changed;
+  const root = ReactDOM.createRoot(rootElement);
+  root.render(
+    <StrictMode>
+      <TourGuildProvider>
+        <QueryClientProvider client={queryClient}>
+          <App />
+          <ReactQueryDevtools initialIsOpen={false} />
+          <Toaster richColors={true} position={'top-center'} />
+        </QueryClientProvider>
+      </TourGuildProvider>
+    </StrictMode>
+  );
 };
 
-const rootElement = document.getElementById('root')!;
-if (!rootElement.innerHTML) {
-  (async () => {
-    const hasClearedCache = sessionStorage.getItem('users-app-cache-cleared') === '1';
-    const changed = await clearServiceWorkerAndCaches();
+const cleanupServiceWorkers = async () => {
+  if (!('serviceWorker' in navigator)) return;
 
-    if (changed && !hasClearedCache) {
-      sessionStorage.setItem('users-app-cache-cleared', '1');
-      window.location.reload();
-      return;
+  try {
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    if (registrations.length > 0) {
+      console.info(`[PWA] Unregistering ${registrations.length} service worker(s).`);
+      await Promise.all(registrations.map((registration) => registration.unregister()));
     }
 
-    const root = ReactDOM.createRoot(rootElement);
-    root.render(
-      <StrictMode>
-        <TourGuildProvider>
-          <QueryClientProvider client={queryClient}>
-            <App />
-            <ReactQueryDevtools initialIsOpen={false} />
-            <Toaster richColors={true} position={'top-center'} />
-          </QueryClientProvider>
-        </TourGuildProvider>
-      </StrictMode>
-    );
-  })();
-}
+    if ('caches' in window) {
+      const cacheKeys = await caches.keys();
+      if (cacheKeys.length > 0) {
+        console.info(`[PWA] Removing ${cacheKeys.length} cache storage bucket(s).`);
+        await Promise.all(cacheKeys.map((key) => caches.delete(key)));
+      }
+    }
+  } catch (error) {
+    console.warn('[PWA] Service worker cleanup failed:', error);
+  }
+};
+
+renderApp();
+void cleanupServiceWorkers();

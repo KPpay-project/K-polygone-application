@@ -1,9 +1,8 @@
 import { ModularCard } from '@/components/sub-modules/card/card.tsx';
-import { DepositAction } from '@/components/actions/deposit-action';
 import { motion } from 'framer-motion';
 import { Copy, Eye, EyeOff, Plus } from 'lucide-react';
-import { useState, useMemo } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { useEffect, useState, useMemo } from 'react';
+import { Button, Typography} from '@repo/ui';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from '@tanstack/react-router';
 import { useCurrencyStore } from '@/store/currency-store';
@@ -14,6 +13,7 @@ import { CreateWalletAction } from '@/components/actions/create-wallet-action';
 import { UserWalletCard } from '@/components/modules/wallet/users-wallet-panel.tsx';
 import { default as countryToCurrency } from 'country-to-currency';
 import { useGetMyWallets } from '@/hooks/api';
+import { useRouter } from '@tanstack/react-router';
 
 import { EmptyState } from '@/components/common/fallbacks';
 import { WalletRemove } from 'iconsax-reactjs';
@@ -139,22 +139,25 @@ export function BalancePanel() {
   };
 
   const walletLenght = wallets?.length;
+  const router = useRouter();
   return (
     <ModularCard
-      title={<h3 className="text-[18px] text-[#444] font-light">{t('balance.totalBalance')}</h3>}
+      title={<Typography variant={"h6"} className="text-[#444] font-light">{t('balance.totalBalance')}</Typography>}
       className={'w-full '}
     >
       <div className="flex items-center justify-between mb-6" data-tour="total-balance">
         <div className="flex items-center gap-3 ">
           <motion.div
             key={displayedBalance + 'balance'}
-            className="text-[32px] font-bold text-[#444444]"
+            className=" font-bold text-[#444444]"
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
             transition={{ duration: 0.2 }}
           >
-            {displayedBalance}
+            <Typography variant={"h2"} className='font-semibold'>
+              {displayedBalance}
+            </Typography>
           </motion.div>
           <button
             onClick={handleToggleAllWallets}
@@ -169,32 +172,17 @@ export function BalancePanel() {
       </div>
 
       <div className="flex gap-3 mb-6" data-tour="balance-actions">
-        <button
-          onClick={handleWithdrawClick}
-          className="bg-primary hover:bg-primary text-white px-6 py-2.5 rounded-[12px] font-light transition-colors flex items-center gap-2"
-        >
-          <Plus size={16} />
+     
+        <Button 
+          
+         onClick={handleWithdrawClick}>
+           <Plus size={16} />
           {t('balance.withdraw')}
-        </button>
-        <Dialog>
-          <DialogTrigger asChild>
-            <button className="border border-primary text-primary hover:bg-blue-50 px-6 py-2.5 rounded-[12px] font-light transition-colors flex items-center gap-2">
-              <Plus size={16} />
+        </Button>
+          <Button variant={"outline"} onClick={() => router.navigate({ to: '/deposit' })}>
+               <Plus size={16} />
               {t('balance.deposit')}
-            </button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>{t('balance.deposit')}</DialogTitle>
-            </DialogHeader>
-            <DepositAction
-              onSuccess={handleDepositSuccess}
-              onCancel={() => {
-                /* dialog will close by user clicking outside or escape */
-              }}
-            />
-          </DialogContent>
-        </Dialog>
+          </Button>
       </div>
 
       <div className="bg-gray-50 rounded-xl px-5 py-10 pt-[22px]" data-tour="wallets-header">
@@ -230,14 +218,10 @@ export function BalancePanel() {
                   <span className="font-medium text-gray-800">{wallets[0].label}</span>
                 </div>
 
-                <button className="p-1 hover:bg-gray-100 rounded-full" aria-label="Wallet options">
-                  <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                  </svg>
-                </button>
+            
               </div>
 
-              <div className="mb-3 flex">
+              <div className="mb-3 flex items-center">
                 <motion.div
                   key={`balance-${wallets[0].id}`}
                   className="text-2xl font-semibold text-gray-900"
