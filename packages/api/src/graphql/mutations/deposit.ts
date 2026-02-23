@@ -109,6 +109,24 @@ const GET_MTN_MOMO_BASIC_USER_INFO = gql`
   }
 `;
 
+const DEPOSIT_VIA_MOBIILE_MONEY = gql`
+  mutation DepositViaMobileMoney($input: MobileMoneyDepositInput!) {
+    depositViaMobileMoney(input: $input) {
+      success
+      message
+      reference
+      status
+      requiresValidation
+      flutterwaveTransactionId
+      transaction {
+        id
+        status
+        reference
+      }
+    }
+  }
+`;
+
 export {
   DEPOSIT,
   MOMO_DEPOSIT,
@@ -116,4 +134,5 @@ export {
   DEPOSIT_VIA_BANK,
   VALIDATE_CARD_PAYMENT,
   GET_MTN_MOMO_BASIC_USER_INFO,
+  DEPOSIT_VIA_MOBIILE_MONEY,
 };
