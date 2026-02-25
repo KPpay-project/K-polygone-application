@@ -4,7 +4,7 @@ import { ReactNode, useState } from 'react';
 import { AdminDashboardStats } from '@/hooks/api/use-dashboard-stats';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
-import { Typography, CountrySelector, Skeleton } from '@repo/ui';
+import { Typography, CountrySelector, Skeleton, ModularCard } from '@repo/ui';
 
 const COUNTRY_OPTIONS = [
   { code: 'ALL', name: 'All', flag: '🌍', prefix: '' },
@@ -132,7 +132,7 @@ export default function SummaryCards({ stats, loading }: { stats?: AdminDashboar
       <motion.div
         key={card.title}
         onClick={() => path && navigate({ to: path })}
-        className="cursor-pointer"
+        className="cursor-pointer "
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         whileHover={{ scale: 1.04, boxShadow: '0 8px 32px rgba(0,0,0,0.10)' }}
@@ -198,7 +198,7 @@ export default function SummaryCards({ stats, loading }: { stats?: AdminDashboar
   );
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md w-full">
+    <ModularCard>
       <div className="mb-4 flex items-center justify-between">
         <Typography variant="h6">Dashboard</Typography>
         <div className="w-[200px]">
@@ -216,6 +216,6 @@ export default function SummaryCards({ stats, loading }: { stats?: AdminDashboar
           ? Array.from({ length: metricsConfig.length }).map((_, idx) => renderSkeleton(idx))
           : allMetricsCards.map(renderCard)}
       </div>
-    </div>
+    </ModularCard>
   );
 }

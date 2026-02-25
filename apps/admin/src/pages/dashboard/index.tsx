@@ -18,9 +18,14 @@ function DashboardHome({ filter }: { filter?: string }) {
         </div>
       </div>
 
-      <div className="flex gap-6 mb-6">
-        <TransactionsSection />
-        <TopCountriesSection />
+      <div className="grid grid-cols-1 md:grid-cols-[7fr_3fr] gap-6 mb-6">
+        <div>
+          <TransactionsSection />
+        </div>
+
+        <div>
+          <TopCountriesSection />
+        </div>
       </div>
       <div className="gap-6 mb-6">
         <WalletsSection />
