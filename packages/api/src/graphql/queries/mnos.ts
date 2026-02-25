@@ -39,3 +39,15 @@ export const LIST_MNOS = gql`
     }
   }
 `;
+
+export const LIST_ACTIVE_MNOS = gql `
+  query ActiveMnos {
+  activeMnos {
+    active
+    id
+    insertedAt
+    name
+    updatedAt
+  }
+}
+`

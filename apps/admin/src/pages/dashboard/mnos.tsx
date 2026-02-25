@@ -4,21 +4,61 @@ import { useNavigate } from '@tanstack/react-router';
 import { ResponsiveTable, TableColumn, TableAction } from '@/components/common/responsive-table';
 import { cn } from '@/lib/utils';
 import HeaderTitle from '@/components/misc/header-title';
-import DefaultModal from '@/components/sub-modules/popups/modal';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { useQuery } from '@apollo/client';
-import { LIST_MNOS } from '@repo/api';
+import { useQuery, useMutation } from '@apollo/client';
+import { LIST_MNOS, mutation_CREATE_MONOS } from '@repo/api';
+import { CustomModal, CountrySelector } from '@repo/ui';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { countries } from '@/utils/constants';
+import { toast } from 'sonner';
 
 function MnosPage() {
   const navigate = useNavigate();
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [newMno, setNewMno] = useState({ countryId: '', name: '' });
+
   const { data, loading, error, refetch } = useQuery(LIST_MNOS, {
     variables: { page: 1, perPage: 10 }
   });
+
+  const [createMno, { loading: creating }] = useMutation(mutation_CREATE_MONOS, {
+    onCompleted: (data) => {
+      if (data?.createMno?.success) {
+        toast.success(data.createMno.message || 'MNO created successfully');
+        setIsAddModalOpen(false);
+        setNewMno({ countryId: '', name: '' });
+        refetch();
+      } else {
+        toast.error(data?.createMno?.errors?.[0]?.message || 'Failed to create MNO');
+      }
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Failed to create MNO');
+    }
+  });
+
+  const handleCreate = () => {
+    if (!newMno.countryId || !newMno.name) {
+      toast.error('Please fill all fields');
+      return;
+    }
+    createMno({
+      variables: {
+        input: {
+          countryId: newMno.countryId,
+          name: newMno.name
+        }
+      }
+    });
+  };
 
   const handleView = (id: string) => {
     navigate({ to: '/dashboard/user-profile', search: { userId: id } });
@@ -147,11 +187,7 @@ function MnosPage() {
             }}
             onFilter={() => console.log('Filter clicked')}
           >
-            <DefaultModal title="Add MNO">
-              <div className="p-4 min-w-[420px]">
-                <div className="text-sm text-muted-foreground">Coming soon</div>
-              </div>
-            </DefaultModal>
+            <Button onClick={() => setIsAddModalOpen(true)}>Add MNO</Button>
           </HeaderTitle>
         </div>
 
@@ -170,6 +206,41 @@ function MnosPage() {
           )}
         </div>
       </div>
+      <CustomModal
+        open={isAddModalOpen}
+        onOpenChange={setIsAddModalOpen}
+        title="Add MNO"
+        description="Enter the details of the new Mobile Network Operator."
+      >
+        <div className="space-y-4 py-4">
+          <div className="space-y-2">
+            <Label>Country</Label>
+            <CountrySelector
+              countries={countries}
+              value={newMno.countryId}
+              onValueChange={(_val, country) => setNewMno({ ...newMno, countryId: country?.code || '' })}
+              placeholder="Select Country"
+              showPrefix={false}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Name</Label>
+            <Input
+              placeholder="MNO Name"
+              value={newMno.name}
+              onChange={(e) => setNewMno({ ...newMno, name: e.target.value })}
+            />
+          </div>
+          <div className="flex justify-end gap-2 pt-4">
+            <Button variant="outline" onClick={() => setIsAddModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleCreate} disabled={creating}>
+              {creating ? 'Creating...' : 'Create MNO'}
+            </Button>
+          </div>
+        </div>
+      </CustomModal>
     </DashboardLayout>
   );
 }

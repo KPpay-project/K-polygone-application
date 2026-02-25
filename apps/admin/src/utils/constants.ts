@@ -29,6 +29,9 @@ export const genders = [
 
 // Country code mapping for flag display
 export const getCountryCode = (countryName: string): string => {
+  if (!countryName) return 'xx';
+
+  // First check specific overrides/mappings
   const countryCodeMap: Record<string, string> = {
     Nigeria: 'ng',
     Ghana: 'gh',
@@ -41,5 +44,21 @@ export const getCountryCode = (countryName: string): string => {
     Tanzania: 'tz',
     Cameroon: 'cm'
   };
-  return countryCodeMap[countryName] || 'xx'; // fallback to generic flag
+
+  if (countryCodeMap[countryName]) {
+    return countryCodeMap[countryName];
+  }
+
+  // Then check the countries array
+  const foundCountry = countries.find((c) => c.name.toLowerCase() === countryName.toLowerCase());
+  if (foundCountry) {
+    return foundCountry.code.toLowerCase();
+  }
+
+  // If it looks like a country code (2 letters), use it
+  if (countryName.length === 2) {
+    return countryName.toLowerCase();
+  }
+
+  return 'xx'; // fallback to generic flag
 };
