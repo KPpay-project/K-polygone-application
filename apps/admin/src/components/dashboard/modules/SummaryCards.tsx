@@ -1,9 +1,17 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowDown, ArrowUp, ProfileRemove } from 'iconsax-reactjs';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { AdminDashboardStats } from '@/hooks/api/use-dashboard-stats';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
+import { Typography, CountrySelector, Skeleton } from '@repo/ui';
+
+const COUNTRY_OPTIONS = [
+  { code: 'ALL', name: 'All', flag: '🌍', prefix: '' },
+  { code: 'NG', name: 'Nigeria', flag: '🇳🇬', prefix: '+234' },
+  { code: 'BJ', name: 'Benin', flag: '🇧🇯', prefix: '+229' },
+  { code: 'SN', name: 'Senegal', flag: '🇸🇳', prefix: '+221' }
+];
 
 type CardData = {
   title: string;
@@ -17,7 +25,7 @@ type CardData = {
   isHighlighted?: boolean;
 };
 
-export default function SummaryCards({ stats }: { stats?: AdminDashboardStats }) {
+export default function SummaryCards({ stats, loading }: { stats?: AdminDashboardStats; loading?: boolean }) {
   const pct = (n?: number) => (typeof n === 'number' ? `${Math.abs(n)}%` : '0%');
   const up = <ArrowUp className="w-3 h-3 mr-1 text-green-500" />;
   const down = <ArrowDown className="w-3 h-3 mr-1 text-red-500" />;
@@ -39,9 +47,7 @@ export default function SummaryCards({ stats }: { stats?: AdminDashboardStats })
     | 'totalMerchants'
     | 'totalWallets'
     | 'totalKycApplications'
-    | 'pendingKyc'
-    | 'approvedKyc'
-    | 'rejectedKyc'
+    | 'kycApplicationsByStatus'
     | 'totalDeposit'
     | 'totalWithdrawal'
     | 'totalTransfer';
@@ -63,9 +69,7 @@ export default function SummaryCards({ stats }: { stats?: AdminDashboardStats })
       hasChange: true,
       path: '/dashboard/verifications'
     },
-    { key: 'pendingKyc', title: 'Pending KYC', path: '/dashboard/kyc-applications?status=pending' },
-    { key: 'approvedKyc', title: 'Approved KYC', path: '/dashboard/kyc-applications?status=approved' },
-    { key: 'rejectedKyc', title: 'Rejected KYC', path: '/dashboard/kyc-applications?status=rejected' },
+    { key: 'kycApplicationsByStatus', title: 'Pending KYC', path: '/dashboard/kyc-applications?status=pending' },
     {
       key: 'totalDeposit',
       title: 'Total Deposit',
@@ -88,7 +92,17 @@ export default function SummaryCards({ stats }: { stats?: AdminDashboardStats })
       path: '/dashboard/transaction/transfer'
     }
   ];
+
+  const search = useSearch({ from: '/dashboard/' });
   const navigate = useNavigate();
+  const selectedCountry = (search as any).filter || 'ALL';
+
+  const handleCountryChange = (_: string, country: any) => {
+    navigate({
+      to: '.',
+      search: (prev: any) => ({ ...prev, filter: country.code })
+    });
+  };
 
   const allMetricsCards: CardData[] = metricsConfig.map(({ key, title, money, hasChange, highlighted }) => {
     const raw = (stats as any)?.[key];
@@ -163,9 +177,45 @@ export default function SummaryCards({ stats }: { stats?: AdminDashboardStats })
     );
   };
 
+  const renderSkeleton = (idx: number) => (
+    <div key={idx} className="w-full h-full">
+      <Card className="shadow-none w-full h-full">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <div className="flex items-center gap-2">
+            <Skeleton className="w-[40px] h-[40px] rounded-lg" />
+            <Skeleton className="h-4 w-[100px]" />
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-8 w-[120px] mb-2" />
+          <div className="flex items-center">
+            <Skeleton className="h-5 w-[80px] rounded-full mr-2" />
+            <Skeleton className="h-4 w-[60px]" />
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-md w-full">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">{allMetricsCards.map(renderCard)}</div>
+      <div className="mb-4 flex items-center justify-between">
+        <Typography variant="h6">Dashboard</Typography>
+        <div className="w-[200px]">
+          <CountrySelector
+            countries={COUNTRY_OPTIONS}
+            value={selectedCountry}
+            onValueChange={handleCountryChange}
+            placeholder="Select Country"
+            showPrefix={false}
+          />
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {loading
+          ? Array.from({ length: metricsConfig.length }).map((_, idx) => renderSkeleton(idx))
+          : allMetricsCards.map(renderCard)}
+      </div>
     </div>
   );
 }
