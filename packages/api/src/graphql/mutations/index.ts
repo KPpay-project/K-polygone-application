@@ -18,3 +18,4 @@ export * from './services/flutterwave';
 export * from './upload';
 export * from './currencies';
 export * from './users';
+export * from './mnos';
