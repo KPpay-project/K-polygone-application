@@ -111,18 +111,17 @@ function DashboardHome() {
             <div data-tour="Cross Payment">
               <ModularCard title={'Cross Payment'}>
                 <EmptyState
-                  title={'Interoperable payments'}
+                  title={'Deposit via Payment Link'}
                   icon={<Box2 variant="Bulk" color="blue" size={80} />}
-                  description={'Send money to any provider'}
+                  description={'Fund your account via a secure payment link'}
                 />
                 <div className="flex justify-center" data-tour="create-card-btn">
-                  <Link to={'/cross-payment'}>
+                  <Link to={'/create-payment-link'}>
                     <Button
-                      className="mt-6 py-6 rounded-2xl bg-blue-700 border-0 shadow-none text-white flex items-center gap-2
-                  hover:text-white"
+                      
                     >
                       <Add />
-                      Send Now
+                      Create Payment Link
                     </Button>
                   </Link>
                 </div>

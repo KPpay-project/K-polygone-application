@@ -78,11 +78,7 @@ export default function TopCountriesSection() {
 
   return (
     <>
-      <ModularCard title={
-        <Typography variant={'p'}>
-          Top Countries 
-        </Typography>
-      } className="w-full">
+      <ModularCard title={<Typography variant={'p'}>Top Countries</Typography>} className="w-full">
         {topCountries.length === 0 ? (
           <div className="py-6 text-center text-sm text-muted-foreground">No countries data available</div>
         ) : (

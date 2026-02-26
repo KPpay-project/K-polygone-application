@@ -7,20 +7,15 @@ import QRCode from 'react-qr-code';
 import { toast } from 'sonner';
 import { Download, X } from 'lucide-react';
 import { toPng } from 'html-to-image';
-
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { CREATE_PAYMENT_LINK, PAYMENT_LINKS_QUERY } from '@repo/api';
+import { PAYMENT_LINKS_QUERY, GENERATE_DEPOSIT_LINK } from '@repo/api';
 import { useGetMyWallets } from '@/hooks/api/use-wallet-queries';
 import ErrorAndSuccessFallback from '@/components/sub-modules/modal-contents/error-success-fallback';
 import { cn } from '@/lib/utils';
 import { Typography } from '@/components/sub-modules/typography/typography';
-import { Dialog, DialogContent, DialogTitle, DialogClose } from '@/components/ui/dialog';
-import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
+import {  DialogClose } from '@/components/ui/dialog';
+import { InputWithSearch , CustomModal , Label, Input, Button , Checkbox } from '@ui/index';
 import { Twitter, Facebook, Whatsapp } from 'react-social-sharing';
+
 
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -45,10 +40,14 @@ export const CreatePaymentLink = () => {
     checkoutUrl: string;
     code: string;
     name: string;
+    amount: string;
+    isActive: boolean;
+    allowedChannels: string[];
+    insertedAt: string;
   } | null>(null);
 
   const { data: walletsData, loading: walletsLoading } = useGetMyWallets();
-  const [createPaymentLink, { loading: creating, error: mutationError }] = useMutation(CREATE_PAYMENT_LINK, {
+  const [createPaymentLink, { loading: creating, error: mutationError }] = useMutation(GENERATE_DEPOSIT_LINK, {
     onCompleted: (data) => {
       if (data.createPaymentLink.success) {
         setSuccessData(data.createPaymentLink.paymentLink);
@@ -81,6 +80,11 @@ export const CreatePaymentLink = () => {
   const selectedWalletId = watch('walletId');
   const selectedWallet = walletsData?.myWallet?.find((w) => w.id === selectedWalletId);
   const currencyCode = selectedWallet?.currency?.code;
+
+  const walletOptions = walletsData?.myWallet?.map((wallet) => ({
+    label: `${wallet.currency.code} - ${parseFloat(wallet.balances[0]?.availableBalance || '0').toFixed(2)}`,
+    value: wallet.id
+  })) || [];
 
   const onSubmit = async (data: FormData) => {
     if (!currencyCode) return;
@@ -130,6 +134,8 @@ export const CreatePaymentLink = () => {
 
   return (
     <>
+
+    
       <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-sm border my-8">
         <div className="mb-6">
           <Typography variant="h2" className="text-2xl font-bold">
@@ -165,18 +171,15 @@ export const CreatePaymentLink = () => {
               {/* Wallet Selection */}
               <div className="space-y-2">
                 <Label>Select Wallet</Label>
-                <Select onValueChange={(val) => setValue('walletId', val)} disabled={walletsLoading}>
-                  <SelectTrigger className={cn(errors.walletId && 'border-red-500')}>
-                    <SelectValue placeholder={walletsLoading ? 'Loading wallets...' : 'Select a wallet'} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {walletsData?.myWallet?.map((wallet) => (
-                      <SelectItem key={wallet.id} value={wallet.id}>
-                        {wallet.currency.code} - {parseFloat(wallet.balances[0]?.availableBalance || '0').toFixed(2)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <InputWithSearch
+                  options={walletOptions}
+                  value={selectedWalletId}
+                  onChange={(val) => setValue('walletId', val)}
+                  disabled={walletsLoading}
+                  placeholder={walletsLoading ? 'Loading wallets...' : 'Select a wallet'}
+                  searchPlaceholder="Search wallets..."
+                  className={cn(errors.walletId && 'border-red-500')}
+                />
                 {errors.walletId && <p className="text-red-500 text-xs">{errors.walletId.message}</p>}
               </div>
 
@@ -191,15 +194,16 @@ export const CreatePaymentLink = () => {
             {/* Type */}
             <div className="space-y-2">
               <Label>Link Type</Label>
-              <Select onValueChange={(val) => setValue('type', val as 'one_time' | 'reusable')} defaultValue="one_time">
-                <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="one_time">One-time (Expires after one payment)</SelectItem>
-                  <SelectItem value="reusable">Reusable (Multiple payments allowed)</SelectItem>
-                </SelectContent>
-              </Select>
+              <InputWithSearch
+                options={[
+                  { label: 'One-time (Expires after one payment)', value: 'one_time' },
+                  { label: 'Reusable (Multiple payments allowed)', value: 'reusable' }
+                ]}
+                value={watch('type')}
+                onChange={(val) => setValue('type', val as 'one_time' | 'reusable')}
+                placeholder="Select type"
+                searchPlaceholder="Search type..."
+              />
             </div>
 
             {/* Allowed Channels */}
@@ -247,7 +251,7 @@ export const CreatePaymentLink = () => {
       </div>
 
       {/* Success Modal */}
-      <Dialog
+      <CustomModal
         open={!!successData}
         onOpenChange={(open) => {
           if (!open) {
@@ -255,12 +259,8 @@ export const CreatePaymentLink = () => {
             reset();
           }
         }}
+        contentClassName="p-0 overflow-hidden bg-white rounded-3xl border-0"
       >
-        <DialogContent className=" p-0 overflow-hidden bg-white rounded-3xl border-0">
-          <VisuallyHidden.Root>
-            <DialogTitle>Share QR Code Link</DialogTitle>
-          </VisuallyHidden.Root>
-
           <div className="relative flex flex-col items-center">
             {/* Close Button */}
             <DialogClose className="absolute top-4 right-4 z-10 p-1 bg-red-100 rounded-full hover:bg-red-200 transition-colors">
@@ -347,8 +347,7 @@ export const CreatePaymentLink = () => {
               </div>
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
+      </CustomModal>
     </>
   );
 };

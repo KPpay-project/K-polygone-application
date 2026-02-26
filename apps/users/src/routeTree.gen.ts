@@ -21,6 +21,7 @@ import { Route as DepositIndexRouteImport } from './routes/deposit/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as CrossPaymentIndexRouteImport } from './routes/cross-payment/index'
 import { Route as CreditCardIndexRouteImport } from './routes/credit-card/index'
+import { Route as CreatePaymentLinkIndexRouteImport } from './routes/create-payment-link/index'
 import { Route as BillPaymentIndexRouteImport } from './routes/bill-payment/index'
 import { Route as ticketIndexRouteImport } from './routes/ ticket/index'
 import { Route as TransferSingleRouteImport } from './routes/transfer/single'
@@ -114,6 +115,11 @@ const CrossPaymentIndexRoute = CrossPaymentIndexRouteImport.update({
 const CreditCardIndexRoute = CreditCardIndexRouteImport.update({
   id: '/credit-card/',
   path: '/credit-card/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CreatePaymentLinkIndexRoute = CreatePaymentLinkIndexRouteImport.update({
+  id: '/create-payment-link/',
+  path: '/create-payment-link/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BillPaymentIndexRoute = BillPaymentIndexRouteImport.update({
@@ -321,6 +327,7 @@ export interface FileRoutesByFullPath {
   '/transfer/single': typeof TransferSingleRoute
   '/ ticket/': typeof ticketIndexRoute
   '/bill-payment/': typeof BillPaymentIndexRoute
+  '/create-payment-link/': typeof CreatePaymentLinkIndexRoute
   '/credit-card/': typeof CreditCardIndexRoute
   '/cross-payment/': typeof CrossPaymentIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -369,6 +376,7 @@ export interface FileRoutesByTo {
   '/transfer/single': typeof TransferSingleRoute
   '/ ticket': typeof ticketIndexRoute
   '/bill-payment': typeof BillPaymentIndexRoute
+  '/create-payment-link': typeof CreatePaymentLinkIndexRoute
   '/credit-card': typeof CreditCardIndexRoute
   '/cross-payment': typeof CrossPaymentIndexRoute
   '/dashboard': typeof DashboardIndexRoute
@@ -418,6 +426,7 @@ export interface FileRoutesById {
   '/transfer/single': typeof TransferSingleRoute
   '/ ticket/': typeof ticketIndexRoute
   '/bill-payment/': typeof BillPaymentIndexRoute
+  '/create-payment-link/': typeof CreatePaymentLinkIndexRoute
   '/credit-card/': typeof CreditCardIndexRoute
   '/cross-payment/': typeof CrossPaymentIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -468,6 +477,7 @@ export interface FileRouteTypes {
     | '/transfer/single'
     | '/ ticket/'
     | '/bill-payment/'
+    | '/create-payment-link/'
     | '/credit-card/'
     | '/cross-payment/'
     | '/dashboard/'
@@ -516,6 +526,7 @@ export interface FileRouteTypes {
     | '/transfer/single'
     | '/ ticket'
     | '/bill-payment'
+    | '/create-payment-link'
     | '/credit-card'
     | '/cross-payment'
     | '/dashboard'
@@ -564,6 +575,7 @@ export interface FileRouteTypes {
     | '/transfer/single'
     | '/ ticket/'
     | '/bill-payment/'
+    | '/create-payment-link/'
     | '/credit-card/'
     | '/cross-payment/'
     | '/dashboard/'
@@ -613,6 +625,7 @@ export interface RootRouteChildren {
   TransferSingleRoute: typeof TransferSingleRoute
   ticketIndexRoute: typeof ticketIndexRoute
   BillPaymentIndexRoute: typeof BillPaymentIndexRoute
+  CreatePaymentLinkIndexRoute: typeof CreatePaymentLinkIndexRoute
   CreditCardIndexRoute: typeof CreditCardIndexRoute
   CrossPaymentIndexRoute: typeof CrossPaymentIndexRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
@@ -727,6 +740,13 @@ declare module '@tanstack/react-router' {
       path: '/credit-card'
       fullPath: '/credit-card/'
       preLoaderRoute: typeof CreditCardIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/create-payment-link/': {
+      id: '/create-payment-link/'
+      path: '/create-payment-link'
+      fullPath: '/create-payment-link/'
+      preLoaderRoute: typeof CreatePaymentLinkIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bill-payment/': {
@@ -989,6 +1009,7 @@ const rootRouteChildren: RootRouteChildren = {
   TransferSingleRoute: TransferSingleRoute,
   ticketIndexRoute: ticketIndexRoute,
   BillPaymentIndexRoute: BillPaymentIndexRoute,
+  CreatePaymentLinkIndexRoute: CreatePaymentLinkIndexRoute,
   CreditCardIndexRoute: CreditCardIndexRoute,
   CrossPaymentIndexRoute: CrossPaymentIndexRoute,
   DashboardIndexRoute: DashboardIndexRoute,
