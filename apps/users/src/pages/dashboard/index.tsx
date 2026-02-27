@@ -19,6 +19,7 @@ import { Link } from '@tanstack/react-router';
 import { useTour } from '@reactour/tour';
 import { SetupPinAction } from '@/components/actions/pin/create-pin';
 import Cookies from 'js-cookie';
+import { AdsPanel } from '@ui/components/ads/ads-panel';
 
 function DashboardHome() {
   const { t } = useTranslation();
@@ -109,8 +110,9 @@ function DashboardHome() {
             </div> */}
 
             <div data-tour="Cross Payment">
-              <ModularCard title={'Cross Payment'}>
-                <EmptyState
+              <ModularCard className='' title={'Cross Payment'}>
+                <AdsPanel/>
+                {/* <EmptyState
                   title={'Deposit via Payment Link'}
                   icon={<Box2 variant="Bulk" color="blue" size={80} />}
                   description={'Fund your account via a secure payment link'}
@@ -124,7 +126,7 @@ function DashboardHome() {
                       Create Payment Link
                     </Button>
                   </Link>
-                </div>
+                </div> */}
               </ModularCard>
             </div>
 

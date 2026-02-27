@@ -1,8 +1,3 @@
-// WARNING: Financial Calculation Safety
-// This file currently uses the 'number' type for currency amounts, which is prone to floating-point errors.
-// For a production fintech application, it is strongly recommended to use a library like 'decimal.js' or 'dinero.js',
-// or to handle all amounts as integers (cents) to ensure precision.
-// TODO: Refactor to use a safe decimal type or integer math.
 
 export function formatCurrency(
   amount: number | string,
