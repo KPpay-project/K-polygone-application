@@ -40,7 +40,7 @@ export default function TopCountriesSection() {
     return (
       <ModularCard className="shadow-none">
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="flex items-center justify-between">
+          <div key={i} className="flex items-center mt-2 justify-between">
             <div className="flex items-center gap-3">
               <Skeleton className="h-8 w-8 rounded-full" />
               <div className="space-y-1">
@@ -59,13 +59,15 @@ export default function TopCountriesSection() {
     return (
       <ModularCard
         title={<Typography variant={'p'}>Top Countries</Typography>}
-        className="h-full flex items-center justify-center"
+        className="h-full  items-center justify-center"
       >
+       <>
         <EmptyState
           icon={<GlobalSearch />}
           title="No countries data available"
           description="Please check your connection and try again."
         />
+       </>
       </ModularCard>
     );
   }
@@ -74,11 +76,13 @@ export default function TopCountriesSection() {
     <>
       <ModularCard className="h-full w-full" title={'Top Countries'}>
         {topCountries.length === 0 ? (
-          <EmptyState
+          <>
+            <EmptyState
             icon={<GlobalSearch size={40} variant="Bulk" />}
             title="No countries data available"
             description="No countries found"
           />
+          </>
         ) : (
           <>
             <CountriesList countries={previewCountries} />
