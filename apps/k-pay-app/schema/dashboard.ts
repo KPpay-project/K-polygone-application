@@ -461,7 +461,8 @@ export const contactInfoSchema = () =>
         message: 'Mailing address must be at most 100 characters',
       })
       .regex(/^[A-Za-z0-9\s.,'/-]*$/, {
-        message: 'Mailing address can only contain letters, numbers, spaces, and basic punctuation',
+        message:
+          'Mailing address can only contain letters, numbers, spaces, and basic punctuation',
       })
       .optional()
       .or(z.literal('')),
@@ -471,7 +472,8 @@ export const contactInfoSchema = () =>
         message: 'Mailing address must be at most 100 characters',
       })
       .regex(/^[A-Za-z0-9\s.,'/-]*$/, {
-        message: 'Mailing address can only contain letters, numbers, spaces, and basic punctuation',
+        message:
+          'Mailing address can only contain letters, numbers, spaces, and basic punctuation',
       })
       .optional()
       .or(z.literal('')),

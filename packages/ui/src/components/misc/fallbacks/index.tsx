@@ -9,6 +9,8 @@ interface EmptyStateProps {
   description?: string;
   height?: string;
   className?: string;
+  hasTitle?: boolean;
+  hasDescription?: boolean;
 }
 
 export const EmptyState = ({
@@ -17,20 +19,31 @@ export const EmptyState = ({
   description = 'There is no data to display at the moment.',
   height = 'h-[30vh]',
   className = '',
+  hasTitle = true,
+  hasDescription = true,
 }: EmptyStateProps) => {
   return (
-    <div className={`w-full flex items-center justify-center ${height} ${className}`}>
-      <div className="flex flex-col items-center gap-4">
-        {icon}
+    <>
+      <div className={`w-full  flex items-center justify-center ${height} ${className}`}>
+        <div className="flex flex-col items-center gap-4 py-5">
+          {icon}
 
-        <div className="text-center mt-2 w-[90%] lg:w-[400px]">
-          <Typography variant="h3" className="text-black text-[18px] my-3">
-            {title}
-          </Typography>
-          <Typography className="text-gray-500 mt-2">{description}</Typography>
+          <div className="text-center mt-2 w-[90%] lg:w-[400px]">
+            {hasTitle && (
+              <Typography variant="h6" className="  font-normal my-3">
+                {title}
+              </Typography>
+            )}
+
+            {hasDescription && (
+              <Typography className="text-gray-500 font-thin mt-2" variant={'small'}>
+                {description}
+              </Typography>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

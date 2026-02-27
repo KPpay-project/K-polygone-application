@@ -12,10 +12,8 @@ import { ME } from '@repo/api';
 import { HAS_PAYMENT_PIN, HasPaymentPinResponse } from '@repo/api';
 import { useProfileStore } from '@/store/profile-store';
 import { useEffect, useState } from 'react';
-import { EmptyState } from '@/components/common/fallbacks';
 import { KycStatusBanner } from '@/components/kyc';
 import { useKycRequired } from '@/hooks/api/use-kyc-status';
-import { Link } from '@tanstack/react-router';
 import { useTour } from '@reactour/tour';
 import { SetupPinAction } from '@/components/actions/pin/create-pin';
 import Cookies from 'js-cookie';
@@ -110,8 +108,8 @@ function DashboardHome() {
             </div> */}
 
             <div data-tour="Cross Payment">
-              <ModularCard className='' title={'Cross Payment'}>
-                <AdsPanel/>
+              <ModularCard className="" title={'Cross Payment'}>
+                <AdsPanel />
                 {/* <EmptyState
                   title={'Deposit via Payment Link'}
                   icon={<Box2 variant="Bulk" color="blue" size={80} />}

@@ -148,7 +148,7 @@ const UserWalletCard: FC<WalletCardProps> = ({
             {wallet?.label}
           </span>
         </div>
-{/* 
+        {/* 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
@@ -201,9 +201,7 @@ const UserWalletCard: FC<WalletCardProps> = ({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
         >
-          <Typography variant={"h4"}>
-            {formattedAmount}
-          </Typography>
+          <Typography variant={'h4'}>{formattedAmount}</Typography>
         </motion.div>
         <button
           type="button"

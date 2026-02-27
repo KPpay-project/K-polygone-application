@@ -1,7 +1,6 @@
 import { gql } from '@apollo/client';
 
-
-const GENERATE_DEPOSIT_LINK = gql `
+const GENERATE_DEPOSIT_LINK = gql`
   mutation CreatePaymentLink($input: CreatePaymentLinkInput!) {
     createPaymentLink(input: $input) {
       success
@@ -18,7 +17,7 @@ const GENERATE_DEPOSIT_LINK = gql `
       }
     }
   }
-`
+`;
 
 const DEPOSIT = gql`
   mutation Deposit($input: DepositInput!) {
@@ -136,5 +135,5 @@ export {
   DEPOSIT_VIA_BANK,
   VALIDATE_CARD_PAYMENT,
   GET_MTN_MOMO_BASIC_USER_INFO,
-  GENERATE_DEPOSIT_LINK
+  GENERATE_DEPOSIT_LINK,
 };

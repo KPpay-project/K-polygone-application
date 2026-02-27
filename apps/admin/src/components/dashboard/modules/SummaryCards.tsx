@@ -200,7 +200,9 @@ export default function SummaryCards({ stats, loading }: { stats?: AdminDashboar
   return (
     <ModularCard>
       <div className="mb-4 flex items-center justify-between">
-        <Typography variant="h6">Dashboard</Typography>
+        <Typography variant="h6" className="font-medium">
+          Dashboard
+        </Typography>
         <div className="w-[200px]">
           <CountrySelector
             countries={COUNTRY_OPTIONS}

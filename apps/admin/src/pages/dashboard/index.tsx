@@ -32,7 +32,7 @@ function DashboardHome({ filter }: { filter?: string }) {
       </div>
       <div className="flex gap-6 mb-6">
         <RevenueSection />
-        <TicketsSection />
+        {/* <TicketsSection /> */}
       </div>
     </div>
   );
