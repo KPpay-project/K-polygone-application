@@ -112,7 +112,7 @@ export const GET_ACTIVITY_LOGS = gql`
             updatedAt
             __typename
           }
-          
+
           wallet {
             id
             ownerId
@@ -139,7 +139,7 @@ export const GET_ACTIVITY_LOGS = gql`
           financialInfoStatus
           bankInfoStatus
           message
-          errors{
+          errors {
             message
             code
             field
@@ -178,7 +178,7 @@ export const GET_ACTIVITY_LOGS = gql`
             mailingCity
             mailingCountry
             mailingPostalCode
-            addressProofUrl{
+            addressProofUrl {
               thumb
               original
             }

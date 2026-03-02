@@ -121,7 +121,7 @@ export default function SummaryCards({ stats, loading }: { stats?: AdminDashboar
   });
 
   const renderCard = (card: CardData, idx: number) => {
-    const trendTone = card.trend.isPositive ? 'text-emerald-700' : 'text-rose-700';
+    const trendTextClass = card.trend.isPositive ? 'text-green-700' : 'text-red-600';
 
     const path = metricsConfig[idx]?.path;
     return (
@@ -151,10 +151,16 @@ export default function SummaryCards({ stats, loading }: { stats?: AdminDashboar
           <div className="pt-0">
             <div className="mb-2 text-2xl font-semibold leading-none text-slate-900">{card.value}</div>
             {card.hasChange ? (
-              <div className={`flex items-center gap-1.5 text-[11px] font-medium ${trendTone}`}>
-                {card.trend.icon}
-                <span>{card.trend.value}</span>
-                <span className="text-slate-500">vs last month</span>
+              <div className="flex items-center gap-2">
+                <div className={`inline-flex items-center gap-1 ${trendTextClass}`}>
+                  {card.trend.icon}
+                  <Typography variant="tiny" className={`font-medium ${trendTextClass}`}>
+                    {card.trend.value}
+                  </Typography>
+                </div>
+                <Typography variant="tiny" className="text-slate-500">
+                  vs last month
+                </Typography>
               </div>
             ) : null}
           </div>

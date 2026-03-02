@@ -2,9 +2,8 @@ import * as React from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
 import useDashboardStats from '@/hooks/api/use-dashboard-stats';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue , ModularCard, Typography} from '@repo/ui';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, ModularCard, Typography } from '@repo/ui';
 import moment from 'moment';
-
 
 export const description = 'An interactive bar chart';
 
@@ -75,7 +74,9 @@ export default function WalletsSection({ filter }: { filter?: string }) {
       <div className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
           <div className="flex items-center gap-4">
-            <Typography variant="h6" className="font-medium">Wallets</Typography>
+            <Typography variant="h6" className="font-medium">
+              Wallets
+            </Typography>
             <div className="w-[150px]">
               <Select value={currency} onValueChange={setCurrency}>
                 <SelectTrigger className="h-8">
@@ -92,7 +93,9 @@ export default function WalletsSection({ filter }: { filter?: string }) {
               </Select>
             </div>
           </div>
-          <Typography variant={'small'} className="text-muted-foreground font-normal">Showing total wallets for the last 12 months</Typography>
+          <Typography variant={'small'} className="text-muted-foreground font-normal">
+            Showing total wallets for the last 12 months
+          </Typography>
         </div>
         <div className="flex">
           {(['active', 'frozen'] as const).map((key) => {

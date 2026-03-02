@@ -61,13 +61,13 @@ export default function TopCountriesSection() {
         title={<Typography variant={'p'}>Top Countries</Typography>}
         className="h-full  items-center justify-center"
       >
-       <>
-        <EmptyState
-          icon={<GlobalSearch />}
-          title="No countries data available"
-          description="Please check your connection and try again."
-        />
-       </>
+        <>
+          <EmptyState
+            icon={<GlobalSearch />}
+            title="No countries data available"
+            description="Please check your connection and try again."
+          />
+        </>
       </ModularCard>
     );
   }
@@ -78,10 +78,10 @@ export default function TopCountriesSection() {
         {topCountries.length === 0 ? (
           <>
             <EmptyState
-            icon={<GlobalSearch size={40} variant="Bulk" />}
-            title="No countries data available"
-            description="No countries found"
-          />
+              icon={<GlobalSearch size={40} variant="Bulk" />}
+              title="No countries data available"
+              description="No countries found"
+            />
           </>
         ) : (
           <>

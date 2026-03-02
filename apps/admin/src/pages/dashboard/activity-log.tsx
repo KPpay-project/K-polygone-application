@@ -342,7 +342,7 @@ function ActivityLogPage() {
             currentFilters={filters}
             filterConfig={activityLogFilterConfig}
           >
-            <Button  onClick={handleExport}>
+            <Button onClick={handleExport}>
               <ExportSquare className="h-4 w-4" />
               Export
             </Button>

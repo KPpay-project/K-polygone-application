@@ -4,7 +4,6 @@ import { ReactNode, useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@/components/ui/table';
 
-
 export interface TableColumn<T = any> {
   key: string;
   label: string;
@@ -128,7 +127,10 @@ export default function ResponsiveTable<T = any>({
   };
 
   const DefaultDesktopRow = ({ row, index }: { row: T; index: number }) => (
-    <TableRow className={cn(onRowClick && 'cursor-pointer', 'text-[13px] hover:bg-muted/50')} onClick={() => onRowClick?.(row)}>
+    <TableRow
+      className={cn(onRowClick && 'cursor-pointer', 'text-[13px] hover:bg-muted/50')}
+      onClick={() => onRowClick?.(row)}
+    >
       {columns.map((column) => (
         <TableCell
           key={`${column.key}-${index}`}
@@ -150,7 +152,10 @@ export default function ResponsiveTable<T = any>({
                   action.onClick(row);
                 }}
                 disabled={action.disabled?.(row)}
-                className={cn('p-1.5 rounded-md hover:bg-muted disabled:opacity-50 transition-colors', action.className)}
+                className={cn(
+                  'p-1.5 rounded-md hover:bg-muted disabled:opacity-50 transition-colors',
+                  action.className
+                )}
                 title={action.label}
               >
                 {typeof action.icon === 'function'
@@ -189,7 +194,10 @@ export default function ResponsiveTable<T = any>({
                   action.onClick(row);
                 }}
                 disabled={action.disabled?.(row)}
-                className={cn('p-1.5 rounded-md hover:bg-muted disabled:opacity-50 transition-colors', action.className)}
+                className={cn(
+                  'p-1.5 rounded-md hover:bg-muted disabled:opacity-50 transition-colors',
+                  action.className
+                )}
                 title={action.label}
               >
                 {typeof action.icon === 'function'

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Input , Button, Typography } from '@repo/ui';
+import { Input, Button, Typography } from '@repo/ui';
 import { Search, Filter } from 'lucide-react';
 import ModularFilterModal, { FilterConfig } from '@/components/common/modular-filter-modal';
 
