@@ -1,15 +1,18 @@
 import * as React from 'react';
-import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import moment from 'moment';
 
-import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip } from '@/components/ui/chart';
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ModularCard } from '@/components/sub-modules/card/card';
 import { useAdminTransactionStats } from '@/hooks/api/use-admin-dashboard-stats';
 
-export const description = 'An interactive area chart';
+export const description = 'An interactive bar chart';
 
 const chartConfig = {
+  views: {
+    label: 'Transactions'
+  },
   completed: {
     label: 'Completed',
     color: '#16a34a'
@@ -22,6 +25,7 @@ const chartConfig = {
 
 export default function TransactionsSection() {
   const [selectedYear, setSelectedYear] = React.useState(new Date().getFullYear());
+  const [activeChart, setActiveChart] = React.useState<'completed' | 'failed'>('completed');
   const { data, loading } = useAdminTransactionStats();
 
   const filteredData = React.useMemo(() => {
@@ -53,6 +57,14 @@ export default function TransactionsSection() {
     return Array.from({ length: 5 }, (_, i) => Math.max(2024, currentYear) + i);
   }, []);
 
+  const total = React.useMemo(
+    () => ({
+      completed: filteredData.reduce((acc, curr) => acc + curr.completed, 0),
+      failed: filteredData.reduce((acc, curr) => acc + curr.failed, 0)
+    }),
+    [filteredData]
+  );
+
   return (
     <ModularCard
       title={
@@ -73,23 +85,33 @@ export default function TransactionsSection() {
         </div>
       }
     >
+      <div className="mb-4 flex border rounded-lg overflow-hidden w-fit">
+        {(['completed', 'failed'] as const).map((key) => (
+          <button
+            key={key}
+            data-active={activeChart === key}
+            className="relative z-10 flex min-w-[120px] flex-col items-start gap-1 border-r px-4 py-3 text-left last:border-r-0 data-[active=true]:bg-slate-50"
+            onClick={() => setActiveChart(key)}
+          >
+            <span className="text-xs text-muted-foreground">{chartConfig[key].label}</span>
+            <span className="text-base font-semibold leading-none">{total[key].toLocaleString()}</span>
+          </button>
+        ))}
+      </div>
       <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">
         {loading ? (
           <div className="flex items-center justify-center h-full">
             <div className="animate-pulse text-gray-500">Loading chart data...</div>
           </div>
         ) : (
-          <AreaChart data={filteredData}>
-            <defs>
-              <linearGradient id="fillCompleted" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#16a34a" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#16a34a" stopOpacity={0.1} />
-              </linearGradient>
-              <linearGradient id="fillFailed" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#dc2626" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#dc2626" stopOpacity={0.1} />
-              </linearGradient>
-            </defs>
+          <BarChart
+            accessibilityLayer
+            data={filteredData}
+            margin={{
+              left: 12,
+              right: 12
+            }}
+          >
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="date"
@@ -104,48 +126,16 @@ export default function TransactionsSection() {
             />
 
             <ChartTooltip
-              cursor={{ stroke: '#d1d5db', strokeWidth: 1 }}
-              content={({ active, payload, label }) => {
-                if (active && payload && payload.length) {
-                  return (
-                    <div className="rounded-lg border bg-white p-3 shadow-md">
-                      <p className="font-medium text-gray-900 mb-2">{moment(label).format('MMMM YYYY')}</p>
-                      {payload.map((entry, index) => (
-                        <div key={index} className="flex items-center gap-2 text-sm">
-                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }} />
-                          <span className="text-gray-600">{entry.name}:</span>
-                          <span className="font-medium">{entry.value?.toLocaleString()}</span>
-                        </div>
-                      ))}
-                      <div className="border-t mt-2 pt-2 text-sm text-gray-600">
-                        Total: {payload.reduce((sum, entry) => sum + (Number(entry.value) || 0), 0).toLocaleString()}
-                      </div>
-                    </div>
-                  );
-                }
-                return null;
-              }}
+              content={
+                <ChartTooltipContent
+                  className="w-[170px]"
+                  nameKey="views"
+                  labelFormatter={(value) => moment(value).format('MMMM YYYY')}
+                />
+              }
             />
-            <Area
-              dataKey="failed"
-              type="natural"
-              fill="url(#fillFailed)"
-              stroke="#dc2626"
-              strokeWidth={2}
-              stackId="a"
-              activeDot={{ r: 4, stroke: '#dc2626', strokeWidth: 2 }}
-            />
-            <Area
-              dataKey="completed"
-              type="natural"
-              fill="url(#fillCompleted)"
-              stroke="#16a34a"
-              strokeWidth={2}
-              stackId="a"
-              activeDot={{ r: 4, stroke: '#16a34a', strokeWidth: 2 }}
-            />
-            <ChartLegend content={<ChartLegendContent />} />
-          </AreaChart>
+            <Bar dataKey={activeChart} fill={chartConfig[activeChart].color} radius={[4, 4, 0, 0]} />
+          </BarChart>
         )}
       </ChartContainer>
     </ModularCard>

@@ -7,8 +7,31 @@ interface CountChange {
 }
 
 export interface TopCountry {
-  count: number | null;
   country: string;
+  totalVolume: string;
+  transactionCount: number;
+}
+
+export interface TransactionCounts {
+  total: number;
+  pending: number;
+  completed: number;
+  failed: number;
+  cancelled: number;
+}
+
+export interface UserCounts {
+  users: number;
+  merchants: number;
+  kycApplications: number;
+  wallets: number;
+}
+
+export interface TransactionVolumes {
+  total: string;
+  deposits: string;
+  withdrawals: string;
+  transfers: string;
 }
 
 export interface AdminDashboardStats {
@@ -21,18 +44,40 @@ export interface AdminDashboardStats {
   totalWithdrawal: CountChange;
   totalTransfer: CountChange;
 
-  pendingKyc: number;
-  approvedKyc: number;
-  rejectedKyc: number;
+  kycApplicationsByStatus: number;
+
+  dailyTransactionCounts: TransactionCounts;
+  weeklyTransactionCounts: TransactionCounts;
+  monthlyTransactionCounts: TransactionCounts;
+  annualTransactionCounts: TransactionCounts;
+
+  dailyUserCounts: UserCounts;
+  weeklyUserCounts: UserCounts;
+  monthlyUserCounts: UserCounts;
+  annualUserCounts: UserCounts;
+
+  dailyTransactionVolumes: TransactionVolumes;
+  weeklyTransactionVolumes: TransactionVolumes;
+  monthlyTransactionVolumes: TransactionVolumes;
+  annualTransactionVolumes: TransactionVolumes;
+
   topCountries: TopCountry[];
+  walletCountByMonth: {
+    year: number;
+    month: number;
+    monthLabel?: string;
+    activeWallets: number;
+    frozenWallets: number;
+  }[];
 }
 
 interface GetAdminDashboardStatsResult {
   adminDashboardStats: AdminDashboardStats;
 }
 
-export const useDashboardStats = () => {
+export const useDashboardStats = (variables?: { countryCode?: string; currency?: string }) => {
   return useQuery<GetAdminDashboardStatsResult>(GET_DASHBOARD_STATS, {
+    variables,
     errorPolicy: 'all',
     fetchPolicy: 'cache-first'
   });

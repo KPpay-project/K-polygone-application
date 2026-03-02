@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Input, Button, Typography } from '@repo/ui';
 import { Search, Filter } from 'lucide-react';
 import ModularFilterModal, { FilterConfig } from '@/components/common/modular-filter-modal';
 
@@ -54,7 +53,7 @@ const ModularHeaderTitle: React.FC<ModularHeaderTitleProps> = ({
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
       <div className="flex items-center gap-2">
-        <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+        <Typography variant={'h5'}> {title}</Typography>
         {count !== undefined && (
           <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded-full">{count}</span>
         )}

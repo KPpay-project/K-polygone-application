@@ -1,6 +1,16 @@
 import { gql } from '@apollo/client';
 
 export const GET_ADMIN_COMPREHENSIVE_TRANSACTION_STATS = gql`
+  fragment AdminDashboardStatWithChangeFields on StatWithChange {
+    percentageChange
+    total
+  }
+
+  fragment AdminDashboardStatWithDecimalChangeFields on StatWithDecimalChange {
+    percentageChange
+    total
+  }
+
   query ComprehensiveTransactionStats {
     adminDashboardStats {
       comprehensiveTransactionStats {
@@ -43,12 +53,10 @@ export const GET_ADMIN_COMPREHENSIVE_TRANSACTION_STATS = gql`
         year
       }
       totalDeposit {
-        percentageChange
-        total
+        ...AdminDashboardStatWithDecimalChangeFields
       }
       totalTransfer {
-        percentageChange
-        total
+        ...AdminDashboardStatWithDecimalChangeFields
       }
       monthlyTransactionVolumes {
         deposits
@@ -86,16 +94,13 @@ export const GET_ADMIN_COMPREHENSIVE_TRANSACTION_STATS = gql`
         totalVolume
       }
       totalUsers {
-        percentageChange
-        total
+        ...AdminDashboardStatWithChangeFields
       }
       totalWallets {
-        percentageChange
-        total
+        ...AdminDashboardStatWithChangeFields
       }
       totalWithdrawal {
-        percentageChange
-        total
+        ...AdminDashboardStatWithDecimalChangeFields
       }
       dailyTransactionVolumes {
         deposits

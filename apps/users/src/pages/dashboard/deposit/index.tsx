@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { DepositMethods, DepositFormCard } from './components';
 import { useEffect, useState } from 'react';
 import { DepositMethodKey, depositMethodsRegistry, methodRequiresPhone } from './methods';
+import { DEPOSITE_METHOD_ENUM } from '@/enums';
 
 const depositSchema = z
   .object({
@@ -26,7 +27,7 @@ const depositSchema = z
 type DepositFormValues = z.infer<typeof depositSchema>;
 
 const DepositScreen = () => {
-  const [selectedMethod, setSelectedMethod] = useState<DepositMethodKey>('card');
+  const [selectedMethod, setSelectedMethod] = useState<DepositMethodKey>(DEPOSITE_METHOD_ENUM.PROVIDERS);
 
   const form = useForm<DepositFormValues>({
     resolver: zodResolver(depositSchema),

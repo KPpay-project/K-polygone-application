@@ -1,16 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const GET_ACTIVITY_LOGS = gql`
-  query ActivityLogs(
-    $page: Int
-    $perPage: Int
-    $sortBy: String
-    $sortDirection: String
-    $search: String
-    $fromDate: Date
-    $toDate: Date
-    $filters: ActivityLogsFilters
-  ) {
+  fragment ActivityLogsQueryFields on RootQueryType {
     getActivityLogs(
       page: $page
       perPage: $perPage
@@ -49,7 +40,6 @@ export const GET_ACTIVITY_LOGS = gql`
             lastName
             email
             phone
-            role
             status
             insertedAt
             updatedAt
@@ -93,7 +83,6 @@ export const GET_ACTIVITY_LOGS = gql`
           reference
           externalReference
           exchangeRate
-          feeAmount
           provider
           providerStatus
           providerMessage
@@ -114,20 +103,7 @@ export const GET_ACTIVITY_LOGS = gql`
             updatedAt
             __typename
           }
-          feeCurrency {
-            id
-            code
-            name
-            symbol
-            precision
-            exchangeRateUsd
-            countryCode
-            countryNames
-            isActive
-            insertedAt
-            updatedAt
-            __typename
-          }
+
           wallet {
             id
             ownerId
@@ -154,7 +130,11 @@ export const GET_ACTIVITY_LOGS = gql`
           financialInfoStatus
           bankInfoStatus
           message
-          errors
+          errors {
+            message
+            code
+            field
+          }
           rejectionReason
           insertedAt
           updatedAt
@@ -189,7 +169,10 @@ export const GET_ACTIVITY_LOGS = gql`
             mailingCity
             mailingCountry
             mailingPostalCode
-            addressProofUrl
+            addressProofUrl {
+              thumb
+              original
+            }
             insertedAt
             updatedAt
             __typename
@@ -255,6 +238,19 @@ export const GET_ACTIVITY_LOGS = gql`
       totalEntries
       totalPages
     }
+  }
+
+  query ActivityLogs(
+    $page: Int
+    $perPage: Int
+    $sortBy: String
+    $sortDirection: String
+    $search: String
+    $fromDate: Date
+    $toDate: Date
+    $filters: ActivityLogsFilters
+  ) {
+    ...ActivityLogsQueryFields
   }
 `;
 
