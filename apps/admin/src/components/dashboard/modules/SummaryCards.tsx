@@ -18,15 +18,21 @@ type CardData = {
   trend: {
     icon: ReactNode;
     value: string;
+    rawValue: number;
     isPositive: boolean;
   };
   hasChange?: boolean;
 };
 
 export default function SummaryCards({ stats, loading }: { stats?: AdminDashboardStats; loading?: boolean }) {
-  const pct = (n?: number) => (typeof n === 'number' ? `${Math.abs(n)}%` : '0%');
+  const pct = (n?: number) => (typeof n === 'number' ? `${Math.abs(n).toFixed(2)}%` : '0.00%');
   const up = <ArrowUp className="h-3.5 w-3.5" />;
   const down = <ArrowDown className="h-3.5 w-3.5" />;
+
+  const calculateChange = (value: unknown) => {
+    const numeric = typeof value === 'number' ? value : Number(value);
+    return Number.isFinite(numeric) ? numeric : 0;
+  };
 
   const formatCurrency = (value: number | string | undefined, currency: string = 'USD') => {
     const num = typeof value === 'string' ? parseFloat(value) : typeof value === 'number' ? value : 0;
@@ -106,7 +112,7 @@ export default function SummaryCards({ stats, loading }: { stats?: AdminDashboar
     const raw = (stats as any)?.[key];
     const total = hasChange ? (raw?.total ?? 0) : (raw ?? 0);
     const value = money ? formatCurrency(total, 'USD') : total;
-    const change = hasChange ? (raw?.percentageChange as number | undefined) : 0;
+    const change = hasChange ? calculateChange(raw?.percentageChange) : 0;
     const isPositive = (change ?? 0) >= 0;
     return {
       title,
@@ -114,15 +120,32 @@ export default function SummaryCards({ stats, loading }: { stats?: AdminDashboar
       trend: {
         icon: isPositive ? up : down,
         value: pct(change),
+        rawValue: change,
         isPositive
       },
       hasChange
     };
   });
 
-  const renderCard = (card: CardData, idx: number) => {
-    const trendTextClass = card.trend.isPositive ? 'text-green-700' : 'text-red-600';
+  const renderTrend = (trend: CardData['trend']) => {
+    const trendTextClass = trend.isPositive ? 'text-green-700' : 'text-red-600';
 
+    return (
+      <div className="flex items-center gap-2">
+        <div className={`inline-flex items-center gap-1 ${trendTextClass}`}>
+          {trend.icon}
+          <Typography variant="tiny" className={`font-medium ${trendTextClass}`}>
+            {trend.value}
+          </Typography>
+        </div>
+        <Typography variant="tiny" className="text-gray-500 font-normal ">
+          vs last month
+        </Typography>
+      </div>
+    );
+  };
+
+  const renderCard = (card: CardData, idx: number) => {
     const path = metricsConfig[idx]?.path;
     return (
       <motion.button
@@ -130,8 +153,8 @@ export default function SummaryCards({ stats, loading }: { stats?: AdminDashboar
         type="button"
         onClick={() => path && navigate({ to: path })}
         className="w-full text-left"
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
+        // initial={{ opacity: 0, y: 12 }}
+        // animate={{ opacity: 1, y: 0 }}
         whileHover={{ y: -2 }}
         transition={{ duration: 0.22, delay: idx * 0.035 }}
       >
@@ -141,28 +164,16 @@ export default function SummaryCards({ stats, loading }: { stats?: AdminDashboar
           contentClassName=""
         >
           <div className="pb-2">
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center justify-between gap-3 mt-1">
               <Typography variant="tiny" className="font-medium text-slate-600">
                 {card.title}
               </Typography>
-              <span className="text-slate-400">•••</span>
+              {/* <span className="text-gray-400">•••</span> */}
             </div>
           </div>
           <div className="pt-0">
             <div className="mb-2 text-2xl font-semibold leading-none text-slate-900">{card.value}</div>
-            {card.hasChange ? (
-              <div className="flex items-center gap-2">
-                <div className={`inline-flex items-center gap-1 ${trendTextClass}`}>
-                  {card.trend.icon}
-                  <Typography variant="tiny" className={`font-medium ${trendTextClass}`}>
-                    {card.trend.value}
-                  </Typography>
-                </div>
-                <Typography variant="tiny" className="text-slate-500">
-                  vs last month
-                </Typography>
-              </div>
-            ) : null}
+            {card.hasChange ? renderTrend(card.trend) : null}
           </div>
         </ModularCard>
       </motion.button>
