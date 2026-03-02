@@ -24,6 +24,7 @@ export const GET_DASHBOARD_STATS = gql`
         total
         percentageChange
       }
+
       totalWithdrawal {
         total
         percentageChange
@@ -42,6 +43,7 @@ export const GET_DASHBOARD_STATS = gql`
         failed
         cancelled
       }
+        
       weeklyTransactionCounts {
         total
         pending

@@ -92,7 +92,7 @@ export default function WalletsSection({ filter }: { filter?: string }) {
               </Select>
             </div>
           </div>
-          <Typography className="text-sm text-muted-foreground">Showing total wallets for the last 12 months</Typography>
+          <Typography variant={'small'} className="text-muted-foreground font-normal">Showing total wallets for the last 12 months</Typography>
         </div>
         <div className="flex">
           {(['active', 'frozen'] as const).map((key) => {

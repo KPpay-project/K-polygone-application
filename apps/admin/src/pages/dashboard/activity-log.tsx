@@ -1,5 +1,5 @@
 import DashboardLayout from '@/components/layouts/dashboard-layout';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui';
 import { EyeIcon } from 'lucide-react';
 import { ExportSquare } from 'iconsax-reactjs';
 import { ResponsiveTable, TableColumn, TableAction } from '@/components/common/responsive-table';
@@ -12,6 +12,7 @@ import useActivityLogs, { ActivityLog } from '@/hooks/api/use-activity-logs';
 import { toast } from 'sonner';
 import { activityLogFilterConfig } from '@/config/filter-configs';
 import moment from 'moment';
+import { Typography } from '@repo/ui';
 
 function ActivityLogPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -341,7 +342,7 @@ function ActivityLogPage() {
             currentFilters={filters}
             filterConfig={activityLogFilterConfig}
           >
-            <Button className="bg-blue-700 flex items-center gap-2 hover:bg-blue-800" onClick={handleExport}>
+            <Button  onClick={handleExport}>
               <ExportSquare className="h-4 w-4" />
               Export
             </Button>

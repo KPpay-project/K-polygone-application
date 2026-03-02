@@ -4,6 +4,7 @@ import { ReactNode, useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@/components/ui/table';
 
+
 export interface TableColumn<T = any> {
   key: string;
   label: string;
@@ -127,11 +128,11 @@ export default function ResponsiveTable<T = any>({
   };
 
   const DefaultDesktopRow = ({ row, index }: { row: T; index: number }) => (
-    <TableRow className={cn(onRowClick && 'cursor-pointer', 'text-[15px]')} onClick={() => onRowClick?.(row)}>
+    <TableRow className={cn(onRowClick && 'cursor-pointer', 'text-[13px] hover:bg-muted/50')} onClick={() => onRowClick?.(row)}>
       {columns.map((column) => (
         <TableCell
           key={`${column.key}-${index}`}
-          className={cn('truncate px-6 py-4 text-sm', column.className)}
+          className={cn('truncate px-4 py-3 text-sm text-muted-foreground', column.className)}
           title={String(getCellValue(row, column))}
           style={{ width: column.width ? `${column.width}%` : undefined }}
         >
@@ -139,8 +140,8 @@ export default function ResponsiveTable<T = any>({
         </TableCell>
       ))}
       {actions && actions.length > 0 && (
-        <TableCell className="w-20 px-6 py-4">
-          <div className="flex items-center justify-end gap-2">
+        <TableCell className="w-16 px-4 py-3">
+          <div className="flex items-center justify-end gap-1">
             {actions.map((action, actionIndex) => (
               <button
                 key={actionIndex}
@@ -149,12 +150,12 @@ export default function ResponsiveTable<T = any>({
                   action.onClick(row);
                 }}
                 disabled={action.disabled?.(row)}
-                className={cn('p-1 rounded hover:bg-gray-100 disabled:opacity-50', action.className)}
+                className={cn('p-1.5 rounded-md hover:bg-muted disabled:opacity-50 transition-colors', action.className)}
                 title={action.label}
               >
                 {typeof action.icon === 'function'
                   ? action.icon(row)
-                  : action.icon || <ChevronRight className="w-4 h-4 text-gray-400" />}
+                  : action.icon || <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />}
               </button>
             ))}
           </div>
@@ -165,21 +166,21 @@ export default function ResponsiveTable<T = any>({
 
   const DefaultMobileCard = ({ row, index }: { row: T; index: number }) => (
     <div
-      className={cn('bg-white border border-gray-50 rounded-lg p-4 space-y-3', onRowClick && 'cursor-pointer')}
+      className={cn('bg-card border rounded-lg p-3 space-y-2', onRowClick && 'cursor-pointer')}
       onClick={() => onRowClick?.(row)}
     >
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         {columns.slice(0, 4).map((column) => (
-          <div key={column.key} className="flex justify-between items-center">
-            <span className="text-xs text-gray-500">{column.label}</span>
-            <div className={cn('text-sm text-gray-900', column.className)}>{getCellValue(row, column)}</div>
+          <div key={column.key} className="flex justify-between items-center text-sm">
+            <span className="text-muted-foreground text-xs">{column.label}</span>
+            <div className={cn('font-medium', column.className)}>{getCellValue(row, column)}</div>
           </div>
         ))}
       </div>
-      <div className="flex items-center justify-between pt-2 border-t border-gray-50">
+      <div className="flex items-center justify-between pt-2 border-t mt-2">
         {showCheckbox && <Checkbox checked={checkedRows.includes(index)} onCheckedChange={() => handleCheck(index)} />}
         {actions && actions.length > 0 && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             {actions.map((action, actionIndex) => (
               <button
                 key={actionIndex}
@@ -188,12 +189,12 @@ export default function ResponsiveTable<T = any>({
                   action.onClick(row);
                 }}
                 disabled={action.disabled?.(row)}
-                className={cn('p-1 rounded hover:bg-gray-100 disabled:opacity-50', action.className)}
+                className={cn('p-1.5 rounded-md hover:bg-muted disabled:opacity-50 transition-colors', action.className)}
                 title={action.label}
               >
                 {typeof action.icon === 'function'
                   ? action.icon(row)
-                  : action.icon || <ChevronRight className="w-4 h-4 text-gray-400" />}
+                  : action.icon || <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />}
               </button>
             ))}
           </div>
@@ -221,29 +222,29 @@ export default function ResponsiveTable<T = any>({
   return (
     <div className={cn('w-full overflow-hidden', className)}>
       <div className="hidden lg:block w-full">
-        <div className="bg-white rounded-lg overflow-hidden">
-          <Table className="text-[15px]">
+        <div className="bg-card rounded-lg overflow-hidden border">
+          <Table className="text-[13px]">
             <TableHeader>
-              <TableRow>
+              <TableRow className="hover:bg-transparent">
                 {columns.map((column) => (
                   <TableHead
                     key={column.key}
-                    className={cn('text-sm font-medium py-4 px-6', column.className)}
+                    className={cn('text-xs font-medium py-3 px-4 text-muted-foreground h-auto', column.className)}
                     style={{ width: column.width ? `${column.width}%` : undefined }}
                   >
                     <div className="flex items-center">
-                      <p className="text-sm text-gray-700">{column.label}</p>
+                      <p>{column.label}</p>
                       {column.sortable && (
-                        <button className="ml-1 p-0.5">
-                          <ChevronRight className="w-3 h-3 text-gray-400 rotate-90" />
+                        <button className="ml-1 p-0.5 hover:bg-muted rounded">
+                          <ChevronRight className="w-3 h-3 text-muted-foreground rotate-90" />
                         </button>
                       )}
                     </div>
                   </TableHead>
                 ))}
                 {actions && actions.length > 0 && (
-                  <TableHead className="w-20 text-right pr-6">
-                    <p className="text-sm text-gray-700">Actions</p>
+                  <TableHead className="w-16 text-right pr-4 h-auto">
+                    <p className="text-xs font-medium text-muted-foreground">Actions</p>
                   </TableHead>
                 )}
               </TableRow>
