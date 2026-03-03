@@ -64,7 +64,8 @@ export const useMenuItems = (): SidebarItemProps[] => {
     //   ]
     // },
 
-    { icon: <MoneyChange size="18" variant="Outline" />, label: t('sidebar.exchangeMoney'), href: '/exchange' }
+    { icon: <MoneyChange size="18" variant="Outline" />, label: t('sidebar.exchangeMoney'), href: '/exchange' },
+     { icon: <MoneyChange size="18" variant="Outline" />, label: "More", href: '/more' }
     // { icon: <Clipboard size="18" variant="Outline" />, label: t('sidebar.transactionHistory'), href: '/transactions' }
   ];
 };
@@ -78,12 +79,12 @@ export const useBottomOptions = (): SidebarItemProps[] => {
       label: t('sidebar.ticket'),
       href: '/ticket'
     },
-    {
-      icon: <Setting2 size="18" variant="Outline" />,
-      label: t('sidebar.settings'),
-      href: '/settings',
-      matchTailingUrl: true
-    }
+    // {
+    //   icon: <Setting2 size="18" variant="Outline" />,
+    //   label: t('sidebar.settings'),
+    //   href: '/settings',
+    //   matchTailingUrl: true
+    // }
   ];
 };
 
@@ -136,4 +137,5 @@ export const bottomOptions = [
     href: '/settings',
     matchTailingUrl: true
   }
+
 ];
