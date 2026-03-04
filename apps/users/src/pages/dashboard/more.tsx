@@ -1,142 +1,177 @@
 // MorePage.tsx
-import {
-  ArrowUp,
-  ChevronRight,
-  IdCard,
-  LogOut,
-  ShieldCheck,
-  TrendingUp,
-  UserCircle2,
-  UserRoundCheck
-} from 'lucide-react';
+import { Typography } from '@/components/sub-modules/typography/typography';
+import { cn } from '@/lib/utils';
+import { getRoleFromCookie } from '@/hooks/api/misc';
 import { useProfileStore } from '@/store/profile-store';
 import { useUserStore } from '@/store/user-store';
 import { useNavigate } from '@tanstack/react-router';
-import { Typography, ModularCard } from '@ui/index';
+import {
+  ArrowRight2,
+  ArrowUp2,
+  DirectSend,
+  ProfileCircle,
+  SecuritySafe,
+  Verify
+} from 'iconsax-reactjs';
+import { ReactNode } from 'react';
 
 type MoreItem = {
-  label: string;
-  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  description: string;
+  cta: string;
   href: string;
+  icon: ReactNode;
 };
-
-const moreItems: MoreItem[] = [
-  { label: 'Profile', icon: IdCard, href: '/settings/my-profile' },
-  { label: 'KYC Verification', icon: UserRoundCheck, href: '/settings/verifications' },
-  { label: 'Security', icon: ShieldCheck, href: '/settings/security' },
-  { label: 'Upgrade Account', icon: TrendingUp, href: '/settings/upgrade-account' }
-];
 
 const MorePage = () => {
   const navigate = useNavigate();
   const profile = useProfileStore((state) => state.profile);
   const userAccount = useUserStore((state) => state.userAccount);
+  const role = getRoleFromCookie();
 
   const firstName = profile?.user?.firstName || userAccount?.user?.firstName || '';
   const lastName = profile?.user?.lastName || userAccount?.user?.lastName || '';
-  const fullName = `${firstName} ${lastName}`.trim() || 'User';
+  const fullName = `${firstName} ${lastName}`.trim() || 'My Account';
+  const email = profile?.user?.email || userAccount?.user?.email || 'account@example.com';
+  const initials = `${firstName?.[0] || 'A'}${lastName?.[0] || 'C'}`.toUpperCase();
+
+  const moreItems: MoreItem[] = [
+    {
+      title: 'Profile',
+      description: 'Personal details, contact info and public display.',
+      cta: 'Manage Profile',
+      href: '/settings/my-profile',
+      icon: <ProfileCircle size={24} variant="Bulk" />
+    },
+    ...(role === 'user'
+      ? [
+          {
+            title: 'KYC Verification',
+            description: 'Verify your identity to increase transaction limits.',
+            cta: 'View Status',
+            href: '/settings/verifications',
+            icon: <Verify size={24} variant="Bulk" />
+          }
+        ]
+      : []),
+    {
+      title: 'Security',
+      description: 'Passwords, 2FA, and active sessions management.',
+      cta: 'Configure',
+      href: '/settings/security',
+      icon: <SecuritySafe size={24} variant="Bulk" />
+    },
+    ...(role === 'user'
+      ? [
+          {
+            title: 'Upgrade Account',
+            description: 'Unlock premium features and lower fees today.',
+            cta: 'See Plans',
+            href: '/settings/upgrade-account',
+            icon: <DirectSend size={24} variant="Bulk" />
+          }
+        ]
+      : [])
+  ];
 
   return (
-    <ModularCard className="px-8 mx-20">
-      <div className="mx-auto w-full max-w-[1120px]  px-2 py-4 sm:px-4 sm:py-6 lg:px-6 lg:py-8">
-        <div className="mt-6 bg-gradient-to-r from-[#111a20] to-[#1a2429] px-4 py-5 text-white sm:px-6 sm:py-6">
-          <Typography
-    
-            variant="h6"
-            className="text-white font-medium sm:text-medium"
-      
-          >
-            Account Tier
-          </Typography>
-
-          <div className="mt-4 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex h-[54px] w-[54px] items-center justify-center rounded-3xl border-2 border-[#2f90ff] bg-[#141f25] shadow-[inset_0_0_0_2px_#facc15]">
-                <UserCircle2 className="h-8 w-8 text-white" />
+    <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+      <div className="rounded-3xl border border-emerald-100 bg-white p-5 sm:p-6 lg:p-8 shadow-sm">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-center gap-4 sm:gap-6">
+            <div className="relative">
+              <div className="h-16 w-16 sm:h-24 sm:w-24 rounded-full border-[3px] border-emerald-300 bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl sm:text-3xl font-semibold">
+                {initials}
               </div>
-
-              <div className="flex items-center gap-3">
-                <Typography
-                  variant="lead"
-                  className=" text-white sm:leading-none"
-                >
-                  {fullName}
-                </Typography>
-
-               
+              <div className="absolute -bottom-1 -right-1 h-7 w-7 sm:h-9 sm:w-9 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-lg">
+                <Verify size={16} variant="Bold" />
               </div>
             </div>
-
-            <div className="inline-flex w-full items-center justify-between rounded-full bg-white px-3 py-3 text-[#0f1720] sm:w-auto sm:gap-4 sm:px-5">
-              <span className="inline-flex items-center gap-2 rounded-full bg-[#00c853] px-4 py-2 sm:text-[32px]">
-                <Typography
-                  variant={"small"}
-                  className=""
-                >
-                  Tier 2
-                </Typography>
-              </span>
-
-              <span className="inline-flex items-center gap-2 text-base sm:text-[32px]">
-                <ArrowUp className="h-6 w-6" />
-                <Typography as="span" variant="body" className="text-base sm:text-[32px]">
-                  Upgrade
-                </Typography>
-              </span>
+            <div>
+              <Typography
+                variant="p"
+                className="text-xl sm:text-2xl font-semibold text-gray-900"
+              >
+                {fullName}
+              </Typography>
+              <Typography
+                variant="p"
+                className="mt-1 text-xs sm:text-sm text-gray-500"
+              >
+                {email}
+              </Typography>
+              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs sm:text-sm">
+                <span className="rounded-full bg-emerald-100 text-emerald-700 font-semibold px-3 py-1">
+                  TIER 2 ACCOUNT
+                </span>
+                <span className="text-gray-400">• Verified account</span>
+              </div>
             </div>
           </div>
+          {role === 'user' && (
+            <button
+              type="button"
+              onClick={() => navigate({ to: '/settings/upgrade-account' })}
+              className="h-10 sm:h-12 px-4 sm:px-6 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold inline-flex items-center justify-center gap-2 transition-colors text-sm sm:text-base"
+            >
+              <ArrowUp2 size={18} />
+              Upgrade Account
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
+          <Typography
+            variant="p"
+            className="text-xl sm:text-2xl font-semibold text-gray-900"
+          >
+            Account Settings
+          </Typography>
+          <Typography
+            variant="p"
+            className="text-gray-500 text-sm sm:text-base"
+          >
+            Manage your presence and security
+          </Typography>
         </div>
 
-        <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-4">
-          {moreItems.map(({ label, icon: Icon, href }) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          {moreItems.map((item) => (
             <button
-              key={label}
+              key={item.href}
               type="button"
-              onClick={() => navigate({ to: href })}
-              className="text-left"
+              onClick={() => navigate({ to: item.href })}
+              className={cn(
+                'text-left rounded-3xl border p-5 sm:p-6 min-h-[210px] flex flex-col transition-all',
+                'bg-white border-emerald-100 hover:border-emerald-300 hover:shadow-md'
+              )}
             >
-              <ModularCard
-                hideHeader
-                className="h-[180px] rounded-none border border-[#171e22] bg-[#efefef] py-0 transition-colors hover:bg-[#e7e7e7] sm:h-[210px]"
-                contentClassName="mt-0 flex h-full items-center justify-center p-0"
+              <div className="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                {item.icon}
+              </div>
+              <Typography
+                variant="p"
+                className="mt-5 text-lg font-semibold text-gray-900"
               >
-                <div className="flex flex-col items-center justify-center gap-3 px-4 text-center text-[#1f272c]">
-                  <Icon className="h-8 w-8" />
-                  <Typography
-                    variant="small"
-                    className="max-w-[140px] text-sm font-normal leading-snug text-[#1f272c]"
-                  >
-                    {label}
-                  </Typography>
-                </div>
-              </ModularCard>
+                {item.title}
+              </Typography>
+              <Typography
+                variant="p"
+                className="mt-2 text-gray-500 text-sm"
+              >
+                {item.description}
+              </Typography>
+              <span className="mt-auto pt-6 inline-flex items-center gap-2 text-emerald-600 font-semibold text-sm">
+                {item.cta}
+                <ArrowRight2 size={16} />
+              </span>
             </button>
           ))}
         </div>
-
-        <div className="my-10 h-px w-full bg-[#b8b3aa]" />
-
-        <button
-          type="button"
-          className="flex w-full items-center justify-between border border-[#171e22] bg-[#efefef] px-6 py-6 text-[#1f272c] sm:px-8 sm:py-7"
-        >
-          <span className="inline-flex items-center gap-4">
-            <span className="inline-flex h-14 w-14 items-center justify-center bg-[#facc15] text-[#1a1a1a]">
-              <LogOut className="h-7 w-7" />
-            </span>
-            <Typography
-              as="span"
-              variant="h3"
-              className="text-[18px] font-medium sm:text-[40px]"
-            >
-              Log out
-            </Typography>
-          </span>
-
-          <ChevronRight className="h-8 w-8" />
-        </button>
       </div>
-    </ModularCard>
+    </div>
   );
 };
 
