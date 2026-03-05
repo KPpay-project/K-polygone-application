@@ -1,10 +1,9 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# Get the commit message from the first argument
 commit_msg=$(cat "$1")
 
-# Check if commit message follows conventional commit format
+
 if ! echo "$commit_msg" | grep -qE "^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .+"; then
   echo "❌ Invalid commit message format."
   echo "💡 Please use conventional commit format:"
@@ -20,4 +19,4 @@ if ! echo "$commit_msg" | grep -qE "^(feat|fix|docs|style|refactor|test|chore|pe
   exit 1
 fi
 
-echo "✅ Commit message format is valid!" 
+echo "✅ Commit message format is valid!"
