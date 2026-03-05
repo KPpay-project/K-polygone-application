@@ -87,7 +87,9 @@ const ChanglePasswordAction = () => {
 
         form.reset();
       } else {
-        toast.error(data?.changePassword.errors?.[0]?.message || data?.changePassword.message || 'Error changing password');
+        toast.error(
+          data?.changePassword.errors?.[0]?.message || data?.changePassword.message || 'Error changing password'
+        );
       }
     } catch (error: any) {
       toast.error(error?.message || 'Error changing password');

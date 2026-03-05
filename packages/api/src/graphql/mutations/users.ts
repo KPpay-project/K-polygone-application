@@ -1,7 +1,5 @@
 import { gql } from '@apollo/client';
 
-
-
 export const SUSPEND_USER = gql`
   mutation SuspendUser($userAccountId: ID!, $reason: String) {
     suspendUser(userAccountId: $userAccountId, reason: $reason) {
@@ -17,17 +15,18 @@ export const SUSPEND_USER = gql`
 `;
 
 const CHANGE_USER_STATUS = gql`
-mutation ChangePassword($input: ChangePasswordInput!) {
-  changePassword(input: $input) {
-    message
-    success
-    errors {
-      code
-      field
+  mutation ChangePassword($input: ChangePasswordInput!) {
+    changePassword(input: $input) {
       message
+      success
+      errors {
+        code
+        field
+        message
+      }
     }
   }
-}`
+`;
 
 export const SUSPEND_ADMIN = gql`
   mutation SuspendAdmin($input: AdminSuspensionInput!) {

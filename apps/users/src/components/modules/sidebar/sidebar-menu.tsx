@@ -65,7 +65,7 @@ export const useMenuItems = (): SidebarItemProps[] => {
     // },
 
     { icon: <MoneyChange size="18" variant="Outline" />, label: t('sidebar.exchangeMoney'), href: '/exchange' },
-     { icon: <MoneyChange size="18" variant="Outline" />, label: "More", href: '/more' }
+    { icon: <MoneyChange size="18" variant="Outline" />, label: 'More', href: '/more' }
     // { icon: <Clipboard size="18" variant="Outline" />, label: t('sidebar.transactionHistory'), href: '/transactions' }
   ];
 };
@@ -78,7 +78,7 @@ export const useBottomOptions = (): SidebarItemProps[] => {
       icon: <Ticket size="18" variant="Outline" />,
       label: t('sidebar.ticket'),
       href: '/ticket'
-    },
+    }
     // {
     //   icon: <Setting2 size="18" variant="Outline" />,
     //   label: t('sidebar.settings'),
@@ -137,5 +137,4 @@ export const bottomOptions = [
     href: '/settings',
     matchTailingUrl: true
   }
-
 ];
