@@ -1,15 +1,15 @@
-import CreatePaymentLink from '@/components/actions/merchants/create-payment-link';
 import DashboardLayout from '@/components/layouts/dashboard-layout';
+import MorePage from '@/pages/dashboard/more';
 import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/create-payment-link/')({
+export const Route = createFileRoute('/more/')({
   component: RouteComponent
 });
 
 function RouteComponent() {
   return (
     <DashboardLayout>
-      <CreatePaymentLink />
+      <MorePage />
     </DashboardLayout>
   );
 }

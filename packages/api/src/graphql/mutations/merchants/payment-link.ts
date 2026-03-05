@@ -9,7 +9,10 @@ export const CREATE_PAYMENT_LINK = gql`
         code
         checkoutUrl
         name
+        amount
         isActive
+        allowedChannels
+        insertedAt
       }
     }
   }

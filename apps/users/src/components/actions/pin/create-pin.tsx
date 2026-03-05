@@ -170,14 +170,12 @@ const SetupPinAction = ({ onClose, onSuccess }: SetupPinActionProps) => {
         <div className="flex items-center justify-center mb-4">
           <Keyboard size="50" color="#FF8A65" variant="Bulk" />
         </div>
-        <Typography className='text-center font-semibold'>
-          Set Up Payment PIN
-        </Typography>
+        <Typography className="text-center font-semibold">Set Up Payment PIN</Typography>
         <div className="flex flex-col gap-4 mt-6">
-        <Typography  className='text-gray-600 text-center'>
+          <Typography className="text-gray-600 text-center">
             To secure your transactions, please set up a payment PIN. This PIN will be required for all payment
             operations.
-        </Typography>
+          </Typography>
           <div className="flex gap-3 justify-end mt-2">
             <Button className="w-full bg-red-400/20" variant="outline" onClick={onClose}>
               Later

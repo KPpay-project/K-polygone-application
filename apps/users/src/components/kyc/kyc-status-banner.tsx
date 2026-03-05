@@ -44,11 +44,11 @@ const KycStatusBanner: React.FC<KycStatusBannerProps> = ({ className }) => {
         </div>
         {kycStatus.actionText && (
           <Link to={kycStatus.redirectUrl}>
-              <Button data-tour="start-verification-btn" variant={"disabled_outline"} >
-                {kycStatus.actionText}
+            <Button data-tour="start-verification-btn" variant={'disabled_outline'}>
+              {kycStatus.actionText}
               <ArrowRight />
-              </Button>
-            </Link>
+            </Button>
+          </Link>
         )}
       </div>
     </Alert>

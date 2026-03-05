@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useUserId } from '@/store/user-store';
 import { toast } from 'sonner';
 import { Form, FormControl, FormField, FormItem, FormLabel, Input, Button } from 'k-polygon-assets';
 import { IconArrowRight } from 'k-polygon-assets/icons';
@@ -41,8 +40,7 @@ const changePasswordSchema = z
 type FormValues = z.infer<typeof changePasswordSchema>;
 
 type ChangePasswordInput = {
-  userAccountId: string;
-  oldPassword: string;
+  currentPassword: string;
   newPassword: string;
   newPasswordConfirmation: string;
 };
@@ -51,10 +49,15 @@ const ChanglePasswordAction = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
-  const userAccountId = useUserId();
 
   const [changePassword, { loading }] = useMutation<
-    { changePassword: { success: boolean; message: string } },
+    {
+      changePassword: {
+        success: boolean;
+        message: string;
+        errors?: Array<{ code?: string; field?: string; message?: string }>;
+      };
+    },
     { input: ChangePasswordInput }
   >(CHANGE_PASSWORD);
 
@@ -72,8 +75,7 @@ const ChanglePasswordAction = () => {
       const { data } = await changePassword({
         variables: {
           input: {
-            userAccountId: userAccountId || '',
-            oldPassword: values.oldPassword,
+            currentPassword: values.oldPassword,
             newPassword: values.newPassword,
             newPasswordConfirmation: values.repeatNewPassword
           }
@@ -85,7 +87,9 @@ const ChanglePasswordAction = () => {
 
         form.reset();
       } else {
-        toast.error(data?.changePassword.message || 'Error changing password');
+        toast.error(
+          data?.changePassword.errors?.[0]?.message || data?.changePassword.message || 'Error changing password'
+        );
       }
     } catch (error: any) {
       toast.error(error?.message || 'Error changing password');

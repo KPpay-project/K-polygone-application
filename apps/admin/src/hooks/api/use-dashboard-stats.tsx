@@ -62,13 +62,20 @@ export interface AdminDashboardStats {
   annualTransactionVolumes: TransactionVolumes;
 
   topCountries: TopCountry[];
+  walletCountByMonth: {
+    year: number;
+    month: number;
+    monthLabel?: string;
+    activeWallets: number;
+    frozenWallets: number;
+  }[];
 }
 
 interface GetAdminDashboardStatsResult {
   adminDashboardStats: AdminDashboardStats;
 }
 
-export const useDashboardStats = (variables?: { countryCode?: string }) => {
+export const useDashboardStats = (variables?: { countryCode?: string; currency?: string }) => {
   return useQuery<GetAdminDashboardStatsResult>(GET_DASHBOARD_STATS, {
     variables,
     errorPolicy: 'all',

@@ -15,6 +15,7 @@ import { Route as TransferIndexRouteImport } from './routes/transfer/index'
 import { Route as TransactionsIndexRouteImport } from './routes/transactions/index'
 import { Route as TicketIndexRouteImport } from './routes/ticket/index'
 import { Route as SettingsIndexRouteImport } from './routes/settings/index'
+import { Route as MoreIndexRouteImport } from './routes/more/index'
 import { Route as MerchantIndexRouteImport } from './routes/merchant/index'
 import { Route as ExchangeIndexRouteImport } from './routes/exchange/index'
 import { Route as DepositIndexRouteImport } from './routes/deposit/index'
@@ -85,6 +86,11 @@ const TicketIndexRoute = TicketIndexRouteImport.update({
 const SettingsIndexRoute = SettingsIndexRouteImport.update({
   id: '/settings/',
   path: '/settings/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MoreIndexRoute = MoreIndexRouteImport.update({
+  id: '/more/',
+  path: '/more/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MerchantIndexRoute = MerchantIndexRouteImport.update({
@@ -334,6 +340,7 @@ export interface FileRoutesByFullPath {
   '/deposit/': typeof DepositIndexRoute
   '/exchange/': typeof ExchangeIndexRoute
   '/merchant/': typeof MerchantIndexRoute
+  '/more/': typeof MoreIndexRoute
   '/settings/': typeof SettingsIndexRoute
   '/ticket/': typeof TicketIndexRoute
   '/transactions/': typeof TransactionsIndexRoute
@@ -383,6 +390,7 @@ export interface FileRoutesByTo {
   '/deposit': typeof DepositIndexRoute
   '/exchange': typeof ExchangeIndexRoute
   '/merchant': typeof MerchantIndexRoute
+  '/more': typeof MoreIndexRoute
   '/settings': typeof SettingsIndexRoute
   '/ticket': typeof TicketIndexRoute
   '/transactions': typeof TransactionsIndexRoute
@@ -433,6 +441,7 @@ export interface FileRoutesById {
   '/deposit/': typeof DepositIndexRoute
   '/exchange/': typeof ExchangeIndexRoute
   '/merchant/': typeof MerchantIndexRoute
+  '/more/': typeof MoreIndexRoute
   '/settings/': typeof SettingsIndexRoute
   '/ticket/': typeof TicketIndexRoute
   '/transactions/': typeof TransactionsIndexRoute
@@ -484,6 +493,7 @@ export interface FileRouteTypes {
     | '/deposit/'
     | '/exchange/'
     | '/merchant/'
+    | '/more/'
     | '/settings/'
     | '/ticket/'
     | '/transactions/'
@@ -533,6 +543,7 @@ export interface FileRouteTypes {
     | '/deposit'
     | '/exchange'
     | '/merchant'
+    | '/more'
     | '/settings'
     | '/ticket'
     | '/transactions'
@@ -582,6 +593,7 @@ export interface FileRouteTypes {
     | '/deposit/'
     | '/exchange/'
     | '/merchant/'
+    | '/more/'
     | '/settings/'
     | '/ticket/'
     | '/transactions/'
@@ -632,6 +644,7 @@ export interface RootRouteChildren {
   DepositIndexRoute: typeof DepositIndexRoute
   ExchangeIndexRoute: typeof ExchangeIndexRoute
   MerchantIndexRoute: typeof MerchantIndexRoute
+  MoreIndexRoute: typeof MoreIndexRoute
   SettingsIndexRoute: typeof SettingsIndexRoute
   TicketIndexRoute: typeof TicketIndexRoute
   TransactionsIndexRoute: typeof TransactionsIndexRoute
@@ -698,6 +711,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings/'
       preLoaderRoute: typeof SettingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/more/': {
+      id: '/more/'
+      path: '/more'
+      fullPath: '/more/'
+      preLoaderRoute: typeof MoreIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/merchant/': {
@@ -1016,6 +1036,7 @@ const rootRouteChildren: RootRouteChildren = {
   DepositIndexRoute: DepositIndexRoute,
   ExchangeIndexRoute: ExchangeIndexRoute,
   MerchantIndexRoute: MerchantIndexRoute,
+  MoreIndexRoute: MoreIndexRoute,
   SettingsIndexRoute: SettingsIndexRoute,
   TicketIndexRoute: TicketIndexRoute,
   TransactionsIndexRoute: TransactionsIndexRoute,

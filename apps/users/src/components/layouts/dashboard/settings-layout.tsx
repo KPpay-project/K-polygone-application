@@ -37,8 +37,8 @@ const SettingsLayout: React.FC<ISettingsLayout> = ({ children }) => {
             </button>
           </div>
 
-          <div className="grid md:grid-cols-7 gap-4 sm:gap-6 md:gap-8 h-full">
-            <ModularCard
+          <div className=" sm:gap-6 md:gap-8 h-full">
+            {/* <ModularCard
               className={cn(
                 'md:col-span-2 bg-white  rounded-[16px] ',
                 'md:h-full md:block w-md',
@@ -71,7 +71,7 @@ const SettingsLayout: React.FC<ISettingsLayout> = ({ children }) => {
                   );
                 })}
               </div>
-            </ModularCard>
+            </ModularCard> */}
 
             <motion.div
               className="md:col-span-5 bg-white p-4 sm:p-6 md:p-[28px] min-h-[400px] 
