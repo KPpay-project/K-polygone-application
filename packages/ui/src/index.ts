@@ -1,4 +1,5 @@
 export * from './lib/utils';
+export * from './components/misc/profile';
 export * from './components/ads/ads-panel';
 export * from './components/ui/alert';
 export * from './components/ui/avatar';

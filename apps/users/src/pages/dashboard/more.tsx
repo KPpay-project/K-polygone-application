@@ -46,7 +46,7 @@ const MorePage = () => {
       description: 'Passwords, 2FA, and active sessions management.',
       cta: 'Configure',
       href: '/settings/security',
-      icon: <SecuritySafe size={ICON_SIZE} variant="Bulk"  color={COLOR}/>
+      icon: <SecuritySafe size={ICON_SIZE} variant="Bulk" color={COLOR} />
     },
     ...(role === 'user'
       ? [
@@ -86,8 +86,10 @@ const MorePage = () => {
                 'bg-white border-emerald-100 hover:border-emerald-300 '
               )}
             >
-              <div className="h-12 w-12 bg-blue-50
-               rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <div
+                className="h-12 w-12 bg-blue-50
+               rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center"
+              >
                 {item.icon}
               </div>
               <Typography variant="p" className="mt-5  font-semibold text-gray-900">
