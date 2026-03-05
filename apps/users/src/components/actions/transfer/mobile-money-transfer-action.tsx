@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import { Button } from 'k-polygon-assets';
 import { NumberInput, Currency } from '@/components/ui/input';
 import UsersCurrencyDropdown from '@/components/currency-dropdown/users-currency-dropdown';
-import { useWithdrawOrTransfer } from '@/hooks/api/use-withdraw-or-transfer';
 import { useProfileStore } from '@/store/profile-store';
 import { toast } from 'sonner';
 import Loading from '@/components/common/loading';
@@ -18,7 +17,12 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { VerifyTransactionPin } from '@/components/actions/pin/verify-transaction-pin';
 import ListBeneficiariesPanel, { Beneficiary } from '@/components/modules/beneficiaries/list-beneficiaries-panel';
 import { BENEFICIARY_TYPE_ENUM } from '@/enums';
-import { CREATE_BENEFICIARY_MUTATION, FETCH_BENEFICIARIES_QUERY } from '@repo/api';
+import {
+  CREATE_BENEFICIARY_MUTATION,
+  FETCH_BENEFICIARIES_QUERY,
+  MOBILE_MONEY_WITHRAWAL_QOUTE,
+  WITHDRAW_TO_MOBILE_MONEY
+} from '@repo/api';
 import { useMutation } from '@apollo/client';
 import { Button as ShadcnButton } from '@/components/ui/button';
 import { useGetMyWallets } from '@/hooks/api';
@@ -30,6 +34,18 @@ const schema = z.object({
 });
 
 type FormData = z.infer<typeof schema>;
+type MobileMoneyQuote = {
+  amount: string;
+  applies: boolean;
+  currencyCode: string;
+  expiresAt: string;
+  feeAmount: string;
+  feeCurrencyCode: string;
+  paymentType: string;
+  quoteId: string;
+  tier: string;
+  totalDebit: string;
+};
 
 interface Props {
   onSuccess?: () => void;
@@ -46,10 +62,14 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
 
   const [selectedWalletId, setSelectedWalletId] = useState<string>(defaultWalletId);
   const [isPinModalOpen, setIsPinModalOpen] = useState(false);
+  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
   const [pendingData, setPendingData] = useState<FormData | null>(null);
   const [selectedBeneficiary, setSelectedBeneficiary] = useState<Beneficiary | null>(null);
   const [selectedCurrencyOption, setSelectedCurrencyOption] = useState<CurrencyOption | null>(null);
+  const [selectedCountryCode, setSelectedCountryCode] = useState('NG');
+  const [currentQuoteId, setCurrentQuoteId] = useState<string | null>(null);
+  const [currentQuote, setCurrentQuote] = useState<MobileMoneyQuote | null>(null);
 
   const [resultStatus, setResultStatus] = useState<'success' | 'error'>('success');
   const [resultMessage, setResultMessage] = useState('');
@@ -90,32 +110,12 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
     return map;
   }, [walletsData]);
 
-  const { withdrawOrTransfer, loading } = useWithdrawOrTransfer({
-    onCompleted: (data) => {
-      const payload = data?.withdrawOrTransfer;
-
-      if (payload?.success) {
-        setResultStatus('success');
-        setResultMessage(payload?.message || t('transfer.success') || 'Transfer successful');
-        setIsResultModalOpen(true);
-        onSuccess?.();
-        reset();
-      } else {
-        setResultStatus('error');
-        setResultMessage(payload?.message || t('transfer.failed') || 'Transfer failed');
-        setIsResultModalOpen(true);
-      }
-      setPendingData(null);
-    },
-    onError: (error) => {
-      setResultStatus('error');
-      setResultMessage(error.message || t('common.error') || 'An error occurred');
-      setIsResultModalOpen(true);
-      setPendingData(null);
-    }
+  const [getMobileMoneyQuote, { loading: quoting }] = useMutation(MOBILE_MONEY_WITHRAWAL_QOUTE, {
+    errorPolicy: 'all'
   });
+  const [withdrawToMobileMoney, { loading: withdrawing }] = useMutation(WITHDRAW_TO_MOBILE_MONEY);
 
-  const onSubmit = (values: FormData) => {
+  const onSubmit = async (values: FormData) => {
     const walletId = selectedWalletId || defaultWalletId;
 
     if (!walletId) {
@@ -127,12 +127,49 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
       return;
     }
 
-    setPendingData(values);
-    setIsPinModalOpen(true);
+    const amountNum = parseFloat(values.amount.replace(/,/g, ''));
+    if (isNaN(amountNum) || amountNum <= 0) {
+      toast.error('Invalid amount');
+      return;
+    }
+
+    try {
+      const quoteResp = await getMobileMoneyQuote({
+        variables: {
+          input: {
+            amount: amountNum,
+            countryCode: selectedCountryCode.toUpperCase(),
+            currencyCode: values.currency,
+            network: selectedProvider,
+            walletId
+          }
+        }
+      });
+
+      const quote = quoteResp.data?.mobileMoneyWithdrawalQuote;
+      const errorMsg = (quoteResp as any)?.errors?.[0]?.message;
+
+      if (errorMsg || !quote?.quoteId) {
+        setResultStatus('error');
+        setResultMessage(errorMsg || t('transfer.quoteFailed') || 'Failed to get quote');
+        setIsResultModalOpen(true);
+        return;
+      }
+
+      setCurrentQuoteId(quote.quoteId);
+      setCurrentQuote(quote);
+      setPendingData(values);
+      setIsQuoteModalOpen(true);
+    } catch (error: any) {
+      setResultStatus('error');
+      setResultMessage(error?.message || t('common.error') || 'An error occurred');
+      setIsResultModalOpen(true);
+    }
   };
 
   const handlePinVerified = async (pin: string) => {
-    if (!pendingData || !selectedWalletId || !selectedProvider) return;
+    const walletId = selectedWalletId || defaultWalletId;
+    if (!pendingData || !walletId || !selectedProvider || !currentQuoteId) return;
 
     const amountNum = parseFloat(pendingData.amount.replace(/,/g, ''));
 
@@ -141,25 +178,57 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
       return;
     }
 
-    await withdrawOrTransfer({
-      variables: {
-        input: {
-          walletId: selectedWalletId,
-          currencyCode: pendingData.currency,
-          amount: amountNum,
-          provider: selectedProvider,
-          receiverPhone: pendingData.receiverPhone,
-          description: 'Mobile Money Transfer',
-          paymentPin: pin
+    try {
+      const resp = await withdrawToMobileMoney({
+        variables: {
+          input: {
+            amount: amountNum,
+            countryCode: selectedCountryCode.toUpperCase(),
+            currencyCode: pendingData.currency,
+            description: 'Mobile Money Transfer',
+            network: selectedProvider,
+            paymentPin: pin,
+            phoneNumber: pendingData.receiverPhone,
+            quoteId: currentQuoteId,
+            walletId
+          }
         }
+      });
+
+      const payload = resp.data?.withdrawToMobileMoney;
+      if (payload?.success) {
+        setResultStatus('success');
+        setResultMessage(payload?.message || t('transfer.success') || 'Transfer successful');
+        setIsResultModalOpen(true);
+        onSuccess?.();
+        reset();
+      } else {
+        setResultStatus('error');
+        setResultMessage(payload?.message || t('transfer.failed') || 'Transfer failed');
+        setIsResultModalOpen(true);
       }
-    });
+    } catch (error: any) {
+      setResultStatus('error');
+      setResultMessage(error?.message || t('common.error') || 'An error occurred');
+      setIsResultModalOpen(true);
+    } finally {
+      setPendingData(null);
+      setIsPinModalOpen(false);
+    }
   };
 
   const closeResultModal = () => {
     setIsResultModalOpen(false);
+    setIsQuoteModalOpen(false);
     setIsPinModalOpen(false);
     setResultMessage('');
+    setCurrentQuoteId(null);
+    setCurrentQuote(null);
+  };
+
+  const continueFromQuote = () => {
+    setIsQuoteModalOpen(false);
+    setIsPinModalOpen(true);
   };
 
   const handleSelectBeneficiary = (beneficiary: Beneficiary) => {
@@ -211,7 +280,7 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
     <>
       {/* Main Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="px-4 pb-6 space-y-6">
-        <Loading isLoading={loading} text={t('common.processing') || 'Processing...'} />
+        <Loading isLoading={quoting || withdrawing} text={t('common.processing') || 'Processing...'} />
 
         <ListBeneficiariesPanel
           selectedBeneficiary={selectedBeneficiary}
@@ -247,7 +316,10 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
         <div>
           <PrimaryPhoneNumberInput
             value={watchedPhone || ''}
-            onChange={(v) => setValue('receiverPhone', v)}
+            onChange={(v, countryData) => {
+              setValue('receiverPhone', v);
+              setSelectedCountryCode(countryData?.countryCode?.toUpperCase?.() || 'NG');
+            }}
             placeholder={t('transfer.enterMobileNumber') || 'Enter mobile number'}
             className="w-full"
           />
@@ -256,18 +328,21 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
           )}
         </div>
 
-        <Button type="submit" className="w-full" disabled={loading}>
+        <Button type="submit" className="w-full" disabled={quoting || withdrawing}>
           {t('common.continue') || 'Continue'}
         </Button>
       </form>
 
       <Dialog
-        open={isPinModalOpen || isResultModalOpen}
+        open={isPinModalOpen || isQuoteModalOpen || isResultModalOpen}
         onOpenChange={(open) => {
           if (!open) {
             setIsPinModalOpen(false);
+            setIsQuoteModalOpen(false);
             setIsResultModalOpen(false);
             setPendingData(null);
+            setCurrentQuoteId(null);
+            setCurrentQuote(null);
           }
         }}
       >
@@ -297,6 +372,49 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
                   </ShadcnButton>
                 )}
               </>
+            ) : isQuoteModalOpen ? (
+              <div className="space-y-4">
+                <Typography className="text-lg font-semibold text-gray-900">Withdrawal Quote</Typography>
+                <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 space-y-2 text-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Amount</span>
+                    <span className="font-medium text-gray-900">
+                      {currentQuote?.amount} {currentQuote?.currencyCode}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Fee</span>
+                    <span className="font-medium text-gray-900">
+                      {currentQuote?.feeAmount} {currentQuote?.feeCurrencyCode}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Total Debit</span>
+                    <span className="font-semibold text-gray-900">
+                      {currentQuote?.totalDebit} {currentQuote?.currencyCode}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Network</span>
+                    <span className="font-medium text-gray-900">{currentQuote?.paymentType}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Tier</span>
+                    <span className="font-medium text-gray-900">{currentQuote?.tier}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Applies</span>
+                    <span className="font-medium text-gray-900">{currentQuote?.applies ? 'Yes' : 'No'}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-gray-600">Expires At</span>
+                    <span className="font-medium text-gray-900 text-right">{currentQuote?.expiresAt}</span>
+                  </div>
+                </div>
+                <Button type="button" className="w-full" onClick={continueFromQuote}>
+                  {t('common.continue') || 'Continue'}
+                </Button>
+              </div>
             ) : (
               <VerifyTransactionPin
                 onClose={() => {
@@ -304,7 +422,7 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
                   setPendingData(null);
                 }}
                 onSuccess={handlePinVerified}
-                loading={loading}
+                loading={withdrawing}
                 title={t('transfer.verifyTransaction') || 'Verify Transaction'}
                 description={t('transfer.enterPinDescription') || 'Enter your 4-digit PIN to confirm'}
               />

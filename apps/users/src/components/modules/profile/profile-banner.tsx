@@ -23,7 +23,7 @@ function ProfileBanner() {
       <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex items-center gap-4 sm:gap-6">
           <div className="relative">
-            <DefaultUserProfile name={fullName} size={64} />
+            <DefaultUserProfile className="border-2 border-gray-300" name={fullName} size={64} />
             <div
               className="absolute -bottom-1 -right-1 h-7 w-7
             bg-green-100  rounded-full bg-emerald-500 text-green-500 flex items-center justify-center "
