@@ -26,6 +26,7 @@ import {
 import { useMutation } from '@apollo/client';
 import { Button as ShadcnButton } from '@/components/ui/button';
 import { useGetMyWallets } from '@/hooks/api';
+import { extractApiErrorMessage, type GraphQLLikeResponse } from '@repo/common';
 
 const schema = z.object({
   amount: z.string().min(1, 'Amount is required'),
@@ -45,6 +46,19 @@ type MobileMoneyQuote = {
   quoteId: string;
   tier: string;
   totalDebit: string;
+};
+type MobileMoneyQuoteResult = {
+  mobileMoneyWithdrawalQuote: MobileMoneyQuote | null;
+};
+type WithdrawToMobileMoneyPayload = {
+  success: boolean;
+  message?: string;
+  flutterwaveTransferId?: string;
+  reference?: string;
+  status?: string;
+};
+type WithdrawToMobileMoneyResult = {
+  withdrawToMobileMoney: WithdrawToMobileMoneyPayload | null;
 };
 
 interface Props {
@@ -110,10 +124,16 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
     return map;
   }, [walletsData]);
 
-  const [getMobileMoneyQuote, { loading: quoting }] = useMutation(MOBILE_MONEY_WITHRAWAL_QOUTE, {
-    errorPolicy: 'all'
-  });
-  const [withdrawToMobileMoney, { loading: withdrawing }] = useMutation(WITHDRAW_TO_MOBILE_MONEY);
+  const [getMobileMoneyQuote, { loading: quoting }] = useMutation<MobileMoneyQuoteResult>(
+    MOBILE_MONEY_WITHRAWAL_QOUTE,
+    {
+      errorPolicy: 'all'
+    }
+  );
+  const [withdrawToMobileMoney, { loading: withdrawing }] = useMutation<WithdrawToMobileMoneyResult>(
+    WITHDRAW_TO_MOBILE_MONEY,
+    { errorPolicy: 'all' }
+  );
 
   const onSubmit = async (values: FormData) => {
     const walletId = selectedWalletId || defaultWalletId;
@@ -134,7 +154,7 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
     }
 
     try {
-      const quoteResp = await getMobileMoneyQuote({
+      const quoteResp: GraphQLLikeResponse<MobileMoneyQuoteResult> = await getMobileMoneyQuote({
         variables: {
           input: {
             amount: amountNum,
@@ -147,7 +167,9 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
       });
 
       const quote = quoteResp.data?.mobileMoneyWithdrawalQuote;
-      const errorMsg = (quoteResp as any)?.errors?.[0]?.message;
+      const errorMsg = extractApiErrorMessage(quoteResp, {
+        fallback: t('transfer.quoteFailed') || 'Failed to get quote'
+      });
 
       if (errorMsg || !quote?.quoteId) {
         setResultStatus('error');
@@ -162,7 +184,13 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
       setIsQuoteModalOpen(true);
     } catch (error: any) {
       setResultStatus('error');
-      setResultMessage(error?.message || t('common.error') || 'An error occurred');
+      setResultMessage(
+        extractApiErrorMessage(error, {
+          fallback: t('common.error') || 'An error occurred'
+        }) ||
+          t('common.error') ||
+          'An error occurred'
+      );
       setIsResultModalOpen(true);
     }
   };
@@ -179,7 +207,7 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
     }
 
     try {
-      const resp = await withdrawToMobileMoney({
+      const resp: GraphQLLikeResponse<WithdrawToMobileMoneyResult> = await withdrawToMobileMoney({
         variables: {
           input: {
             amount: amountNum,
@@ -195,6 +223,14 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
         }
       });
 
+      const graphQlErrorMessage = extractApiErrorMessage(resp);
+      if (graphQlErrorMessage && !resp.data?.withdrawToMobileMoney) {
+        setResultStatus('error');
+        setResultMessage(graphQlErrorMessage);
+        setIsResultModalOpen(true);
+        return;
+      }
+
       const payload = resp.data?.withdrawToMobileMoney;
       if (payload?.success) {
         setResultStatus('success');
@@ -204,12 +240,27 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
         reset();
       } else {
         setResultStatus('error');
-        setResultMessage(payload?.message || t('transfer.failed') || 'Transfer failed');
+        setResultMessage(
+          extractApiErrorMessage(
+            { message: payload?.message },
+            {
+              fallback: t('transfer.failed') || 'Transfer failed'
+            }
+          ) ||
+            t('transfer.failed') ||
+            'Transfer failed'
+        );
         setIsResultModalOpen(true);
       }
     } catch (error: any) {
       setResultStatus('error');
-      setResultMessage(error?.message || t('common.error') || 'An error occurred');
+      setResultMessage(
+        extractApiErrorMessage(error, {
+          fallback: t('common.error') || 'An error occurred'
+        }) ||
+          t('common.error') ||
+          'An error occurred'
+      );
       setIsResultModalOpen(true);
     } finally {
       setPendingData(null);
