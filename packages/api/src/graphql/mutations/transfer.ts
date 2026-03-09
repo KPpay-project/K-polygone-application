@@ -28,10 +28,10 @@ export interface WalletToWalletInput {
 }
 
 export interface TransferToKpayUserInput {
-  amount: string; // Decimal!
-  currencyCode: string; // String!
-  description?: string | null; // String
-  recipientEmail: string; // String!
+  amount: string;
+  currencyCode: string;
+  description?: string | null;
+  recipientEmail: string;
 }
 
 const TRANSFER = gql`
@@ -88,11 +88,11 @@ const TRANSFER_TO_KPAY_USER = gql`
 `;
 
 export interface TransferQuoteInput {
-  amount: string; // Decimal as string
-  currencyCode: string; // e.g., "USD"
-  fromWalletId: string; // sender wallet id
-  paymentType: string; // e.g., "WALLET_TO_WALLET"
-  toWalletCode: string; // receiver wallet code
+  amount: string;
+  currencyCode: string;
+  fromWalletId: string;
+  paymentType: string;
+  toWalletCode: string;
 }
 
 const TRANSFER_QUOTE = gql`
@@ -174,7 +174,38 @@ const WITHDRAW_TO_BANK = gql`
   }
 `;
 
+const MOBILE_MONEY_WITHRAWAL_QOUTE = gql`
+  mutation MobileMoneyWithdrawalQuote($input: MobileMoneyWithdrawalQuoteInput!) {
+    mobileMoneyWithdrawalQuote(input: $input) {
+      amount
+      applies
+      currencyCode
+      expiresAt
+      feeAmount
+      feeCurrencyCode
+      paymentType
+      quoteId
+      tier
+      totalDebit
+    }
+  }
+`;
+
+const WITHDRAW_TO_MOBILE_MONEY = gql`
+  mutation WithdrawToMobileMoney($input: MobileMoneyWithdrawalInput!) {
+    withdrawToMobileMoney(input: $input) {
+      flutterwaveTransferId
+      message
+      reference
+      status
+      success
+    }
+  }
+`;
+
 export {
+  WITHDRAW_TO_MOBILE_MONEY,
+  MOBILE_MONEY_WITHRAWAL_QOUTE,
   TRANSFER,
   MOMO_TRANSFER,
   TRANSFER_TO_KPAY_USER,
