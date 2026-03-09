@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface Wallet {
   id: string;
@@ -41,6 +42,7 @@ export const useWalletStore = create<WalletStore>()(
     }),
     {
       name: 'wallet-store',
+      storage: createJSONStorage(() => AsyncStorage),
       partialize: (state) => ({ wallet: state.wallet }),
     }
   )

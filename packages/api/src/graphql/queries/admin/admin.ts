@@ -1,12 +1,12 @@
 import { gql } from '@apollo/client';
 
 export const GET_DASHBOARD_STATS = gql`
-  fragment AdminDashboardStatWithChangeFields on StatWithChange {
+  fragment AdminOverviewStatWithChangeFields on StatWithChange {
     total
     percentageChange
   }
 
-  fragment AdminDashboardStatWithDecimalChangeFields on StatWithDecimalChange {
+  fragment AdminOverviewStatWithDecimalChangeFields on StatWithDecimalChange {
     total
     percentageChange
   }
@@ -14,27 +14,27 @@ export const GET_DASHBOARD_STATS = gql`
   query AdminDashboardStats($countryCode: String) {
     adminDashboardStats(countryCode: $countryCode) {
       totalWallets {
-        ...AdminDashboardStatWithChangeFields
+        ...AdminOverviewStatWithChangeFields
       }
       totalUsers {
-        ...AdminDashboardStatWithChangeFields
+        ...AdminOverviewStatWithChangeFields
       }
       totalMerchants {
-        ...AdminDashboardStatWithChangeFields
+        ...AdminOverviewStatWithChangeFields
       }
       totalKycApplications {
-        ...AdminDashboardStatWithChangeFields
+        ...AdminOverviewStatWithChangeFields
       }
 
       totalDeposit {
-        ...AdminDashboardStatWithDecimalChangeFields
+        ...AdminOverviewStatWithDecimalChangeFields
       }
 
       totalWithdrawal {
-        ...AdminDashboardStatWithDecimalChangeFields
+        ...AdminOverviewStatWithDecimalChangeFields
       }
       totalTransfer {
-        ...AdminDashboardStatWithDecimalChangeFields
+        ...AdminOverviewStatWithDecimalChangeFields
       }
 
       kycApplicationsByStatus(status: "pending")
