@@ -14,9 +14,7 @@ import { Link, router } from 'expo-router';
 import { ArrowLeft } from 'iconsax-react-nativejs';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from '@apollo/client';
-import {
-  validateForgotPasswordForm,
-} from '../../src/validations/auth/forgot-password';
+import { validateForgotPasswordForm } from '../../src/validations/auth/forgot-password';
 import type {
   ForgotPasswordFormData,
   ForgotPasswordFormErrors,
@@ -32,9 +30,8 @@ export default function ForgotPasswordScreen() {
     email: '',
   });
   const [errors, setErrors] = useState<FormErrors>({});
-  const [forgotPassword, { loading: isLoading }] = useMutation(
-    FORGOTTEN_PASSWORD
-  );
+  const [forgotPassword, { loading: isLoading }] =
+    useMutation(FORGOTTEN_PASSWORD);
 
   const validateForm = (): boolean => {
     const validation = validateForgotPasswordForm(formData, t);
@@ -77,7 +74,8 @@ export default function ForgotPasswordScreen() {
 
       setErrors((prev) => ({
         ...prev,
-        general: data?.requestPasswordReset?.message || t('resetPasswordFailed'),
+        general:
+          data?.requestPasswordReset?.message || t('resetPasswordFailed'),
       }));
     } catch (error) {
       console.error('Reset password failed:', error);

@@ -56,7 +56,6 @@ export default function AddMoneyPage() {
         title={t('addMoney')}
         description={t('addMoneyModeQuestion')}
       />
-
       <View className={'mt-1'}>
         {data.map((item, index) => (
           <TouchableOpacity

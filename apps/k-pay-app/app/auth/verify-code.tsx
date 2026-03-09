@@ -97,7 +97,9 @@ export default function VerifyCodeScreen() {
       });
 
       if (!data?.requestPasswordReset?.success) {
-        setError(data?.requestPasswordReset?.message || t('resetPasswordFailed'));
+        setError(
+          data?.requestPasswordReset?.message || t('resetPasswordFailed')
+        );
         return;
       }
 

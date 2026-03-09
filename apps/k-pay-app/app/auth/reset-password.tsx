@@ -16,9 +16,7 @@ import { ReusableModal } from '@/components/ui/modal/modal';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from '@apollo/client';
 import { RESET_PASSWORD } from '@repo/api';
-import {
-  validateResetPasswordForm,
-} from '../../src/validations/auth/reset-password';
+import { validateResetPasswordForm } from '../../src/validations/auth/reset-password';
 import type {
   ResetPasswordFormData,
   ResetPasswordFormErrors,
