@@ -1,11 +1,11 @@
 import { ScreenContainer } from '@/layout/safe-area-layout';
 import { HeaderWithTitle } from '@/components';
-import { Bank, Convert, Mobile } from 'iconsax-react-nativejs';
+import { Bank, Mobile } from 'iconsax-react-nativejs';
 import { router } from 'expo-router';
 import { TouchableOpacity, View } from 'react-native';
 import { Typography } from '@/components/ui';
 import { useTranslation } from 'react-i18next';
-import { StatusScreen } from '@/components/fallbacks/status-screen';
+import { SupportedProviders } from '@/types/graphql';
 
 export default function AddMoneyPage() {
   const { t } = useTranslation();
@@ -28,25 +28,25 @@ export default function AddMoneyPage() {
       icon: <Mobile size={20} color="#0057FF" />,
       title: 'Add via M-Pesa',
       description: 'Deposit to our partner merchant',
-      path: '/deposit/via-mpesa',
+      path: `/deposit/${SupportedProviders.M_PESA}`,
     },
     {
       icon: <Mobile size={20} color="#0057FF" />,
       title: 'Add via MTN Momo',
       description: 'Deposit to our partner merchant',
-      path: '/deposit/via-mtn-momo',
+      path: `/deposit/${SupportedProviders.MTN_MOMO}`,
     },
     {
       icon: <Mobile size={20} color="#0057FF" />,
       title: 'Add via Airtel',
       description: 'Deposit to our partner merchant',
-      path: '/deposit/via-airtel',
+      path: `/deposit/${SupportedProviders.AIRTEL}`,
     },
     {
       icon: <Mobile size={20} color="#0057FF" />,
       title: 'Add via Orange',
       description: 'Deposit to our partner merchant',
-      path: '/deposit/via-orange',
+      path: `/deposit/${SupportedProviders.ORANGE}`,
     },
   ];
 
