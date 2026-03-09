@@ -34,6 +34,8 @@ const schema = z.object({
   currency: z.string().min(1)
 });
 
+const SIMPLE_ERROR_MESSAGE = 'Something went wrong. Please try again.';
+
 type FormData = z.infer<typeof schema>;
 type MobileMoneyQuote = {
   amount: string;
@@ -168,12 +170,12 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
 
       const quote = quoteResp.data?.mobileMoneyWithdrawalQuote;
       const errorMsg = extractApiErrorMessage(quoteResp, {
-        fallback: t('transfer.quoteFailed') || 'Failed to get quote'
+        fallback: SIMPLE_ERROR_MESSAGE
       });
 
       if (errorMsg || !quote?.quoteId) {
         setResultStatus('error');
-        setResultMessage(errorMsg || t('transfer.quoteFailed') || 'Failed to get quote');
+        setResultMessage(errorMsg || SIMPLE_ERROR_MESSAGE);
         setIsResultModalOpen(true);
         return;
       }
@@ -186,10 +188,9 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
       setResultStatus('error');
       setResultMessage(
         extractApiErrorMessage(error, {
-          fallback: t('common.error') || 'An error occurred'
+          fallback: SIMPLE_ERROR_MESSAGE
         }) ||
-          t('common.error') ||
-          'An error occurred'
+          SIMPLE_ERROR_MESSAGE
       );
       setIsResultModalOpen(true);
     }
@@ -244,11 +245,10 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
           extractApiErrorMessage(
             { message: payload?.message },
             {
-              fallback: t('transfer.failed') || 'Transfer failed'
+              fallback: SIMPLE_ERROR_MESSAGE
             }
           ) ||
-            t('transfer.failed') ||
-            'Transfer failed'
+            SIMPLE_ERROR_MESSAGE
         );
         setIsResultModalOpen(true);
       }
@@ -256,10 +256,9 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
       setResultStatus('error');
       setResultMessage(
         extractApiErrorMessage(error, {
-          fallback: t('common.error') || 'An error occurred'
+          fallback: SIMPLE_ERROR_MESSAGE
         }) ||
-          t('common.error') ||
-          'An error occurred'
+          SIMPLE_ERROR_MESSAGE
       );
       setIsResultModalOpen(true);
     } finally {

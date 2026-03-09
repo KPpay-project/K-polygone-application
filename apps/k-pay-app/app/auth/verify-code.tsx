@@ -13,14 +13,19 @@ import type { OTPInputRef } from '@/components/ui';
 import { Link, router, useLocalSearchParams } from 'expo-router';
 import { ArrowLeft } from 'iconsax-react-nativejs';
 import { useTranslation } from 'react-i18next';
+import { useMutation } from '@apollo/client';
+import { FORGOTTEN_PASSWORD, VERIFY_OTP } from '@repo/api';
 
 export default function VerifyCodeScreen() {
   const { t } = useTranslation();
   const { email } = useLocalSearchParams<{ email: string }>();
   const [code, setCode] = useState(['', '', '', '', '', '']);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const otpRef = useRef<OTPInputRef>(null);
+  const [verifyOtp, { loading: isVerifying }] = useMutation(VERIFY_OTP);
+  const [requestPasswordReset, { loading: isResending }] =
+    useMutation(FORGOTTEN_PASSWORD);
+  const isLoading = isVerifying || isResending;
 
   const handleCodeChange = (newCode: string[]) => {
     setCode(newCode);
@@ -29,27 +34,41 @@ export default function VerifyCodeScreen() {
 
   const handleVerifyCode = async () => {
     const enteredCode = code.join('');
+    const normalizedEmail = Array.isArray(email) ? email[0] : email;
+
     if (enteredCode.length !== 6) {
       setError(t('enterCompleteCode'));
       return;
     }
+    if (!normalizedEmail) {
+      setError(t('resetPasswordFailed'));
+      return;
+    }
 
-    setIsLoading(true);
     setError('');
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      router.push({
-        pathname: '/auth/reset-password',
-        params: { email, code: enteredCode },
+      const { data } = await verifyOtp({
+        variables: {
+          input: {
+            email: normalizedEmail,
+            otpCode: enteredCode,
+          },
+        },
       });
+
+      if (data?.verifyOtp?.success && data?.verifyOtp?.token) {
+        router.push({
+          pathname: '/auth/reset-password',
+          params: { email: normalizedEmail, token: data.verifyOtp.token },
+        });
+        return;
+      }
+
+      setError(data?.verifyOtp?.message || t('invalidCode'));
     } catch (error) {
       console.error('Code verification failed:', error);
-      setError(t('invalidCode'));
-    } finally {
-      setIsLoading(false);
+      setError(error instanceof Error ? error.message : t('invalidCode'));
     }
   };
 
@@ -62,16 +81,34 @@ export default function VerifyCodeScreen() {
   };
 
   const handleResendCode = async () => {
-    setIsLoading(true);
+    const normalizedEmail = Array.isArray(email) ? email[0] : email;
+    if (!normalizedEmail) {
+      setError(t('resetPasswordFailed'));
+      return;
+    }
+
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const { data } = await requestPasswordReset({
+        variables: {
+          input: {
+            email: normalizedEmail,
+          },
+        },
+      });
+
+      if (!data?.requestPasswordReset?.success) {
+        setError(data?.requestPasswordReset?.message || t('resetPasswordFailed'));
+        return;
+      }
 
       otpRef.current?.clear();
+      setCode(['', '', '', '', '', '']);
+      setError('');
     } catch (error) {
       console.error('Resend failed:', error);
-    } finally {
-      setIsLoading(false);
+      setError(
+        error instanceof Error ? error.message : t('resetPasswordFailed')
+      );
     }
   };
 

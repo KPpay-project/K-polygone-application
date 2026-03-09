@@ -14,9 +14,10 @@ import { Input } from '@/components/ui/input/input';
 import { ArrowLeft, Eye, EyeSlash } from 'iconsax-react-nativejs';
 import { ReusableModal } from '@/components/ui/modal/modal';
 import { useTranslation } from 'react-i18next';
+import { useMutation } from '@apollo/client';
+import { RESET_PASSWORD } from '@repo/api';
 import {
   validateResetPasswordForm,
-  validateResetPasswordField,
 } from '../../src/validations/auth/reset-password';
 import type {
   ResetPasswordFormData,
@@ -28,19 +29,21 @@ type FormErrors = ResetPasswordFormErrors;
 
 export default function ResetPasswordScreen() {
   const { t } = useTranslation();
-  const { email, code } = useLocalSearchParams<{
-    email: string;
-    code: string;
+  const { email, token } = useLocalSearchParams<{
+    email?: string;
+    token?: string;
   }>();
+  const normalizedEmail = Array.isArray(email) ? email[0] : email;
+  const normalizedToken = Array.isArray(token) ? token[0] : token;
   const [formData, setFormData] = useState<FormData>({
     newPassword: '',
     confirmPassword: '',
   });
   const [errors, setErrors] = useState<FormErrors>({});
-  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [resetPassword, { loading: isLoading }] = useMutation(RESET_PASSWORD);
 
   const validateForm = (): boolean => {
     const validation = validateResetPasswordForm(formData, t);
@@ -61,18 +64,40 @@ export default function ResetPasswordScreen() {
 
   const handleResetPassword = async () => {
     if (!validateForm()) return;
+    if (!normalizedToken) {
+      setErrors((prev) => ({ ...prev, general: t('invalidCode') }));
+      return;
+    }
 
-    setIsLoading(true);
     setErrors({});
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      setIsModalVisible(true);
+      const { data } = await resetPassword({
+        variables: {
+          input: {
+            token: normalizedToken,
+            newPassword: formData.newPassword,
+            newPasswordConfirmation: formData.confirmPassword,
+          },
+        },
+      });
+
+      if (data?.resetPassword?.success) {
+        setIsModalVisible(true);
+        return;
+      }
+
+      setErrors((prev) => ({
+        ...prev,
+        general: data?.resetPassword?.message || t('passwordResetFailed'),
+      }));
     } catch (error) {
       console.error('Password reset failed:', error);
-      setErrors((prev) => ({ ...prev, general: t('passwordResetFailed') }));
-    } finally {
-      setIsLoading(false);
+      setErrors((prev) => ({
+        ...prev,
+        general:
+          error instanceof Error ? error.message : t('passwordResetFailed'),
+      }));
     }
   };
 
@@ -114,7 +139,7 @@ export default function ResetPasswordScreen() {
               {t('resetPassword')}
             </Typography>
             <Typography variant="body" className="text-gray-500">
-              {t('resetPasswordSubtitle')} {email}
+              {t('resetPasswordSubtitle')} {normalizedEmail}
             </Typography>
           </View>
 

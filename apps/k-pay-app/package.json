@@ -98,6 +98,7 @@
     "@types/jest": "^29.0.0",
     "@types/react": "~19.1.16",
     "@repo/eslint-config": "workspace:*",
+    "@repo/api": "workspace:*",
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-unused-imports": "^4.1.4",
