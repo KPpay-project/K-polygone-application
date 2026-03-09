@@ -69,10 +69,11 @@ export const CHANGE_PASSWORD = gql`
     changePassword(input: $input) {
       success
       message
-      userAccount {
-        id
+      errors {
+        code
+        field
+        message
       }
-      errors
     }
   }
 `;

@@ -3,9 +3,7 @@ import TransactionsSection from '@/components/dashboard/modules/TransactionsSect
 import TopCountriesSection from '@/components/dashboard/modules/TopCountriesSection';
 import WalletsSection from '@/components/dashboard/modules/WalletsSection';
 import RevenueSection from '@/components/dashboard/modules/RevenueSection';
-import TicketsSection from '@/components/dashboard/modules/TicketsSection';
 import useDashboardStats from '@/hooks/api/use-dashboard-stats.tsx';
-import { Typography } from '@ui/index';
 
 function DashboardHome({ filter }: { filter?: string }) {
   const { data, loading } = useDashboardStats({ countryCode: filter });
@@ -32,7 +30,7 @@ function DashboardHome({ filter }: { filter?: string }) {
       </div>
       <div className="flex gap-6 mb-6">
         <RevenueSection />
-        <TicketsSection />
+        {/* <TicketsSection /> */}
       </div>
     </div>
   );

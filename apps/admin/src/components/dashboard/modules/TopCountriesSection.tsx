@@ -2,19 +2,11 @@ import { useState } from 'react';
 import { useDashboardStats } from '@/hooks/api/use-dashboard-stats';
 import type { TopCountry } from '@/hooks/api/use-dashboard-stats';
 import { getCountryCode } from '@/utils/constants';
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CustomModal,
-  ModularCard,
-  Skeleton,
-  Typography
-} from '@repo/ui';
+import { Button, CustomModal, ModularCard, Skeleton, Typography } from '@repo/ui';
 import { formatCurrency } from '@repo/utils';
 import { CountryFlag } from '@repo/ui';
+import { EmptyState } from '@repo/ui';
+import { GlobalSearch } from 'iconsax-reactjs';
 
 function CountriesList({ countries }: { countries: TopCountry[] }) {
   return (
@@ -48,7 +40,7 @@ export default function TopCountriesSection() {
     return (
       <ModularCard className="shadow-none">
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="flex items-center justify-between">
+          <div key={i} className="flex items-center mt-2 justify-between">
             <div className="flex items-center gap-3">
               <Skeleton className="h-8 w-8 rounded-full" />
               <div className="space-y-1">
@@ -65,22 +57,32 @@ export default function TopCountriesSection() {
 
   if (error) {
     return (
-      <Card className="lg:w-[320px]">
-        <CardHeader>
-          <CardTitle>Top Countries</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="py-6 text-center text-sm text-muted-foreground">Failed to load countries data</div>
-        </CardContent>
-      </Card>
+      <ModularCard
+        title={<Typography variant={'p'}>Top Countries</Typography>}
+        className="h-full  items-center justify-center"
+      >
+        <>
+          <EmptyState
+            icon={<GlobalSearch />}
+            title="No countries data available"
+            description="Please check your connection and try again."
+          />
+        </>
+      </ModularCard>
     );
   }
 
   return (
     <>
-      <ModularCard title={<Typography variant={'p'}>Top Countries</Typography>} className="w-full">
+      <ModularCard className="h-full w-full" title={'Top Countries'}>
         {topCountries.length === 0 ? (
-          <div className="py-6 text-center text-sm text-muted-foreground">No countries data available</div>
+          <>
+            <EmptyState
+              icon={<GlobalSearch size={40} variant="Bulk" />}
+              title="No countries data available"
+              description="No countries found"
+            />
+          </>
         ) : (
           <>
             <CountriesList countries={previewCountries} />

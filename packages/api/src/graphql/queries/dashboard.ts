@@ -1,11 +1,20 @@
 import { gql } from '@apollo/client';
 
 export const GET_DASHBOARD_STATS = gql`
+  fragment DashboardStatWithChangeFields on StatWithChange {
+    total
+    percentageChange
+  }
+
+  fragment DashboardStatWithDecimalChangeFields on StatWithDecimalChange {
+    total
+    percentageChange
+  }
+
   query GetAdminDashboardStats {
     adminDashboardStats {
       totalWallets {
-        total
-        percentageChange
+        ...DashboardStatWithChangeFields
       }
 
       walletCountByMonth {
@@ -21,29 +30,23 @@ export const GET_DASHBOARD_STATS = gql`
       }
 
       totalKycApplications {
-        total
-        percentageChange
+        ...DashboardStatWithChangeFields
       }
 
       totalUsers {
-        total
-        percentageChange
+        ...DashboardStatWithChangeFields
       }
       totalMerchants {
-        total
-        percentageChange
+        ...DashboardStatWithChangeFields
       }
       totalDeposit {
-        total
-        percentageChange
+        ...DashboardStatWithDecimalChangeFields
       }
       totalWithdrawal {
-        total
-        percentageChange
+        ...DashboardStatWithDecimalChangeFields
       }
       totalTransfer {
-        total
-        percentageChange
+        ...DashboardStatWithDecimalChangeFields
       }
       pendingKyc: kycApplicationsByStatus(status: "pending")
       approvedKyc: kycApplicationsByStatus(status: "approved")

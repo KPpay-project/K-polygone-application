@@ -2,7 +2,7 @@ import { ModularCard } from '@/components/sub-modules/card/card.tsx';
 import { motion } from 'framer-motion';
 import { Copy, Eye, EyeOff, Plus } from 'lucide-react';
 import { useEffect, useState, useMemo } from 'react';
-import { Button, Typography} from '@repo/ui';
+import { Button, Typography } from '@repo/ui';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from '@tanstack/react-router';
 import { useCurrencyStore } from '@/store/currency-store';
@@ -142,7 +142,11 @@ export function BalancePanel() {
   const router = useRouter();
   return (
     <ModularCard
-      title={<Typography variant={"h6"} className="text-[#444] font-light">{t('balance.totalBalance')}</Typography>}
+      title={
+        <Typography variant={'h6'} className="text-[#444] font-light">
+          {t('balance.totalBalance')}
+        </Typography>
+      }
       className={'w-full '}
     >
       <div className="flex items-center justify-between mb-6" data-tour="total-balance">
@@ -155,7 +159,7 @@ export function BalancePanel() {
             exit={{ opacity: 0, y: 5 }}
             transition={{ duration: 0.2 }}
           >
-            <Typography variant={"h2"} className='font-semibold'>
+            <Typography variant={'h2'} className="font-semibold">
               {displayedBalance}
             </Typography>
           </motion.div>
@@ -172,17 +176,14 @@ export function BalancePanel() {
       </div>
 
       <div className="flex gap-3 mb-6" data-tour="balance-actions">
-     
-        <Button 
-          
-         onClick={handleWithdrawClick}>
-           <Plus size={16} />
+        <Button onClick={handleWithdrawClick}>
+          <Plus size={16} />
           {t('balance.withdraw')}
         </Button>
-          <Button variant={"outline"} onClick={() => router.navigate({ to: '/deposit' })}>
-               <Plus size={16} />
-              {t('balance.deposit')}
-          </Button>
+        <Button variant={'outline'} onClick={() => router.navigate({ to: '/deposit' })}>
+          <Plus size={16} />
+          {t('balance.deposit')}
+        </Button>
       </div>
 
       <div className="bg-gray-50 rounded-xl px-5 py-10 pt-[22px]" data-tour="wallets-header">
@@ -217,8 +218,6 @@ export function BalancePanel() {
                   </div>
                   <span className="font-medium text-gray-800">{wallets[0].label}</span>
                 </div>
-
-            
               </div>
 
               <div className="mb-3 flex items-center">

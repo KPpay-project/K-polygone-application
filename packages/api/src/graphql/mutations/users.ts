@@ -14,6 +14,20 @@ export const SUSPEND_USER = gql`
   }
 `;
 
+const CHANGE_USER_STATUS = gql`
+  mutation ChangePassword($input: ChangePasswordInput!) {
+    changePassword(input: $input) {
+      message
+      success
+      errors {
+        code
+        field
+        message
+      }
+    }
+  }
+`;
+
 export const SUSPEND_ADMIN = gql`
   mutation SuspendAdmin($input: AdminSuspensionInput!) {
     suspendAdmin(input: $input) {
