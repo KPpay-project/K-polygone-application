@@ -4,8 +4,10 @@ import {
   Modal,
   TouchableWithoutFeedback,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 import { Typography } from '../typography/typography';
+import { useTranslation } from 'react-i18next';
 
 interface ReusableModalProps {
   visible: boolean;
@@ -34,6 +36,7 @@ export function ReusableModal({
   variant = 'center',
   isClosing = false,
 }: ReusableModalProps) {
+  const { t } = useTranslation();
   const handleBackdropPress = () => {
     if (isClosing) return;
     if (onBackdropPress) {
@@ -69,7 +72,7 @@ export function ReusableModal({
               }`}
               style={{
                 maxWidth: variant === 'center' ? 400 : screenWidth,
-                height: variant === 'bottom' ? screenHeight * 0.5 : undefined,
+                height: variant === 'bottom' ? screenHeight * 0.4 : undefined,
               }}
             >
               {title && (
@@ -85,16 +88,23 @@ export function ReusableModal({
 
               {children}
 
-              {/* {showCloseButton && (
+              {showCloseButton ? (
                 <View className="mt-6">
-                  <ReusableButton
-                    variant="outline"
-                    text={t('close')}
+                  <TouchableOpacity
                     onPress={onClose}
-                    loading={isClosing}
-                  />
+                    disabled={isClosing}
+                    activeOpacity={0.85}
+                    className="w-full py-3 rounded-xl border border-gray-200"
+                  >
+                    <Typography
+                      variant="body"
+                      className="text-gray-900 text-center"
+                    >
+                      {t('close')}
+                    </Typography>
+                  </TouchableOpacity>
                 </View>
-              )} */}
+              ) : null}
             </View>
           </TouchableWithoutFeedback>
         </View>

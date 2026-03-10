@@ -26,6 +26,7 @@ export interface PhoneInputProps {
   selectedCountry: Country;
   onCountryChange: (country: Country) => void;
   countries: Country[];
+  defaultCountryCode?: string;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
   showContactPicker?: boolean;
@@ -40,6 +41,7 @@ export const PhoneInput: FC<PhoneInputProps> = ({
   selectedCountry,
   onCountryChange,
   countries,
+  defaultCountryCode,
   disabled = false,
   style,
   showContactPicker = true,
@@ -48,25 +50,85 @@ export const PhoneInput: FC<PhoneInputProps> = ({
   const { countryCode, loading } = useUserCountry();
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const hasInitializedCountry = useRef(false);
+  const hasUserSelectedCountry = useRef(false);
+  const lastAppliedDefaultCountryCode = useRef<string | null>(null);
+  const lastAppliedDetectedCountryCode = useRef<string | null>(null);
 
   useEffect(() => {
-    if (hasInitializedCountry.current || loading || !countryCode) {
+    if (!countries.length) {
+      return;
+    }
+
+    const preferred = String(defaultCountryCode || '').trim().toUpperCase();
+    if (!preferred) {
+      lastAppliedDefaultCountryCode.current = null;
+      return;
+    }
+
+    if (lastAppliedDefaultCountryCode.current === preferred) {
       return;
     }
 
     const matchedCountry = countries.find(
-      (country) => country.code.toUpperCase() === countryCode.toUpperCase()
+      (country) => country.code.toUpperCase() === preferred
     );
 
-    if (matchedCountry && matchedCountry.code !== selectedCountry.code) {
-      onCountryChange(matchedCountry);
+    if (!matchedCountry) {
+      return;
     }
 
-    hasInitializedCountry.current = true;
-  }, [loading, countryCode, countries, selectedCountry.code, onCountryChange]);
+    lastAppliedDefaultCountryCode.current = preferred;
+    lastAppliedDetectedCountryCode.current = null;
+    hasUserSelectedCountry.current = false;
+    if (matchedCountry.code !== selectedCountry.code) {
+      onCountryChange(matchedCountry);
+    }
+  }, [defaultCountryCode, countries, selectedCountry.code, onCountryChange]);
+
+  useEffect(() => {
+    if (
+      !!String(defaultCountryCode || '').trim() ||
+      !countries.length ||
+      loading
+    ) {
+      return;
+    }
+
+    if (hasUserSelectedCountry.current) {
+      return;
+    }
+
+    const detected = String(countryCode || '').trim().toUpperCase();
+    const preferred = detected || 'BJ';
+    
+
+    if (lastAppliedDetectedCountryCode.current === preferred) {
+      return;
+    }
+
+    const matchedCountry = countries.find(
+      (country) => country.code.toUpperCase() === preferred
+    );
+
+    if (!matchedCountry) {
+      return;
+    }
+
+    lastAppliedDetectedCountryCode.current = preferred;
+    if (matchedCountry.code !== selectedCountry.code) {
+      onCountryChange(matchedCountry);
+    }
+  }, [
+    loading,
+    countryCode,
+    defaultCountryCode,
+    countries,
+    selectedCountry.code,
+    onCountryChange,
+  ]);
 
   const handleCountrySelect = (country: Country) => {
+    hasUserSelectedCountry.current = true;
     onCountryChange(country);
     setShowCountryPicker(false);
     setSearchQuery('');

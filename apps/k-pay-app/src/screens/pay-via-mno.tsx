@@ -200,7 +200,7 @@ export default function DepositViaBankScreen({
           <View className="mb-6">
             <CustomTextInput
               label="Amount"
-              placeholder="$23"
+              placeholder="0.00"
               value={form.amount}
               onChangeText={(value: string) => setValue('amount', value)}
               keyboardType="decimal-pad"
@@ -218,6 +218,7 @@ export default function DepositViaBankScreen({
             <PhoneInput
               label="Phone Number"
               value={form.phoneNumber}
+             
               onChangeText={(value: string) => setValue('phoneNumber', value)}
               placeholder="Enter Phone Number"
               disabled={loading || mutationLoading}
@@ -231,7 +232,7 @@ export default function DepositViaBankScreen({
           <View className="mb-8">
             <CustomTextInput
               label="Transaction ID / Reference"
-              placeholder="$23"
+              placeholder="Enter Transaction  Reference"
               value={form.transactionId}
               onChangeText={(value: string) => setValue('transactionId', value)}
               editable={!(loading || mutationLoading)}
