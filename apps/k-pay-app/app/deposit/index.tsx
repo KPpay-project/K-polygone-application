@@ -11,13 +11,13 @@ export default function AddMoneyPage() {
   const { t } = useTranslation();
 
   const data = [
-    {
-      icon: <Bank size={20} color="#0057FF" />,
-      title: 'Add via Bank transfer',
-      description:
-        'Fund your account by sending money to your unique NG bank account',
-      path: '/deposit/via-bank',
-    },
+    // {
+    //   icon: <Bank size={20} color="#0057FF" />,
+    //   title: 'Add via Bank transfer',
+    //   description:
+    //     'Fund your account by sending money to your unique NG bank account',
+    //   path: '/deposit/via-bank',
+    // },
     // {
     //   icon: <Convert size={20} color="#0057FF" />,
     //   title: 'Add via conversion',
