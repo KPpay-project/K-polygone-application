@@ -14,6 +14,18 @@ const DEPOSIT = gql`
   }
 `;
 
+const GET_MTN_MOMO_BASIC_USER_INFO = gql`
+  query GetMtnMomoBasicUserInfo($phoneNumber: String!, $service: MtnMomoService) {
+    mtnMomoBasicUserInfo(phoneNumber: $phoneNumber, service: $service) {
+      found
+      basicUserInfo {
+        givenName
+        familyName
+      }
+    }
+  }
+`;
+
 const MOMO_DEPOSIT = gql`
   mutation MomoDeposit($input: MomoDepositInput!) {
     depositMomo(input: $input) {
@@ -57,4 +69,4 @@ const DEPOSIT_VIA_BANK = gql`
   }
 `;
 
-export { DEPOSIT, MOMO_DEPOSIT, DEPOSIT_VIA_BANK };
+export { DEPOSIT, GET_MTN_MOMO_BASIC_USER_INFO, MOMO_DEPOSIT, DEPOSIT_VIA_BANK };
