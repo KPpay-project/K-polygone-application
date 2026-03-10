@@ -1,18 +1,17 @@
-import React from 'react';
+import { type ReactNode } from 'react';
 import {
   View,
   Modal,
   TouchableWithoutFeedback,
   Dimensions,
 } from 'react-native';
-import { useTranslation } from 'react-i18next';
 import { Typography } from '../typography/typography';
 
 interface ReusableModalProps {
   visible: boolean;
   onClose: () => void;
   title?: string;
-  children?: React.ReactNode;
+  children?: ReactNode;
   showCloseButton?: boolean;
   animationType?: 'slide' | 'fade' | 'none';
   transparent?: boolean;
@@ -21,7 +20,7 @@ interface ReusableModalProps {
   isClosing?: boolean;
 }
 
-const { width: screenWidth } = Dimensions.get('window');
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 export function ReusableModal({
   visible,
@@ -35,7 +34,6 @@ export function ReusableModal({
   variant = 'center',
   isClosing = false,
 }: ReusableModalProps) {
-  const { t } = useTranslation();
   const handleBackdropPress = () => {
     if (isClosing) return;
     if (onBackdropPress) {
@@ -71,6 +69,7 @@ export function ReusableModal({
               }`}
               style={{
                 maxWidth: variant === 'center' ? 400 : screenWidth,
+                height: variant === 'bottom' ? screenHeight * 0.5 : undefined,
               }}
             >
               {title && (

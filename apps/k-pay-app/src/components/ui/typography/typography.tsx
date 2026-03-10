@@ -1,4 +1,3 @@
-import React from 'react';
 import { TextProps, Text } from 'react-native';
 
 export type TypographyVariant =
@@ -37,7 +36,6 @@ export interface TypographyProps extends TextProps {
   variant?: TypographyVariant;
   color?: string;
   weight?: FontWeight;
-  children: React.ReactNode;
   style?: any;
 }
 
@@ -128,14 +126,13 @@ const variantStyles: Record<TypographyVariant, any> = {
   },
 };
 
-export const Typography: React.FC<TypographyProps> = ({
+export function Typography({
   variant = 'body',
   color,
   weight,
-  children,
   style,
   ...props
-}) => {
+}: TypographyProps): JSX.Element {
   const baseStyle = variantStyles[variant] || variantStyles.body;
   const customFontFamily = weight ? getFontFamily(weight) : null;
 
@@ -146,28 +143,25 @@ export const Typography: React.FC<TypographyProps> = ({
     style,
   ];
 
-  return (
-    <Text style={computedStyle} {...props}>
-      {children}
-    </Text>
-  );
-};
-export const Heading1: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="h1" {...props} />
-);
+  return <Text {...props} style={computedStyle} />;
+}
 
-export const Heading2: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="h2" {...props} />
-);
+export function Heading1(props: Omit<TypographyProps, 'variant'>): JSX.Element {
+  return <Typography variant="h1" {...props} />;
+}
 
-export const Heading3: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="h3" {...props} />
-);
+export function Heading2(props: Omit<TypographyProps, 'variant'>): JSX.Element {
+  return <Typography variant="h2" {...props} />;
+}
 
-export const BodyText: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="body" {...props} />
-);
+export function Heading3(props: Omit<TypographyProps, 'variant'>): JSX.Element {
+  return <Typography variant="h3" {...props} />;
+}
 
-export const Caption: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="caption" {...props} />
-);
+export function BodyText(props: Omit<TypographyProps, 'variant'>): JSX.Element {
+  return <Typography variant="body" {...props} />;
+}
+
+export function Caption(props: Omit<TypographyProps, 'variant'>): JSX.Element {
+  return <Typography variant="caption" {...props} />;
+}
