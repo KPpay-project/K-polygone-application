@@ -3,6 +3,7 @@ import {
   InMemoryCache,
   createHttpLink,
   ApolloLink,
+  Observable,
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
@@ -43,59 +44,91 @@ export const setLogoutCallback = (callback: () => void) => {
   globalLogoutCallback = callback;
 };
 
-let isRefreshing = false;
 let refreshAttempts = 0;
+let refreshPromise: Promise<string | null> | null = null;
 
-const refreshAccessToken = async (): Promise<string | null> => {
-  if (isRefreshing) {
-    return null;
-  }
+const isRefreshTokenExpiredError = (err: unknown): boolean => {
+  const anyErr = err as any;
+  const msg =
+    typeof anyErr?.message === 'string'
+      ? anyErr.message
+      : typeof anyErr?.toString === 'function'
+        ? String(anyErr)
+        : '';
 
-  isRefreshing = true;
-  refreshAttempts += 1;
+  const graphQLErrors: any[] = Array.isArray(anyErr?.graphQLErrors)
+    ? anyErr.graphQLErrors
+    : [];
 
-  try {
-    const refreshToken = await AsyncStorage.getItem(JWT_REFRESH_TOKEN_NAME);
-    if (!refreshToken) {
-      console.warn('No refresh token available');
-      triggerLogout();
-      return null;
-    }
+  const graphMsg = graphQLErrors.map((e) => e?.message).join(' ');
+  const graphCode = graphQLErrors.map((e) => e?.extensions?.code).join(' ');
 
-    const { data } = await refreshClient.mutate<RefreshTokenResponse>({
-      mutation: REFRESH_TOKEN,
-      variables: { token: refreshToken },
-    });
-
-    if (data?.refreshToken?.accessToken) {
-      await AsyncStorage.multiSet([
-        [JWT_TOKEN_NAME, data.refreshToken.accessToken],
-        [JWT_REFRESH_TOKEN_NAME, data.refreshToken.refreshToken],
-      ]);
-      refreshAttempts = 0;
-      return data.refreshToken.accessToken;
-    }
-
-    console.warn('Invalid refresh token response');
-    triggerLogout();
-    return null;
-  } catch (err) {
-    console.error('Token refresh failed:', err);
-    if (refreshAttempts >= MAX_REFRESH_ATTEMPTS) {
-      console.warn('Max refresh attempts reached');
-      triggerLogout();
-      return null;
-    }
-    return null;
-  } finally {
-    isRefreshing = false;
-  }
+  const haystack = `${msg} ${graphMsg} ${graphCode}`.toLowerCase();
+  return (
+    haystack.includes('refresh token') && haystack.includes('token_expired')
+  );
 };
 
 const triggerLogout = () => {
+  clearTokens().catch(() => null);
   if (globalLogoutCallback) {
     globalLogoutCallback();
   }
+};
+
+const refreshAccessToken = async (): Promise<string | null> => {
+  if (refreshPromise) {
+    return refreshPromise;
+  }
+
+  refreshAttempts += 1;
+  refreshPromise = (async () => {
+    try {
+      const refreshToken = await AsyncStorage.getItem(JWT_REFRESH_TOKEN_NAME);
+      if (!refreshToken) {
+        console.warn('No refresh token available');
+        triggerLogout();
+        return null;
+      }
+
+      const { data } = await refreshClient.mutate<RefreshTokenResponse>({
+        mutation: REFRESH_TOKEN,
+        variables: { token: refreshToken },
+      });
+
+      if (data?.refreshToken?.accessToken) {
+        await AsyncStorage.multiSet([
+          [JWT_TOKEN_NAME, data.refreshToken.accessToken],
+          [JWT_REFRESH_TOKEN_NAME, data.refreshToken.refreshToken],
+        ]);
+        refreshAttempts = 0;
+        return data.refreshToken.accessToken;
+      }
+
+      console.warn('Invalid refresh token response');
+      triggerLogout();
+      return null;
+    } catch (err) {
+      console.error('Token refresh failed:', err);
+
+      if (isRefreshTokenExpiredError(err)) {
+        triggerLogout();
+        return null;
+      }
+
+      if (refreshAttempts >= MAX_REFRESH_ATTEMPTS) {
+        console.warn('Max refresh attempts reached');
+        triggerLogout();
+        return null;
+      }
+
+      return null;
+    } finally {
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
 };
 
 export const scheduleTokenRefresh = async () => {
@@ -144,24 +177,24 @@ const errorLink = onError(({ graphQLErrors, operation, forward }) => {
       return;
     }
 
-    return fromPromise(
-      refreshAccessToken().then((newToken) => {
-        if (newToken) {
-          operation.setContext(({ headers = {} }) => ({
-            headers: {
-              ...headers,
-              authorization: `Bearer ${newToken}`,
-            },
-          }));
-          scheduleTokenRefresh();
-          return true;
-        }
-
+    return fromPromise(refreshAccessToken()).flatMap((newToken) => {
+      if (!newToken) {
         console.warn('Token refresh failed in error link');
         triggerLogout();
-        throw new Error('Token refresh failed');
-      })
-    ).flatMap(() => forward(operation));
+        return new Observable((observer) => {
+          observer.complete();
+        });
+      }
+
+      operation.setContext(({ headers = {} }) => ({
+        headers: {
+          ...headers,
+          authorization: `Bearer ${newToken}`,
+        },
+      }));
+      scheduleTokenRefresh();
+      return forward(operation);
+    });
   }
 });
 

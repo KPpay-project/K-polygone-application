@@ -189,8 +189,7 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
       setResultMessage(
         extractApiErrorMessage(error, {
           fallback: SIMPLE_ERROR_MESSAGE
-        }) ||
-          SIMPLE_ERROR_MESSAGE
+        }) || SIMPLE_ERROR_MESSAGE
       );
       setIsResultModalOpen(true);
     }
@@ -247,8 +246,7 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
             {
               fallback: SIMPLE_ERROR_MESSAGE
             }
-          ) ||
-            SIMPLE_ERROR_MESSAGE
+          ) || SIMPLE_ERROR_MESSAGE
         );
         setIsResultModalOpen(true);
       }
@@ -257,8 +255,7 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
       setResultMessage(
         extractApiErrorMessage(error, {
           fallback: SIMPLE_ERROR_MESSAGE
-        }) ||
-          SIMPLE_ERROR_MESSAGE
+        }) || SIMPLE_ERROR_MESSAGE
       );
       setIsResultModalOpen(true);
     } finally {
@@ -350,7 +347,6 @@ const MobileMoneyTransfereAction = ({ onSuccess, selectedProvider }: Props) => {
           {errors.amount && <Typography className="text-red-500 text-xs mt-1">{errors.amount.message}</Typography>}
         </div>
 
-        {/* Currency Selector */}
         <UsersCurrencyDropdown
           value={selectedCurrencyOption}
           selectedCurrency={watchedCurrency || defaultCurrencyCode}

@@ -45,8 +45,7 @@ export const useUserCountry = (): UserCountryData => {
   useEffect(() => {
     const fetchCountry = async () => {
       try {
-        const storage =
-          typeof window !== 'undefined' ? window.sessionStorage : undefined;
+        const storage = typeof window !== 'undefined' ? window.sessionStorage : undefined;
         const storedCountryCode = storage?.getItem('user_country_code');
         if (storedCountryCode) {
           const supportedCountry = countries.find((c) => c.code === storedCountryCode);

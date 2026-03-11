@@ -106,7 +106,6 @@ export const PhoneNumberInput: FC<PhoneNumberInputProps> = ({
     if (value) {
       validatePhoneNumber(value, selectedCountry);
     }
-
   }, [value, selectedCountry]);
 
   const handleChange = (

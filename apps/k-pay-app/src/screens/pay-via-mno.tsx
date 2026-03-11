@@ -1,17 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
 import { View, ScrollView, ActivityIndicator } from 'react-native';
 import { useLazyQuery } from '@apollo/client';
-import { Typography, ReusableButton, PhoneInput, ReusableModal } from '@/components/ui';
+import {
+  Typography,
+  ReusableButton,
+  PhoneInput,
+  ReusableModal,
+} from '@/components/ui';
 import { ContainerLayout } from '@/layout/safe-area-layout';
 import CustomTextInput from '@/components/input/custom-text-input';
 import { countries, Country } from '@/data/countries';
 import { HeaderWithTitle } from '@/components';
 import { useDeposit, useMe } from '@/hooks/api';
 import { useProfileStore } from '@/store/profile-store';
-import {
-  DepositViaMnoScreenProps,
-  FormErrors,
-} from './types';
+import { DepositViaMnoScreenProps, FormErrors } from './types';
 import { useWalletAbstractor } from '@/hooks/use-wallet';
 import { getGraphQLErrorMessage } from '@/utils/error-handling';
 import CurrencyDropdownWithBalance from '@/components/currency/currency-dropdown-with-balance';
@@ -55,11 +57,15 @@ export default function DepositViaMnoScreen({
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [resultOpen, setResultOpen] = useState(false);
-  const [resultStatus, setResultStatus] = useState<'success' | 'error'>('success');
+  const [resultStatus, setResultStatus] = useState<'success' | 'error'>(
+    'success'
+  );
   const [resultMessage, setResultMessage] = useState('');
   const [resultReference, setResultReference] = useState('');
 
-  const [momoUserInfo, setMomoUserInfo] = useState<MtnMomoBasicUserInfo | null>(null);
+  const [momoUserInfo, setMomoUserInfo] = useState<MtnMomoBasicUserInfo | null>(
+    null
+  );
   const [momoLookupError, setMomoLookupError] = useState('');
 
   const setValue = (field: keyof DepositFormData, value: string) => {
@@ -81,11 +87,18 @@ export default function DepositViaMnoScreen({
     };
   }>(GET_MTN_MOMO_BASIC_USER_INFO, { fetchPolicy: 'no-cache' });
 
-  const normalizedPhone = useMemo(() => form.phoneNumber.replace(/\D/g, ''), [form.phoneNumber]);
-  const isPhoneComplete = normalizedPhone.length >= 10 && normalizedPhone.length <= 15;
+  const normalizedPhone = useMemo(
+    () => form.phoneNumber.replace(/\D/g, ''),
+    [form.phoneNumber]
+  );
+  const isPhoneComplete =
+    normalizedPhone.length >= 10 && normalizedPhone.length <= 15;
   const momoDisplayName = useMemo(() => {
     if (!momoUserInfo) return form.phoneNumber;
-    return `${momoUserInfo.givenName || ''} ${momoUserInfo.familyName || ''}`.trim() || form.phoneNumber;
+    return (
+      `${momoUserInfo.givenName || ''} ${momoUserInfo.familyName || ''}`.trim() ||
+      form.phoneNumber
+    );
   }, [form.phoneNumber, momoUserInfo]);
 
   const formattedAmount = useMemo(() => {
@@ -181,7 +194,9 @@ export default function DepositViaMnoScreen({
 
       if (provider === SupportedProviders.MTN_MOMO && !momoUserInfo) {
         setResultStatus('error');
-        setResultMessage(momoLookupError || 'Please enter a valid MTN MoMo number');
+        setResultMessage(
+          momoLookupError || 'Please enter a valid MTN MoMo number'
+        );
         setResultReference('');
         setResultOpen(true);
         setLoading(false);
@@ -189,7 +204,8 @@ export default function DepositViaMnoScreen({
       }
 
       const finalWalletId = selectedCurrency?.walletId || walletId;
-      const finalCurrencyCode = selectedCurrency?.currencyCode || currency_code || 'USD';
+      const finalCurrencyCode =
+        selectedCurrency?.currencyCode || currency_code || 'USD';
 
       const payload = {
         amount: amount,
@@ -207,8 +223,12 @@ export default function DepositViaMnoScreen({
         refetchMe();
         setConfirmOpen(false);
         setResultStatus('success');
-        setResultMessage(response?.data?.deposit?.message || 'Deposit successful');
-        setResultReference(response?.data?.deposit?.transaction?.reference || '');
+        setResultMessage(
+          response?.data?.deposit?.message || 'Deposit successful'
+        );
+        setResultReference(
+          response?.data?.deposit?.transaction?.reference || ''
+        );
         setResultOpen(true);
         setForm({ amount: '', phoneNumber: '' });
         await fetchProfile();
@@ -245,12 +265,18 @@ export default function DepositViaMnoScreen({
     }
 
     if (!isPhoneComplete) {
-      setErrors((prev) => ({ ...prev, phoneNumber: 'Please enter a complete phone number' }));
+      setErrors((prev) => ({
+        ...prev,
+        phoneNumber: 'Please enter a complete phone number',
+      }));
       return;
     }
 
     if (provider === SupportedProviders.MTN_MOMO && !momoUserInfo) {
-      setErrors((prev) => ({ ...prev, phoneNumber: momoLookupError || 'Please enter a valid MTN MoMo number' }));
+      setErrors((prev) => ({
+        ...prev,
+        phoneNumber: momoLookupError || 'Please enter a valid MTN MoMo number',
+      }));
       return;
     }
 
@@ -326,7 +352,10 @@ export default function DepositViaMnoScreen({
             </View>
           ) : null}
 
-          {provider === SupportedProviders.MTN_MOMO && !momoUserInfo && momoLookupError && isPhoneComplete ? (
+          {provider === SupportedProviders.MTN_MOMO &&
+          !momoUserInfo &&
+          momoLookupError &&
+          isPhoneComplete ? (
             <View className="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4">
               <Typography variant="caption" className="text-red-600">
                 {momoLookupError}
@@ -354,26 +383,46 @@ export default function DepositViaMnoScreen({
         >
           <View className="gap-4">
             <View className="items-center">
-              <Typography variant="h4" weight="semiBold" className="text-gray-900">
+              <Typography
+                variant="h4"
+                weight="semiBold"
+                className="text-gray-900"
+              >
                 Confirm Deposit
               </Typography>
-              <Typography variant="caption" className="text-gray-500 mt-1 text-center">
-                You are about to deposit {formattedAmount || '-'} from {momoDisplayName || '-'}.
+              <Typography
+                variant="caption"
+                className="text-gray-500 mt-1 text-center"
+              >
+                You are about to deposit {formattedAmount || '-'} from{' '}
+                {momoDisplayName || '-'}.
               </Typography>
             </View>
 
             <View className="rounded-2xl border border-gray-200 bg-gray-50 p-4 gap-3">
               <View className="flex-row justify-between items-center">
-                <Typography variant="caption" className="text-gray-500">Provider</Typography>
-                <Typography className="text-gray-900">{String(provider)}</Typography>
+                <Typography variant="caption" className="text-gray-500">
+                  Provider
+                </Typography>
+                <Typography className="text-gray-900">
+                  {String(provider)}
+                </Typography>
               </View>
               <View className="flex-row justify-between items-center">
-                <Typography variant="caption" className="text-gray-500">Phone</Typography>
-                <Typography className="text-gray-900">{form.phoneNumber || '-'}</Typography>
+                <Typography variant="caption" className="text-gray-500">
+                  Phone
+                </Typography>
+                <Typography className="text-gray-900">
+                  {form.phoneNumber || '-'}
+                </Typography>
               </View>
               <View className="flex-row justify-between items-center">
-                <Typography variant="caption" className="text-gray-500">Amount</Typography>
-                <Typography className="text-gray-900">{formattedAmount || '-'}</Typography>
+                <Typography variant="caption" className="text-gray-500">
+                  Amount
+                </Typography>
+                <Typography className="text-gray-900">
+                  {formattedAmount || '-'}
+                </Typography>
               </View>
             </View>
 
@@ -405,21 +454,44 @@ export default function DepositViaMnoScreen({
           showCloseButton={false}
         >
           <View className="items-center">
-            <View className={`w-16 h-16 rounded-full items-center justify-center mb-4 ${resultStatus === 'success' ? 'bg-green-100' : 'bg-red-100'}`}>
-              <Typography variant="h2" className={resultStatus === 'success' ? 'text-green-600' : 'text-red-600'}>
+            <View
+              className={`w-16 h-16 rounded-full items-center justify-center mb-4 ${resultStatus === 'success' ? 'bg-green-100' : 'bg-red-100'}`}
+            >
+              <Typography
+                variant="h2"
+                className={
+                  resultStatus === 'success' ? 'text-green-600' : 'text-red-600'
+                }
+              >
                 {resultStatus === 'success' ? '✓' : '×'}
               </Typography>
             </View>
-            <Typography variant="h4" weight="semiBold" className="text-gray-900 mb-2 text-center">
-              {resultStatus === 'success' ? 'Deposit Successful' : 'Deposit Failed'}
+            <Typography
+              variant="h4"
+              weight="semiBold"
+              className="text-gray-900 mb-2 text-center"
+            >
+              {resultStatus === 'success'
+                ? 'Deposit Successful'
+                : 'Deposit Failed'}
             </Typography>
-            <Typography variant="body" className="text-gray-500 text-center mb-4">
-              {resultMessage || (resultStatus === 'success' ? 'Deposit successful' : 'Deposit failed')}
+            <Typography
+              variant="body"
+              className="text-gray-500 text-center mb-4"
+            >
+              {resultMessage ||
+                (resultStatus === 'success'
+                  ? 'Deposit successful'
+                  : 'Deposit failed')}
             </Typography>
             {resultStatus === 'success' && resultReference ? (
               <View className="w-full rounded-2xl border border-gray-200 bg-gray-50 p-4 mb-4">
-                <Typography variant="caption" className="text-gray-500 mb-1">Reference</Typography>
-                <Typography className="text-gray-900">{resultReference}</Typography>
+                <Typography variant="caption" className="text-gray-500 mb-1">
+                  Reference
+                </Typography>
+                <Typography className="text-gray-900">
+                  {resultReference}
+                </Typography>
               </View>
             ) : null}
             <ReusableButton

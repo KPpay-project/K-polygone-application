@@ -59,7 +59,9 @@ export const PhoneInput: FC<PhoneInputProps> = ({
       return;
     }
 
-    const preferred = String(defaultCountryCode || '').trim().toUpperCase();
+    const preferred = String(defaultCountryCode || '')
+      .trim()
+      .toUpperCase();
     if (!preferred) {
       lastAppliedDefaultCountryCode.current = null;
       return;
@@ -98,9 +100,10 @@ export const PhoneInput: FC<PhoneInputProps> = ({
       return;
     }
 
-    const detected = String(countryCode || '').trim().toUpperCase();
+    const detected = String(countryCode || '')
+      .trim()
+      .toUpperCase();
     const preferred = detected || 'BJ';
-    
 
     if (lastAppliedDetectedCountryCode.current === preferred) {
       return;

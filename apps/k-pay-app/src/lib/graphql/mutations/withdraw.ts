@@ -49,3 +49,34 @@ export const WITHDRAW_OR_TRANSFER = gql`
     }
   }
 `;
+
+export const MOBILE_MONEY_WITHRAWAL_QOUTE = gql`
+  mutation MobileMoneyWithdrawalQuote(
+    $input: MobileMoneyWithdrawalQuoteInput!
+  ) {
+    mobileMoneyWithdrawalQuote(input: $input) {
+      amount
+      applies
+      currencyCode
+      expiresAt
+      feeAmount
+      feeCurrencyCode
+      paymentType
+      quoteId
+      tier
+      totalDebit
+    }
+  }
+`;
+
+export const WITHDRAW_TO_MOBILE_MONEY = gql`
+  mutation WithdrawToMobileMoney($input: MobileMoneyWithdrawalInput!) {
+    withdrawToMobileMoney(input: $input) {
+      flutterwaveTransferId
+      message
+      reference
+      status
+      success
+    }
+  }
+`;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -15,6 +15,12 @@ import { GET_MY_CURRENCIES_QUERY } from '@/lib/graphql/queries';
 import { useQuery } from '@apollo/client';
 
 interface CurrencyDropdownWithBalanceProps {
+  value?: {
+    availableBalance: string;
+    currencyCode: string;
+    currencyId: string;
+    walletId: string;
+  } | null;
   onCurrencySelect?: (data: {
     availableBalance: string;
     currencyCode: string;
@@ -24,6 +30,7 @@ interface CurrencyDropdownWithBalanceProps {
 }
 
 const CurrencyDropdownWithBalance = ({
+  value,
   onCurrencySelect,
 }: CurrencyDropdownWithBalanceProps) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -36,8 +43,16 @@ const CurrencyDropdownWithBalance = ({
   const primaryWallet = wallets?.[0];
   const primaryCurrency = primaryWallet?.currency?.code || 'USD';
 
-  const displayCurrency = selectedCurrencyCode || primaryCurrency;
-  const displayAmount = selectedCurrencyAmount || 0;
+  useEffect(() => {
+    if (!value) return;
+    setSelectedCurrencyCode(value.currencyCode || '');
+    setSelectedCurrencyAmount(Number(value.availableBalance || 0));
+  }, [value]);
+
+  const displayCurrency = value?.currencyCode || selectedCurrencyCode || primaryCurrency;
+  const displayAmount = value
+    ? Number(value.availableBalance || 0)
+    : selectedCurrencyAmount || 0;
 
   return (
     <>
