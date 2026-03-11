@@ -28,7 +28,7 @@ export interface PhoneNumberInputProps extends Omit<
 }
 
 export const PhoneNumberInput: FC<PhoneNumberInputProps> = ({
-  country = 'ng',
+  country = '',
   value,
   onChange,
   placeholder = 'Enter phone number',
@@ -106,7 +106,7 @@ export const PhoneNumberInput: FC<PhoneNumberInputProps> = ({
     if (value) {
       validatePhoneNumber(value, selectedCountry);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [value, selectedCountry]);
 
   const handleChange = (

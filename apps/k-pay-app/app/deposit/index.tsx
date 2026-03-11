@@ -51,7 +51,7 @@ export default function AddMoneyPage() {
   ];
 
   return (
-    <ScreenContainer useSafeArea={true} paddingHorizontal={15}>
+    <ScreenContainer useSafeArea={true} scrollable={false} paddingHorizontal={15}>
       <HeaderWithTitle
         title={t('addMoney')}
         description={t('addMoneyModeQuestion')}
