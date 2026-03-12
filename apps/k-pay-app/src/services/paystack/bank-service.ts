@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { PAYSTACK_TEST_KEY } from '@/constants';
 import { Bank, BankAccountDetails } from './types';
 
@@ -7,23 +6,23 @@ export const PAYSTACK_API = {
   RESOLVE_ACCOUNT: 'https://api.paystack.co/bank/resolve',
 };
 
-export const axiosInstance = axios.create({
-  headers: {
-    Authorization: `Bearer ${PAYSTACK_TEST_KEY}`,
-    'Content-Type': 'application/json',
-  },
-});
-
 export class PaystackBankService {
   static async fetchBanks(): Promise<Bank[]> {
     try {
-      const response = await axiosInstance.get(PAYSTACK_API.BANKS);
-      if (response.data.status) {
-        return response.data.data
+      const response = await fetch(PAYSTACK_API.BANKS, {
+        headers: {
+          Authorization: `Bearer ${PAYSTACK_TEST_KEY}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await response.json();
+      if (data.status) {
+        return data.data
           .filter((bank: Bank) => bank.active)
           .sort((a: Bank, b: Bank) => a.name.localeCompare(b.name));
       }
-      throw new Error(response.data.message || 'Failed to fetch banks');
+      throw new Error(data.message || 'Failed to fetch banks');
     } catch (err) {
       throw err instanceof Error ? err : new Error('Failed to fetch banks');
     }
@@ -34,15 +33,23 @@ export class PaystackBankService {
     bankCode: string
   ): Promise<BankAccountDetails | null> {
     try {
-      const response = await axiosInstance.get(PAYSTACK_API.RESOLVE_ACCOUNT, {
-        params: {
-          account_number: accountNumber,
-          bank_code: bankCode,
-        },
+      const params = new URLSearchParams({
+        account_number: accountNumber,
+        bank_code: bankCode,
       });
+      const response = await fetch(
+        `${PAYSTACK_API.RESOLVE_ACCOUNT}?${params.toString()}`,
+        {
+          headers: {
+            Authorization: `Bearer ${PAYSTACK_TEST_KEY}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
-      if (response.data.status) {
-        return response.data.data as BankAccountDetails;
+      const data = await response.json();
+      if (data.status) {
+        return data.data as BankAccountDetails;
       }
       return null;
     } catch (err) {

@@ -45,7 +45,8 @@ export const useUserCountry = (): UserCountryData => {
   useEffect(() => {
     const fetchCountry = async () => {
       try {
-        const storedCountryCode = sessionStorage.getItem('user_country_code');
+        const storage = typeof window !== 'undefined' ? window.sessionStorage : undefined;
+        const storedCountryCode = storage?.getItem('user_country_code');
         if (storedCountryCode) {
           const supportedCountry = countries.find((c) => c.code === storedCountryCode);
           if (supportedCountry) {
@@ -56,8 +57,32 @@ export const useUserCountry = (): UserCountryData => {
           }
         }
 
-        const response = await fetch('https://ipapi.co/json/');
-        const data: IpApiResponse = await response.json();
+        const response = await fetch('https://ipapi.co/json/', {
+          headers: {
+            Accept: 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          return;
+        }
+
+        const contentType = response.headers.get('content-type') || '';
+        if (!contentType.toLowerCase().includes('application/json')) {
+          return;
+        }
+
+        const raw = await response.text();
+        if (!raw || raw.trim().startsWith('<')) {
+          return;
+        }
+
+        let data: IpApiResponse | null = null;
+        try {
+          data = JSON.parse(raw) as IpApiResponse;
+        } catch {
+          return;
+        }
 
         if (data && data.country_code) {
           const supportedCountry = countries.find((c) => c.code === data.country_code);
@@ -65,11 +90,11 @@ export const useUserCountry = (): UserCountryData => {
           if (supportedCountry) {
             setCountryCode(supportedCountry.code);
             setCountryName(supportedCountry.name);
-            sessionStorage.setItem('user_country_code', supportedCountry.code);
+            storage?.setItem('user_country_code', supportedCountry.code);
           }
         }
-      } catch (error) {
-        console.error('Failed to fetch user country:', error);
+      } catch (_error) {
+        return;
       } finally {
         setLoading(false);
       }

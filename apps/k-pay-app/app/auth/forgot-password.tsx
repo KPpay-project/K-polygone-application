@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   View,
-  Text,
   TextInput,
   TouchableOpacity,
   ScrollView,
@@ -14,16 +13,14 @@ import { ReusableButton } from '@/components/ui/button/reusable-button';
 import { Link, router } from 'expo-router';
 import { ArrowLeft } from 'iconsax-react-nativejs';
 import { useTranslation } from 'react-i18next';
-import {
-  validateForgotPasswordForm,
-  validateForgotPasswordField,
-} from '../../src/validations/auth/forgot-password';
+import { useMutation } from '@apollo/client';
+import { validateForgotPasswordForm } from '../../src/validations/auth/forgot-password';
 import type {
   ForgotPasswordFormData,
   ForgotPasswordFormErrors,
 } from '../../src/validations/types';
+import { FORGOTTEN_PASSWORD } from '@repo/api';
 
-// Rename to avoid conflicts
 type FormData = ForgotPasswordFormData;
 type FormErrors = ForgotPasswordFormErrors;
 
@@ -33,7 +30,8 @@ export default function ForgotPasswordScreen() {
     email: '',
   });
   const [errors, setErrors] = useState<FormErrors>({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [forgotPassword, { loading: isLoading }] =
+    useMutation(FORGOTTEN_PASSWORD);
 
   const validateForm = (): boolean => {
     const validation = validateForgotPasswordForm(formData, t);
@@ -55,20 +53,37 @@ export default function ForgotPasswordScreen() {
   const handleResetPassword = async () => {
     if (!validateForm()) return;
 
-    setIsLoading(true);
     setErrors({});
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      router.push({
-        pathname: '/auth/verify-code',
-        params: { email: formData.email },
+      const { data } = await forgotPassword({
+        variables: {
+          input: {
+            email: formData.email.trim(),
+          },
+        },
       });
+
+      if (data?.requestPasswordReset?.success) {
+        router.push({
+          pathname: '/auth/verify-code',
+          params: { email: formData.email.trim() },
+        });
+        return;
+      }
+
+      setErrors((prev) => ({
+        ...prev,
+        general:
+          data?.requestPasswordReset?.message || t('resetPasswordFailed'),
+      }));
     } catch (error) {
       console.error('Reset password failed:', error);
-      setErrors((prev) => ({ ...prev, general: t('resetPasswordFailed') }));
-    } finally {
-      setIsLoading(false);
+      setErrors((prev) => ({
+        ...prev,
+        general:
+          error instanceof Error ? error.message : t('resetPasswordFailed'),
+      }));
     }
   };
 

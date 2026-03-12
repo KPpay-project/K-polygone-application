@@ -1,23 +1,23 @@
 import { ScreenContainer } from '@/layout/safe-area-layout';
 import { HeaderWithTitle } from '@/components';
-import { Bank, Convert, Mobile } from 'iconsax-react-nativejs';
+import { Bank, Mobile } from 'iconsax-react-nativejs';
 import { router } from 'expo-router';
 import { TouchableOpacity, View } from 'react-native';
 import { Typography } from '@/components/ui';
 import { useTranslation } from 'react-i18next';
-import { StatusScreen } from '@/components/fallbacks/status-screen';
+import { SupportedProviders } from '@/types/graphql';
 
 export default function AddMoneyPage() {
   const { t } = useTranslation();
 
   const data = [
-    {
-      icon: <Bank size={20} color="#0057FF" />,
-      title: 'Add via Bank transfer',
-      description:
-        'Fund your account by sending money to your unique NG bank account',
-      path: '/deposit/via-bank',
-    },
+    // {
+    //   icon: <Bank size={20} color="#0057FF" />,
+    //   title: 'Add via Bank transfer',
+    //   description:
+    //     'Fund your account by sending money to your unique NG bank account',
+    //   path: '/deposit/via-bank',
+    // },
     // {
     //   icon: <Convert size={20} color="#0057FF" />,
     //   title: 'Add via conversion',
@@ -28,35 +28,38 @@ export default function AddMoneyPage() {
       icon: <Mobile size={20} color="#0057FF" />,
       title: 'Add via M-Pesa',
       description: 'Deposit to our partner merchant',
-      path: '/deposit/via-mpesa',
+      path: `/deposit/${SupportedProviders.M_PESA}`,
     },
     {
       icon: <Mobile size={20} color="#0057FF" />,
       title: 'Add via MTN Momo',
       description: 'Deposit to our partner merchant',
-      path: '/deposit/via-mtn-momo',
+      path: `/deposit/${SupportedProviders.MTN_MOMO}`,
     },
     {
       icon: <Mobile size={20} color="#0057FF" />,
       title: 'Add via Airtel',
       description: 'Deposit to our partner merchant',
-      path: '/deposit/via-airtel',
+      path: `/deposit/${SupportedProviders.AIRTEL}`,
     },
     {
       icon: <Mobile size={20} color="#0057FF" />,
       title: 'Add via Orange',
       description: 'Deposit to our partner merchant',
-      path: '/deposit/via-orange',
+      path: `/deposit/${SupportedProviders.ORANGE}`,
     },
   ];
 
   return (
-    <ScreenContainer useSafeArea={true} paddingHorizontal={15}>
+    <ScreenContainer
+      useSafeArea={true}
+      scrollable={false}
+      paddingHorizontal={15}
+    >
       <HeaderWithTitle
         title={t('addMoney')}
         description={t('addMoneyModeQuestion')}
       />
-
       <View className={'mt-1'}>
         {data.map((item, index) => (
           <TouchableOpacity

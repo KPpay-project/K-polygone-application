@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { FLUTTERWAVE_TEST_KEY } from '@/constants';
 import { FlutterwaveBank, FlutterwaveAccountDetails } from './types';
 
@@ -7,28 +6,26 @@ export const FLUTTERWAVE_API = {
   RESOLVE_ACCOUNT: 'https://api.flutterwave.com/v3/accounts/resolve',
 };
 
-export const flutterwaveAxiosInstance = axios.create({
-  headers: {
-    Authorization: `Bearer ${FLUTTERWAVE_TEST_KEY}`,
-    'Content-Type': 'application/json',
-    accept: 'application/json',
-  },
-});
-
 export class FlutterwaveBankService {
   static async fetchBanks(): Promise<FlutterwaveBank[]> {
     try {
-      const response = await flutterwaveAxiosInstance.get(
-        FLUTTERWAVE_API.BANKS
-      );
-      if (response.data.status === 'success') {
-        return response.data.data
+      const response = await fetch(FLUTTERWAVE_API.BANKS, {
+        headers: {
+          Authorization: `Bearer ${FLUTTERWAVE_TEST_KEY}`,
+          'Content-Type': 'application/json',
+          accept: 'application/json',
+        },
+      });
+
+      const data = await response.json();
+      if (data.status === 'success') {
+        return data.data
           .filter((bank: FlutterwaveBank) => bank.is_active !== false)
           .sort((a: FlutterwaveBank, b: FlutterwaveBank) =>
             a.name.localeCompare(b.name)
           );
       }
-      throw new Error(response.data.message || 'Failed to fetch banks');
+      throw new Error(data.message || 'Failed to fetch banks');
     } catch (err) {
       throw err instanceof Error ? err : new Error('Failed to fetch banks');
     }
@@ -39,19 +36,25 @@ export class FlutterwaveBankService {
     bankCode: string
   ): Promise<FlutterwaveAccountDetails | null> {
     try {
-      const response = await flutterwaveAxiosInstance.post(
-        FLUTTERWAVE_API.RESOLVE_ACCOUNT,
-        {
+      const response = await fetch(FLUTTERWAVE_API.RESOLVE_ACCOUNT, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${FLUTTERWAVE_TEST_KEY}`,
+          'Content-Type': 'application/json',
+          accept: 'application/json',
+        },
+        body: JSON.stringify({
           account_number: accountNumber,
           account_bank: bankCode,
-        }
-      );
+        }),
+      });
 
-      if (response.data.status === 'success') {
+      const data = await response.json();
+      if (data.status === 'success') {
         return {
-          account_number: response.data.data.account_number,
-          account_name: response.data.data.account_name,
-          bank_code: response.data.data.bank_code,
+          account_number: data.data.account_number,
+          account_name: data.data.account_name,
+          bank_code: data.data.bank_code,
         };
       }
       return null;

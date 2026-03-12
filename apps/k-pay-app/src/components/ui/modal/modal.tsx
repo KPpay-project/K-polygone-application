@@ -1,18 +1,19 @@
-import React from 'react';
+import { type ReactNode } from 'react';
 import {
   View,
   Modal,
   TouchableWithoutFeedback,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native';
-import { useTranslation } from 'react-i18next';
 import { Typography } from '../typography/typography';
+import { useTranslation } from 'react-i18next';
 
 interface ReusableModalProps {
   visible: boolean;
   onClose: () => void;
   title?: string;
-  children?: React.ReactNode;
+  children?: ReactNode;
   showCloseButton?: boolean;
   animationType?: 'slide' | 'fade' | 'none';
   transparent?: boolean;
@@ -21,7 +22,7 @@ interface ReusableModalProps {
   isClosing?: boolean;
 }
 
-const { width: screenWidth } = Dimensions.get('window');
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 export function ReusableModal({
   visible,
@@ -71,6 +72,7 @@ export function ReusableModal({
               }`}
               style={{
                 maxWidth: variant === 'center' ? 400 : screenWidth,
+                height: variant === 'bottom' ? screenHeight * 0.4 : undefined,
               }}
             >
               {title && (
@@ -86,16 +88,23 @@ export function ReusableModal({
 
               {children}
 
-              {/* {showCloseButton && (
+              {showCloseButton ? (
                 <View className="mt-6">
-                  <ReusableButton
-                    variant="outline"
-                    text={t('close')}
+                  <TouchableOpacity
                     onPress={onClose}
-                    loading={isClosing}
-                  />
+                    disabled={isClosing}
+                    activeOpacity={0.85}
+                    className="w-full py-3 rounded-xl border border-gray-200"
+                  >
+                    <Typography
+                      variant="body"
+                      className="text-gray-900 text-center"
+                    >
+                      {t('close')}
+                    </Typography>
+                  </TouchableOpacity>
                 </View>
-              )} */}
+              ) : null}
             </View>
           </TouchableWithoutFeedback>
         </View>

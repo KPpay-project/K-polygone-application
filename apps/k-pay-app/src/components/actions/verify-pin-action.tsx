@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -19,13 +19,13 @@ interface VerifyTransactionPinProps {
   loading?: boolean;
 }
 
-const VerifyTransactionPin: React.FC<VerifyTransactionPinProps> = ({
+const VerifyTransactionPin = ({
   onClose,
   onSuccess,
   title = 'Verify Transaction PIN',
   description = 'Enter your 4-digit PIN to authorize this transaction',
   loading = false,
-}) => {
+}: VerifyTransactionPinProps) => {
   const [pin, setPin] = useState<string[]>(['', '', '', '']);
   const [shuffledKeys, setShuffledKeys] = useState<string[]>([]);
   const shakeAnimation = useRef(new Animated.Value(0)).current;
@@ -176,7 +176,7 @@ const VerifyTransactionPin: React.FC<VerifyTransactionPinProps> = ({
           {pin.map((digit, index) => (
             <View
               key={index}
-              className={`w-4 h-4 rounded-full border-2 transition-all duration-300 ${
+              className={`w-4 h-4 rounded-full border-2 ${
                 digit
                   ? 'bg-blue-600 border-blue-600'
                   : 'border-gray-300 bg-transparent'
