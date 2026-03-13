@@ -1,6 +1,5 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import Toast from 'react-native-toast-message';
-import { useTranslation } from 'react-i18next';
 import {
   PAY_FLUTTERWAVE_BILL,
   VERIFY_BILL_PAYMENT,
@@ -22,8 +21,6 @@ import {
 } from '@/types/bill-payment';
 
 export const useBillPayment = () => {
-  const { t } = useTranslation();
-
   const [createBillPayment, { loading: creating, error: createError }] =
     useMutation<PayFlutterwaveBillResult, PayFlutterwaveBillVariables>(
       PAY_FLUTTERWAVE_BILL,
@@ -31,13 +28,13 @@ export const useBillPayment = () => {
         onCompleted: () => {
           Toast.show({
             type: 'success',
-            text1: t('billPayment.paymentInitiated'),
+            text1: 'Bill payment initiated',
           });
         },
         onError: (error) => {
           Toast.show({
             type: 'error',
-            text1: error.message || t('billPayment.paymentFailed'),
+            text1: error.message || 'Bill payment failed',
           });
         },
       }
@@ -51,19 +48,19 @@ export const useBillPayment = () => {
           if (data.verifyBillPayment.verificationStatus === 'verified') {
             Toast.show({
               type: 'success',
-              text1: t('billPayment.paymentVerified'),
+              text1: 'Bill payment verified',
             });
           } else {
             Toast.show({
               type: 'info',
-              text1: t('billPayment.verificationPending'),
+              text1: 'Verification pending',
             });
           }
         },
         onError: (error) => {
           Toast.show({
             type: 'error',
-            text1: error.message || t('billPayment.verificationFailed'),
+            text1: error.message || 'Verification failed',
           });
         },
       }
@@ -106,8 +103,6 @@ export const useBillPayment = () => {
 };
 
 export const useBillPaymentFees = (variables: GetBillPaymentFeesVariables) => {
-  const { t } = useTranslation();
-
   const { data, loading, error, refetch } = useQuery<
     GetBillPaymentFeesResult,
     GetBillPaymentFeesVariables
@@ -117,7 +112,7 @@ export const useBillPaymentFees = (variables: GetBillPaymentFeesVariables) => {
     onError: (error) => {
       Toast.show({
         type: 'error',
-        text1: error.message || t('billPayment.feeCalculationFailed'),
+        text1: error.message || 'Fee calculation failed',
       });
     },
   });

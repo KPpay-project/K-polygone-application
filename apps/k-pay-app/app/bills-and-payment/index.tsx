@@ -3,7 +3,6 @@ import { View, ScrollView, useWindowDimensions } from 'react-native';
 import { ScreenContainer } from '@/layout/safe-area-layout';
 import { Typography } from '@/components/ui';
 import { getSpacing } from '@/theme';
-import { useTranslation } from 'react-i18next';
 import { HeaderWithTitle } from '@/components';
 import { useQuery } from '@apollo/client';
 import {
@@ -44,7 +43,6 @@ type FlutterwaveBillItem = {
 };
 
 export default function BillsAndPaymentScreen() {
-  const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const isWide = width >= 768;
 
@@ -180,7 +178,7 @@ export default function BillsAndPaymentScreen() {
             }`}
           >
             <Typography className="text-gray-900 font-semibold mb-6">
-              {t('billPayment.title') || 'Bill payment'}
+              Bill payment
             </Typography>
 
             <View className="mb-6">
@@ -188,8 +186,8 @@ export default function BillsAndPaymentScreen() {
                 options={categoryOptions}
                 selectedValue={selectedCategoryCode || undefined}
                 onSelect={(option) => setSelectedCategoryCode(option.value)}
-                placeholder={t('placeholders.searchBillType') || 'Select bill category'}
-                searchPlaceholder={t('placeholders.searchBillType') || 'Search bill category'}
+                placeholder="Select bill category"
+                searchPlaceholder="Search bill category"
                 searchable={true}
                 emptyMessage="No bill category found"
               />
@@ -198,7 +196,7 @@ export default function BillsAndPaymentScreen() {
             <View className="mb-4">
               <View className="flex-row items-center justify-between mb-2">
                 <Typography variant="caption" className="text-gray-700 font-medium">
-                  {t('billPayment.form.country') || 'Country'}
+                  Country
                 </Typography>
               </View>
               <CountrySelector
@@ -207,7 +205,7 @@ export default function BillsAndPaymentScreen() {
                   setSelectedCountry(country);
                   setSelectedCountryCode(country.code);
                 }}
-                placeholder={t('placeholders.selectCountry') || 'Select country'}
+                placeholder="Select country"
                 searchable={true}
                 showDialCode={false}
                 maxHeight={300}
@@ -225,7 +223,7 @@ export default function BillsAndPaymentScreen() {
             {selectedCategoryCode ? (
               <View className="mt-6">
                 <Typography className="text-gray-900 font-semibold mb-3">
-                  {t('billPayment.availableBrands') || 'Available brands'}
+                  Available brands
                 </Typography>
 
                 {availableBillerOptions.length > 0 ? (
@@ -237,8 +235,8 @@ export default function BillsAndPaymentScreen() {
                         setSelectedBillerId(option.value);
                         setSelectedItemId(null);
                       }}
-                      placeholder={t('placeholders.selectNetwork') || 'Select biller'}
-                      searchPlaceholder={t('placeholders.searchBillType') || 'Search biller'}
+                      placeholder="Select biller"
+                      searchPlaceholder="Search biller"
                       searchable={true}
                       emptyMessage="No biller found"
                     />
@@ -256,7 +254,7 @@ export default function BillsAndPaymentScreen() {
                   </View>
                 ) : (
                   <Typography variant="caption" className="text-gray-500">
-                    {t('billPayment.noBrands') || 'No brands available for this selection.'}
+                    No brands available for this selection.
                   </Typography>
                 )}
               </View>

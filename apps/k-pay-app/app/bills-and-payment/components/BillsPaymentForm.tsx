@@ -3,7 +3,6 @@ import * as Clipboard from 'expo-clipboard';
 import React, { useEffect, useMemo, useState } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 
 import { ReusableModal } from '@/components/ui/modal/modal';
 import { Dropdown } from '@/components/ui/dropdown/dropdown';
@@ -60,7 +59,6 @@ export default function BillsPaymentForm({
   selectedItem,
   countryCode,
 }: BillsPaymentFormProps) {
-  const { t } = useTranslation();
   const { profile } = useProfileStore();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [resultOpen, setResultOpen] = useState(false);
@@ -85,7 +83,7 @@ export default function BillsPaymentForm({
   const { createBillPayment, getFlutterwaveBillPaymentStatus, validateFlutterwaveBillCustomer, creating } =
     useBillPayment();
 
-  const formSchema = createBillPaymentSchema(t);
+  const formSchema = createBillPaymentSchema();
 
   const form = useForm<BillPaymentFormData>({
     resolver: zodResolver(formSchema),
@@ -229,8 +227,8 @@ export default function BillsPaymentForm({
       }
 
       const parsedAmount = Number(formData.amount?.toString().replace(/,/g, ''));
-      if (!parsedAmount || Number.isNaN(parsedAmount) || parsedAmount <= 0) {
-        showError(t('validation.amountNumeric'));
+    if (!parsedAmount || Number.isNaN(parsedAmount) || parsedAmount <= 0) {
+        showError('Enter a valid amount');
         return;
       }
 
@@ -282,12 +280,12 @@ export default function BillsPaymentForm({
 
       const paymentResult = createResult.data?.payFlutterwaveBill;
       if (!paymentResult) {
-        showError(t('billPayment.paymentFailed'));
+        showError('Bill payment failed');
         return;
       }
 
       if (!paymentResult.success) {
-        showError(paymentResult.message || t('billPayment.paymentFailed'));
+        showError(paymentResult.message || 'Bill payment failed');
         return;
       }
 
@@ -300,7 +298,7 @@ export default function BillsPaymentForm({
 
         const paymentStatus = statusResult.data?.flutterwaveBillPaymentStatus;
         if (paymentStatus && !paymentStatus.success) {
-          showError(paymentStatus.message || t('billPayment.paymentFailed'));
+          showError(paymentStatus.message || 'Bill payment failed');
           return;
         }
       }
@@ -316,7 +314,7 @@ export default function BillsPaymentForm({
       });
 
       showSuccess(
-        paymentResult.message || t('billPayment.paymentSuccessful'),
+        paymentResult.message || 'Bill payment successful',
         paymentResult.reference || paymentResult.flutterwaveReference || '',
         `${resolvedCurrency} ${parsedAmount.toLocaleString(undefined, {
           minimumFractionDigits: 2,
@@ -325,7 +323,7 @@ export default function BillsPaymentForm({
       );
     } catch (error) {
       console.error('Payment failed:', error);
-      showError(t('billPayment.paymentFailed'));
+      showError('Bill payment failed');
     }
   };
 
@@ -377,7 +375,7 @@ export default function BillsPaymentForm({
         </View>
 
         <View className="mb-6">
-          <FormProgress steps={2} currentStep={1} title={t('billPayment.form.title')} />
+          <FormProgress steps={2} currentStep={1} title="Bill payment" />
         </View>
 
         <View className="gap-6">
@@ -393,7 +391,7 @@ export default function BillsPaymentForm({
                 selectedValue={field.value}
                 onSelect={(option) => field.onChange(option.value)}
                 placeholder="Select currency"
-                label={t('billPayment.form.currency')}
+                label="Currency"
                 error={fieldState.error?.message}
                 disabled={!!selectedItem?.currency || currencyOptions.length === 0}
                 searchable={true}
@@ -419,8 +417,8 @@ export default function BillsPaymentForm({
                       if (isAmountFixed) return;
                       field.onChange(value.toLocaleString());
                     }}
-                    placeholder={t('placeholders.enterAmount')}
-                    label={t('billPayment.form.amount')}
+                    placeholder="Enter amount"
+                    label="Amount"
                     error={fieldState.error?.message}
                     className="mb-0"
                   />
@@ -477,7 +475,7 @@ export default function BillsPaymentForm({
             disabled={!isFormValid}
             loading={creating}
             variant="primary"
-            text={creating ? t('billPayment.form.processing') : t('billPayment.form.proceed')}
+            text={creating ? 'Processing...' : 'Proceed'}
             className={isFormValid ? 'bg-primary' : 'bg-gray-300'}
             textColor={isFormValid ? '#fff' : '#6B7280'}
           />
