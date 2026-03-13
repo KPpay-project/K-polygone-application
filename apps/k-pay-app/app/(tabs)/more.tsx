@@ -214,7 +214,7 @@ export default function MoreScreen() {
             <MenuItem
               icon={<Lock size={20} color={getColor('gray.600')} />}
               title={translate('changePassword')}
-              onPress={() => {}}
+              onPress={() => router.push('/change-password')}
               showArrow={false}
             />
             {/* 
