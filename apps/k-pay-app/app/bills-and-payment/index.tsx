@@ -9,6 +9,8 @@ import { getBillOptions } from './data';
 import type { BillOption } from './types';
 import { getSpacing } from '@/theme';
 import { useTranslation } from 'react-i18next';
+import { HeaderWithTitle } from '@/components';
+import { GET_BILLERS , GET_BILL_PAYMENT_FEES, CREATE_BILL_PAYMENT, FLUTTERWAVE_BILL_CATEGORIES} from '@repo/api';
 
 export default function BillsAndPaymentScreen() {
   const { t } = useTranslation();
@@ -18,18 +20,12 @@ export default function BillsAndPaymentScreen() {
 
   return (
     <ScreenContainer useSafeArea={true} className="bg-gray-50">
-      {/* Header */}
-      <View className="bg-white px-6 py-4 border-b border-gray-200">
-        <TouchableOpacity onPress={handleBack} className="mb-4">
-          <ArrowLeft size={24} color="#000" />
-        </TouchableOpacity>
-        <Typography
-          variant="h3"
-          className="text-gray-900 font-semibold text-lg"
-        >
-          {t('billsAndPayment')}
-        </Typography>
-      </View>
+     
+     <HeaderWithTitle 
+      px={8}
+      title='Bills payment'
+      description='Manage your bills and payments'
+     />
 
       {/* Content */}
       <ScrollView
