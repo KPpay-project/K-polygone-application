@@ -20,6 +20,7 @@ import moment from 'moment';
 import CurrencyDropdownWithBalance from '@/components/currency/currency-dropdown-with-balance';
 import { DetailRow } from '@/components/actions/cross-currency-convertion-action';
 import VerifyTransactionPin from '@/components/actions/verify-pin-action';
+import { useLocalSearchParams } from 'expo-router';
 interface WalletToWalletTransferResponse {
   fromBalance: { availableBalance: number };
   toBalance: { availableBalance: number };
@@ -65,6 +66,11 @@ export default function WalletToWalletTransfer({
   onSuccess,
   defaultCurrencyId = 'USD',
 }: WalletToWalletTransferProps) {
+  const params = useLocalSearchParams<{
+    walletCode?: string;
+    amount?: string;
+    description?: string;
+  }>();
   const { profile } = useProfileStore();
   const [showSuccess, setShowSuccess] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -81,6 +87,21 @@ export default function WalletToWalletTransfer({
     'success' | 'failed' | null
   >(null);
   const [transferMessage, setTransferMessage] = useState<string>('');
+
+  useEffect(() => {
+    const walletCode = typeof params.walletCode === 'string' ? params.walletCode : '';
+    const amount = typeof params.amount === 'string' ? params.amount : '';
+    const description = typeof params.description === 'string' ? params.description : '';
+
+    if (!walletCode && !amount && !description) return;
+
+    setForm((prev) => ({
+      ...prev,
+      receivers_wallet_code: prev.receivers_wallet_code || walletCode,
+      amount: prev.amount || amount,
+      description: prev.description || description,
+    }));
+  }, [params.walletCode, params.amount, params.description]);
 
   if (!profile?.wallets?.length) {
     return (

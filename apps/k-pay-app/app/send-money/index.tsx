@@ -21,6 +21,14 @@ export default function SendMoneyPage() {
     () => [
       {
         icon: <ProfileCircle size={20} color="#0057FF" />,
+        title: t('scanToPayTitle', { defaultValue: 'Scan to Pay' }),
+        description: t('scanToPayDescription', {
+          defaultValue: 'Scan a QR code to pay',
+        }),
+        path: '/scan-to-pay',
+      },
+      {
+        icon: <ProfileCircle size={20} color="#0057FF" />,
         title: t('walletToWalletTitle', {
           defaultValue: 'Wallet to Wallet Transfer',
         }),
