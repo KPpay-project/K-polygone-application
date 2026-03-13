@@ -25,7 +25,7 @@
     "setup:assets": "cd assets && bun install && bun run build || echo 'Warning: Could not setup assets. Please check the assets directory.'"
   },
   "dependencies": {
-    "@apollo/client": "^3.13.8",
+    "@apollo/client": "3.13.9",
     "@hookform/resolvers": "^5.2.1",
     "@material-tailwind/react": "^2.1.10",
     "@radix-ui/react-avatar": "^1.1.10",

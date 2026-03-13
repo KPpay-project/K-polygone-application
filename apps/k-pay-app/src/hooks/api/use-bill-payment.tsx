@@ -1,26 +1,32 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import Toast from 'react-native-toast-message';
 import { useTranslation } from 'react-i18next';
 import {
-  CREATE_BILL_PAYMENT,
+  PAY_FLUTTERWAVE_BILL,
   VERIFY_BILL_PAYMENT,
   GET_BILL_PAYMENT_FEES,
-} from '@/lib/graphql/mutations/bill-payment';
+  VALIDATE_FLUTTERWAVE_BILL_CUSTOMER,
+  FLUTTERWAVE_BILL_PAYMENT_STATUS,
+} from '@repo/api';
 import {
-  CreateBillPaymentVariables,
-  CreateBillPaymentResult,
   VerifyBillPaymentVariables,
   VerifyBillPaymentResult,
   GetBillPaymentFeesVariables,
   GetBillPaymentFeesResult,
+  PayFlutterwaveBillVariables,
+  PayFlutterwaveBillResult,
+  ValidateFlutterwaveBillCustomerVariables,
+  ValidateFlutterwaveBillCustomerResult,
+  FlutterwaveBillPaymentStatusVariables,
+  FlutterwaveBillPaymentStatusResult,
 } from '@/types/bill-payment';
 
 export const useBillPayment = () => {
   const { t } = useTranslation();
 
   const [createBillPayment, { loading: creating, error: createError }] =
-    useMutation<CreateBillPaymentResult, CreateBillPaymentVariables>(
-      CREATE_BILL_PAYMENT,
+    useMutation<PayFlutterwaveBillResult, PayFlutterwaveBillVariables>(
+      PAY_FLUTTERWAVE_BILL,
       {
         onCompleted: () => {
           Toast.show({
@@ -63,13 +69,39 @@ export const useBillPayment = () => {
       }
     );
 
+  const [
+    validateFlutterwaveBillCustomer,
+    { loading: validatingCustomer, error: validateCustomerError },
+  ] = useLazyQuery<
+    ValidateFlutterwaveBillCustomerResult,
+    ValidateFlutterwaveBillCustomerVariables
+  >(VALIDATE_FLUTTERWAVE_BILL_CUSTOMER, {
+    fetchPolicy: 'no-cache',
+  });
+
+  const [
+    getFlutterwaveBillPaymentStatus,
+    { loading: checkingPaymentStatus, error: paymentStatusError },
+  ] = useLazyQuery<
+    FlutterwaveBillPaymentStatusResult,
+    FlutterwaveBillPaymentStatusVariables
+  >(FLUTTERWAVE_BILL_PAYMENT_STATUS, {
+    fetchPolicy: 'no-cache',
+  });
+
   return {
     createBillPayment,
     verifyBillPayment,
+    validateFlutterwaveBillCustomer,
+    getFlutterwaveBillPaymentStatus,
     creating,
     verifying,
+    validatingCustomer,
+    checkingPaymentStatus,
     createError,
     verifyError,
+    validateCustomerError,
+    paymentStatusError,
   };
 };
 

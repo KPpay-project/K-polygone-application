@@ -19,6 +19,7 @@ export interface DropdownProps {
   label?: string;
   searchable?: boolean;
   searchPlaceholder?: string;
+  emptyMessage?: string;
   error?: string;
   disabled?: boolean;
   className?: string;
@@ -32,6 +33,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   label,
   searchable = false,
   searchPlaceholder,
+  emptyMessage,
   error,
   disabled = false,
   className = '',
@@ -120,31 +122,39 @@ export const Dropdown: React.FC<DropdownProps> = ({
             </View>
           )}
           <ScrollView className="max-h-48">
-            {filteredOptions.map((option) => (
-              <TouchableOpacity
-                key={option.value}
-                className="px-4 py-3 border-b border-gray-100 last:border-b-0 flex-row items-center"
-                onPress={() => handleSelect(option)}
-              >
-                {option.icon && <View className="mr-3">{option.icon}</View>}
-                <View className="flex-1">
-                  <Typography
-                    variant="body"
-                    className="text-gray-900 font-medium"
-                  >
-                    {option.label}
-                  </Typography>
-                  {option.subtitle && (
-                    <Typography variant="caption" className="text-gray-500">
-                      {option.subtitle}
+            {filteredOptions.length > 0 ? (
+              filteredOptions.map((option) => (
+                <TouchableOpacity
+                  key={option.value}
+                  className="px-4 py-3 border-b border-gray-100 last:border-b-0 flex-row items-center"
+                  onPress={() => handleSelect(option)}
+                >
+                  {option.icon ? <View className="mr-3">{option.icon}</View> : null}
+                  <View className="flex-1">
+                    <Typography
+                      variant="body"
+                      className="text-gray-900 font-medium"
+                    >
+                      {option.label}
                     </Typography>
-                  )}
-                </View>
-                {selectedValue === option.value && (
-                  <View className="w-4 h-4 bg-blue-500 rounded-full" />
-                )}
-              </TouchableOpacity>
-            ))}
+                    {option.subtitle ? (
+                      <Typography variant="caption" className="text-gray-500">
+                        {option.subtitle}
+                      </Typography>
+                    ) : null}
+                  </View>
+                  {selectedValue === option.value ? (
+                    <View className="w-4 h-4 bg-blue-500 rounded-full" />
+                  ) : null}
+                </TouchableOpacity>
+              ))
+            ) : (
+              <View className="px-4 py-6">
+                <Typography variant="body" className="text-gray-500 text-center">
+                  {emptyMessage || t('noResultsFound')}
+                </Typography>
+              </View>
+            )}
           </ScrollView>
         </View>
       )}

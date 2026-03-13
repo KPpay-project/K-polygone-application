@@ -74,3 +74,66 @@ export interface GetBillPaymentFeesVariables {
 export interface GetBillPaymentFeesResult {
   billPaymentFees: BillPaymentFees;
 }
+
+export interface FlutterwaveBillPaymentInput {
+  amount: number;
+  billerCode: string;
+  billerId: string;
+  countryCode: string;
+  currencyCode: string;
+  customerId: string;
+  itemCode: string;
+  walletId: string;
+  description?: string;
+  narration?: string;
+}
+
+export interface PayFlutterwaveBillVariables {
+  input: FlutterwaveBillPaymentInput;
+}
+
+export interface PayFlutterwaveBillResult {
+  payFlutterwaveBill: {
+    amount: string | number | null;
+    billPaymentId: string | null;
+    currency: string | null;
+    flutterwaveReference: string | null;
+    message: string | null;
+    providerStatus: string | null;
+    reference: string | null;
+    status: string | null;
+    success: boolean;
+  };
+}
+
+export interface ValidateFlutterwaveBillCustomerVariables {
+  customerId: string;
+  itemCode: string;
+}
+
+export interface ValidateFlutterwaveBillCustomerResult {
+  validateFlutterwaveBillCustomer: {
+    customerName: string | null;
+    message: string;
+    status: string;
+    valid: boolean;
+  };
+}
+
+export interface FlutterwaveBillPaymentStatusVariables {
+  reference: string;
+}
+
+export interface FlutterwaveBillPaymentStatusResult {
+  flutterwaveBillPaymentStatus: {
+    amount: string | number | null;
+    billPaymentId: string | null;
+    currency: string | null;
+    flutterwaveReference: string | null;
+    message: string | null;
+    providerStatus: string | null;
+    reference: string | null;
+    status: string | null;
+    success: boolean;
+  };
+}
