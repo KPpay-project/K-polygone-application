@@ -30,13 +30,14 @@ import { useCurrency } from '@/contexts/CurrencyContext';
 import { useTranslation } from 'react-i18next';
 import { getSpacing, getColor } from '@/theme';
 import { HeaderWithTitle } from '@/components';
+import Toggle from '@/components/ui/toggle/toggle';
 
 interface MenuItemProps {
-  icon: React.ReactNode;
+  icon: any;
   title: string;
   subtitle?: string;
   badge?: string;
-  rightComponent?: React.ReactNode;
+  rightComponent?: any;
   onPress: () => void;
   showArrow?: boolean;
   textColor?: string;
@@ -142,7 +143,7 @@ const TWO_FACTOR_AUTH_STATUS_KEY = '@kpay_2fa_status';
 
 export default function MoreScreen() {
   const { t, ready } = useTranslation();
-  const { logout } = useAuth();
+  const { logout, biometricEnabled, biometricSupported, enableBiometricLogin, disableBiometricLogin } = useAuth();
   const { selectedCurrency, setSelectedCurrency } = useCurrency();
 
   const [showCurrencyModal, setShowCurrencyModal] = useState(false);
@@ -217,6 +218,39 @@ export default function MoreScreen() {
               onPress={() => router.push('/change-password')}
               showArrow={false}
             />
+
+            <MenuItem
+              icon={<SecuritySafe size={20} color={getColor('gray.600')} />}
+              title="Biometric login"
+              rightComponent={
+                <Toggle
+                  value={biometricEnabled}
+                  disabled={!biometricSupported}
+                  onValueChange={async (value) => {
+                    if (value) {
+                      const ok = await enableBiometricLogin();
+                      if (!ok) {
+                        await disableBiometricLogin();
+                      }
+                    } else {
+                      await disableBiometricLogin();
+                    }
+                  }}
+                />
+              }
+              onPress={async () => {
+                if (!biometricSupported) return;
+                if (biometricEnabled) {
+                  await disableBiometricLogin();
+                } else {
+                  const ok = await enableBiometricLogin();
+                  if (!ok) {
+                    await disableBiometricLogin();
+                  }
+                }
+              }}
+              showArrow={false}
+            />
             {/* 
             <MenuItem
               icon={<SecuritySafe size={20} color={getColor('gray.600')} />}
@@ -275,7 +309,7 @@ export default function MoreScreen() {
             <TouchableOpacity onPress={() => setShowLogoutModal(true)}>
               <Typography
                 variant="body"
-                weight="semibold"
+                weight="semiBold"
                 color={getColor('error.500')}
               >
                 {translate('logoutAccount')}
@@ -306,7 +340,7 @@ const Section = ({
   children,
 }: {
   title: string;
-  children: React.ReactNode;
+  children: any;
 }) => (
   <View style={{ marginBottom: getSpacing('xl') }}>
     <Typography

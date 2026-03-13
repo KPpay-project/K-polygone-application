@@ -6,6 +6,8 @@ import React, {
   ReactNode,
 } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
+import { NativeModulesProxy } from 'expo-modules-core';
 // Removed useLazyQuery import to fix circular dependency
 import {
   apolloClient,
@@ -40,6 +42,12 @@ interface AuthContextType {
   graphqlUser: GraphQLUser | null;
   meData: MeResponse | null;
   login: (email: string, password: string) => Promise<boolean>;
+  biometricEnabled: boolean;
+  biometricAvailable: boolean;
+  biometricSupported: boolean;
+  enableBiometricLogin: () => Promise<boolean>;
+  disableBiometricLogin: () => Promise<void>;
+  biometricLogin: () => Promise<boolean>;
   registerUser: (
     userData: Omit<UserInput, 'passwordConfirmation'> & {
       confirmPassword: string;
@@ -63,6 +71,8 @@ const AUTH_STORAGE_KEY = '@kpay_auth_token';
 const USER_STORAGE_KEY = '@kpay_user_data';
 const REFRESH_TOKEN_KEY = '@kpay_refresh_token';
 const GRAPHQL_USER_STORAGE_KEY = '@kpay_graphql_user_data';
+const BIOMETRIC_ENABLED_KEY = '@kpay_biometric_enabled';
+const BIOMETRIC_PAYLOAD_KEY = 'kpay_biometric_payload_v1';
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -76,9 +86,55 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
+  const [biometricEnabled, setBiometricEnabled] = useState(false);
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [biometricSupported, setBiometricSupported] = useState(false);
 
   useEffect(() => {
     checkAuthState();
+  }, []);
+
+  const hasExpoNativeModule = (name: string) => {
+    return Boolean((NativeModulesProxy as any)?.[name]);
+  };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const supported =
+          hasExpoNativeModule('ExpoSecureStore') &&
+          hasExpoNativeModule('ExpoLocalAuthentication');
+        setBiometricSupported(supported);
+
+        const enabled = (await AsyncStorage.getItem(BIOMETRIC_ENABLED_KEY)) === 'true';
+        setBiometricEnabled(enabled);
+        if (!enabled || !supported) {
+          setBiometricAvailable(false);
+          return;
+        }
+
+        let LocalAuthentication: any = null;
+        try {
+          LocalAuthentication = require('expo-local-authentication');
+        } catch {
+          LocalAuthentication = null;
+        }
+
+        if (!LocalAuthentication) {
+          setBiometricAvailable(false);
+          return;
+        }
+
+        const [hasHardware, isEnrolled] = await Promise.all([
+          LocalAuthentication.hasHardwareAsync(),
+          LocalAuthentication.isEnrolledAsync(),
+        ]);
+
+        setBiometricAvailable(Boolean(hasHardware && isEnrolled));
+      } catch {
+        setBiometricAvailable(false);
+      }
+    })();
   }, []);
 
   useEffect(() => {
@@ -226,6 +282,250 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const enableBiometricLogin = async (): Promise<boolean> => {
+    try {
+      const supported =
+        hasExpoNativeModule('ExpoSecureStore') &&
+        hasExpoNativeModule('ExpoLocalAuthentication');
+
+      if (!supported) {
+        Toast.show({
+          type: 'error',
+          text1: 'Biometric login is not available on this build',
+        });
+        return false;
+      }
+
+      let LocalAuthentication: any = null;
+      let SecureStore: any = null;
+
+      try {
+        LocalAuthentication = require('expo-local-authentication');
+      } catch {
+        LocalAuthentication = null;
+      }
+      try {
+        SecureStore = require('expo-secure-store');
+      } catch {
+        SecureStore = null;
+      }
+
+      if (!LocalAuthentication || !SecureStore) {
+        Toast.show({
+          type: 'error',
+          text1: 'Biometric login is not available on this build',
+        });
+        return false;
+      }
+
+      const [hasHardware, isEnrolled] = await Promise.all([
+        LocalAuthentication.hasHardwareAsync(),
+        LocalAuthentication.isEnrolledAsync(),
+      ]);
+
+      if (!hasHardware || !isEnrolled) {
+        Toast.show({
+          type: 'error',
+          text1: 'Biometrics not set up on this device',
+        });
+        return false;
+      }
+
+      const authResult = await LocalAuthentication.authenticateAsync({
+        promptMessage: 'Enable biometric login',
+        cancelLabel: 'Cancel',
+        fallbackLabel: 'Use device passcode',
+      });
+
+      if (!authResult.success) {
+        return false;
+      }
+
+      const [
+        storedAccessToken,
+        storedRefreshToken,
+        storedUser,
+        storedGraphQLUser,
+        apolloAccessToken,
+        apolloRefreshToken,
+      ] = await Promise.all([
+        AsyncStorage.getItem(AUTH_STORAGE_KEY),
+        AsyncStorage.getItem(REFRESH_TOKEN_KEY),
+        AsyncStorage.getItem(USER_STORAGE_KEY),
+        AsyncStorage.getItem(GRAPHQL_USER_STORAGE_KEY),
+        AsyncStorage.getItem(JWT_TOKEN_NAME),
+        AsyncStorage.getItem(JWT_REFRESH_TOKEN_NAME),
+      ]);
+
+      const accessToken = apolloAccessToken || storedAccessToken;
+      const refreshTokenValue = apolloRefreshToken || storedRefreshToken;
+
+      if (!accessToken || !refreshTokenValue || (!storedUser && !storedGraphQLUser)) {
+        Toast.show({
+          type: 'error',
+          text1: 'Please login before enabling biometric login',
+        });
+        return false;
+      }
+
+      const payload = JSON.stringify({
+        accessToken,
+        refreshToken: refreshTokenValue,
+        user: storedUser || null,
+        graphqlUser: storedGraphQLUser || null,
+      });
+
+      await SecureStore.setItemAsync(BIOMETRIC_PAYLOAD_KEY, payload, {
+        requireAuthentication: true,
+      });
+
+      await AsyncStorage.setItem(BIOMETRIC_ENABLED_KEY, 'true');
+      setBiometricEnabled(true);
+      setBiometricAvailable(true);
+
+      Toast.show({
+        type: 'success',
+        text1: 'Biometric login enabled',
+      });
+
+      return true;
+    } catch (error: any) {
+      Toast.show({
+        type: 'error',
+        text1: error?.message || 'Unable to enable biometric login',
+      });
+      return false;
+    }
+  };
+
+  const disableBiometricLogin = async (): Promise<void> => {
+    try {
+      let SecureStore: any = null;
+      try {
+        if (hasExpoNativeModule('ExpoSecureStore')) {
+          SecureStore = require('expo-secure-store');
+        } else {
+          SecureStore = null;
+        }
+      } catch {
+        SecureStore = null;
+      }
+
+      if (SecureStore) {
+        await SecureStore.deleteItemAsync(BIOMETRIC_PAYLOAD_KEY);
+      }
+
+      await AsyncStorage.setItem(BIOMETRIC_ENABLED_KEY, 'false');
+      setBiometricEnabled(false);
+      setBiometricAvailable(false);
+      Toast.show({
+        type: 'success',
+        text1: 'Biometric login disabled',
+      });
+    } catch {
+      await AsyncStorage.setItem(BIOMETRIC_ENABLED_KEY, 'false');
+      setBiometricEnabled(false);
+      setBiometricAvailable(false);
+    }
+  };
+
+  const biometricLogin = async (): Promise<boolean> => {
+    try {
+      if (!hasExpoNativeModule('ExpoSecureStore')) {
+        Toast.show({
+          type: 'error',
+          text1: 'Biometric login is not available on this build',
+        });
+        return false;
+      }
+
+      let SecureStore: any = null;
+      try {
+        SecureStore = require('expo-secure-store');
+      } catch {
+        SecureStore = null;
+      }
+
+      if (!SecureStore) {
+        Toast.show({
+          type: 'error',
+          text1: 'Biometric login is not available on this build',
+        });
+        return false;
+      }
+
+      const enabled = (await AsyncStorage.getItem(BIOMETRIC_ENABLED_KEY)) === 'true';
+      if (!enabled) {
+        Toast.show({
+          type: 'error',
+          text1: 'Biometric login is not enabled',
+        });
+        return false;
+      }
+
+      setLoading(true);
+
+      const payloadString = await SecureStore.getItemAsync(BIOMETRIC_PAYLOAD_KEY, {
+        requireAuthentication: true,
+      });
+
+      if (!payloadString) {
+        Toast.show({
+          type: 'error',
+          text1: 'No biometric login data found',
+        });
+        return false;
+      }
+
+      const payload = JSON.parse(payloadString) as {
+        accessToken: string;
+        refreshToken: string;
+        user: string | null;
+        graphqlUser: string | null;
+      };
+
+      if (!payload.accessToken || !payload.refreshToken) {
+        Toast.show({
+          type: 'error',
+          text1: 'Biometric login data is invalid',
+        });
+        return false;
+      }
+
+      await setTokens(payload.accessToken, payload.refreshToken);
+
+      const parsedUser = payload.user ? JSON.parse(payload.user) : null;
+      const parsedGraphQLUser = payload.graphqlUser
+        ? JSON.parse(payload.graphqlUser)
+        : null;
+
+      await Promise.all([
+        AsyncStorage.setItem(AUTH_STORAGE_KEY, payload.accessToken),
+        AsyncStorage.setItem(REFRESH_TOKEN_KEY, payload.refreshToken),
+        parsedUser ? AsyncStorage.setItem(USER_STORAGE_KEY, JSON.stringify(parsedUser)) : AsyncStorage.removeItem(USER_STORAGE_KEY),
+        parsedGraphQLUser
+          ? AsyncStorage.setItem(GRAPHQL_USER_STORAGE_KEY, JSON.stringify(parsedGraphQLUser))
+          : AsyncStorage.removeItem(GRAPHQL_USER_STORAGE_KEY),
+      ]);
+
+      setToken(payload.accessToken);
+      setRefreshToken(payload.refreshToken);
+      setUser(parsedUser);
+      setGraphqlUser(parsedGraphQLUser);
+      setIsAuthenticated(true);
+
+      return true;
+    } catch (error: any) {
+      Toast.show({
+        type: 'error',
+        text1: error?.message || 'Biometric login failed',
+      });
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const registerUser = async (
     userData: Omit<UserInput, 'passwordConfirmation'> & {
       confirmPassword: string;
@@ -329,6 +629,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     graphqlUser,
     meData,
     login,
+    biometricEnabled,
+    biometricAvailable,
+    biometricSupported,
+    enableBiometricLogin,
+    disableBiometricLogin,
+    biometricLogin,
     registerUser,
     logout,
     loading,

@@ -35,6 +35,10 @@ export default function LoginScreen() {
     isAuthenticated,
     loading: authLoading,
     graphqlUser,
+    biometricEnabled,
+    biometricAvailable,
+    biometricSupported,
+    biometricLogin,
   } = useAuth();
   const { setUserAccount } = useUserStore();
   const [formData, setFormData] = useState<LoginFormData>({
@@ -88,6 +92,21 @@ export default function LoginScreen() {
         t('unexpectedError') ||
           'An unexpected error occurred. Please try again.'
       );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleBiometricLogin = async () => {
+    setIsLoading(true);
+    setGeneralError('');
+    try {
+      const success = await biometricLogin();
+      if (!success) {
+        setGeneralError('Biometric login failed');
+      }
+    } catch (error: any) {
+      setGeneralError(error?.message || 'Biometric login failed');
     } finally {
       setIsLoading(false);
     }
@@ -226,6 +245,19 @@ export default function LoginScreen() {
               textColor="#fff"
               iconColor="#fff"
             />
+
+            {biometricSupported && biometricEnabled && biometricAvailable ? (
+              <View className="mt-3">
+                <ReusableButton
+                  variant="outline"
+                  text="Login with biometrics"
+                  onPress={handleBiometricLogin}
+                  disabled={isLoading}
+                  textColor="#111827"
+                  className="bg-transparent"
+                />
+              </View>
+            ) : null}
           </View>
 
           <View className="items-center mb-8">
